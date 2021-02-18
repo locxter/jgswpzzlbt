@@ -45,19 +45,19 @@ module assembly() {
   translate([507.5, 34.75, 189.75]) {
     xAxisTopCarriage();
   }
-  translate([541, 47.5, 174.75]) {
+  translate([541, 47.5, 176.75]) {
     xAxisRollerSpacer();
   }
   translate([541, 47.5, 153.75]) {
     xAxisRollerSpacer();
   }
-  translate([515.25, 151.5, 174.75]) {
+  translate([515.25, 151.5, 176.75]) {
     xAxisRollerSpacer();
   }
   translate([515.25, 151.5, 153.75]) {
     xAxisRollerSpacer();
   }
-  translate([566.75, 151.5, 174.75]) {
+  translate([566.75, 151.5, 176.75]) {
     xAxisRollerSpacer();
   }
   translate([566.75, 151.5, 153.75]) {

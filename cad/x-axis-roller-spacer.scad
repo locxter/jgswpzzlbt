@@ -4,9 +4,9 @@
 
 module xAxisRollerSpacer () {
   difference() {
-    cylinder(15, 3.75, 3.75);
+    cylinder(13, 3.75, 3.75);
     translate([0, 0, -1]) {
-      cylinder(17, 2.75, 2.75);
+      cylinder(15, 2.75, 2.75);
     }
   }
 }
