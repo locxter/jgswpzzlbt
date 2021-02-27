@@ -9,16 +9,16 @@ module xAxisBottomCarriage() {
         translate([25.75, 0, 0]) {
           cube([15.5, 25.5, 5]);
         }
-        translate([0, 62.5, 0]) {
+        translate([0, 61, 0]) {
           cube([15.5, 15.5, 5]);
         }
-        translate([51.5, 62.5, 0]) {
+        translate([51.5, 61, 0]) {
           cube([15.5, 15.5, 5]);
         }
-        translate([0, 109, 0]) {
+        translate([0, 105, 0]) {
           cube([15.5, 15.5, 5]);
         }
-        translate([51.5, 109, 0]) {
+        translate([51.5, 105, 0]) {
           cube([15.5, 15.5, 5]);
         }
       }
@@ -30,26 +30,32 @@ module xAxisBottomCarriage() {
           cylinder(7, 2.75, 2.75);
         }
       }
-      translate([19.5, 48.25, -1]) {
+      translate([19.5, 48.75, -1]) {
         cylinder(7, 1.25, 1.25);
       }
-      translate([19.5, 76.25, -1]) {
+      translate([19.5, 76.75, -1]) {
         cylinder(7, 1.25, 1.25);
       }
-      translate([47.5, 76.25, -1]) {
+      translate([47.5, 76.75, -1]) {
         cylinder(7, 1.25, 1.25);
       }
-      translate([47.5, 48.25, -1]) {
+      translate([47.5, 48.75, -1]) {
         cylinder(7, 1.25, 1.25);
       }
-      translate([7.75, 116.75, -1]) {
+      translate([64, 64.5, -1]) {
+        cylinder(7, 1.75, 1.75);
+      }
+      translate([64, 83.5, -1]) {
+        cylinder(7, 1.75, 1.75);
+      }
+      translate([7.75, 112.75, -1]) {
         cylinder(7, 2.75, 2.75);
       }
-      translate([59.25, 116.75, -1]) {
+      translate([59.25, 112.75, -1]) {
         cylinder(7, 2.75, 2.75);
       }
     }
-    translate([15.5, 109.5, 5]) {
+    translate([15.5, 105.5, 5]) {
       difference() {
         cube([36, 15, 50]);
         translate([-1, 0, 0]) {

@@ -48,9 +48,9 @@ module yAxisCarriage() {
         cylinder(6.5, 8, 8);
       }
     }
-    translate([39.75, 124.5, 10]) {
+    translate([39.75, 119.5, 10]) {
       difference() {
-        cube([90.5, 50.5, 30.5]);
+        cube([90.5, 55.5, 30.5]);
         translate([-1, 0, 0]) {
           rotate([45, 0, 0]) {
             cube([92.5, sqrt(800), sqrt(800)]);
@@ -59,17 +59,17 @@ module yAxisCarriage() {
         translate([-1, -1, 20]) {
           cube([92.5, 21, 11.5]);
         }
-        translate([5, 25, -1]) {
+        translate([5, 30, -1]) {
           cube([80.5, 20.5, 32.5]);
         }
         translate([15.25, -1, 10.25]) {
           rotate([-90, 0, 0]) {
-            cylinder(52.5, 2.75, 2.75);
+            cylinder(57.5, 2.75, 2.75);
           }
         }
         translate([75.25, -1, 10.25]) {
           rotate([-90, 0, 0]) {
-            cylinder(52.5, 2.75, 2.75);
+            cylinder(57.5, 2.75, 2.75);
           }
         }
         translate([15.25, -1, 10.25]) {

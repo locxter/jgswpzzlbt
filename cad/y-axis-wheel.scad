@@ -33,12 +33,12 @@ module yAxisWheel() {
         cylinder(36.5, 1.75, 1.75);
       }
     }
-    translate([9.75, 0, 22.75]) {
+    translate([8.75, 0, 22.75]) {
       rotate([0, 90, 0]) {
         cylinder(26.75, 3, 3);
       }
     }
-    translate([4.75, -3, 19.25]) {
+    translate([4.25, -3, 19.25]) {
       cube([3, 6, 11.75]);
     }
   }

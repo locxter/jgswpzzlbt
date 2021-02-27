@@ -21,12 +21,12 @@ module cAxisServoMount() {
         cylinder(17.75, 1.75, 1.75);
       }
     }
-    translate([9.75, 0, 3.5]) {
+    translate([8.75, 0, 3.5]) {
       rotate([0, 90, 0]) {
         cylinder(8, 3, 3);
       }
     }
-    translate([4.75, -3, -1]) {
+    translate([4.25, -3, -1]) {
       cube([3, 6, 8]);
     }
     translate([-6.25, 8, 12.5]) {

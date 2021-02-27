@@ -8,16 +8,16 @@ module xAxisTopCarriage() {
       translate([25.75, 0, 0]) {
         cube([15.5, 25.5, 5]);
       }
-      translate([0, 62.5, 0]) {
+      translate([0, 61, 0]) {
         cube([15.5, 15.5, 5]);
       }
-      translate([51.5, 62.5, 0]) {
+      translate([51.5, 61, 0]) {
         cube([15.5, 15.5, 5]);
       }
-      translate([0, 109, 0]) {
+      translate([0, 105, 0]) {
         cube([15.5, 15.5, 5]);
       }
-      translate([51.5, 109, 0]) {
+      translate([51.5, 105, 0]) {
         cube([15.5, 15.5, 5]);
       }
     }
@@ -29,23 +29,17 @@ module xAxisTopCarriage() {
         cylinder(7, 2.75, 2.75);
       }
     }
-    translate([7.75, 70.25, -1]) {
+    translate([7.75, 78.75, -1]) {
       cylinder(7, 2.75, 2.75);
     }
-    translate([59.25, 70.25, -1]) {
+    translate([59.25, 68.75, -1]) {
       cylinder(7, 2.75, 2.75);
     }
-    translate([7.75, 116.75, -1]) {
+    translate([7.75, 112.75, -1]) {
       cylinder(7, 2.75, 2.75);
     }
-    translate([59.25, 116.75, -1]) {
+    translate([59.25, 112.75, -1]) {
       cylinder(7, 2.75, 2.75);
-    }
-    translate([64, 91, -1]) {
-      cylinder(7, 1.75, 1.75);
-    }
-    translate([64, 110, -1]) {
-      cylinder(7, 1.75, 1.75);
     }
   }
 }
