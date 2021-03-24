@@ -1,8 +1,8 @@
 # jgswpzzlbt
 
 > Please keep in mind that this is a very early work in progress.
-This is a jigsaw puzzle solving robot I'm designing.
-![Overview picture of the robot](overview.svg)
+![Overview image](overview.svg)
+This is a jigsaw puzzle solving robot I'm designing. It is programmed in C++using OpenCV for image recognition and LibSerial for comunicating with a custom Arduino firmware.
 
 ## Dependencies
 
