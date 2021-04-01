@@ -12,7 +12,7 @@ int main()
     VideoCapture camera;
     // Opening the camera
     camera.open(0, CAP_V4L);
-    // Check for success
+    // Checking for success
     if (!camera.isOpened())
     {
         std::cout << "Unable to open the camera." << std::endl;
@@ -26,12 +26,12 @@ int main()
     camera.set(CAP_PROP_FPS, 30);
     // Creating a new window
     namedWindow("Camera viewer");
-    // Endless fram capturing and displaying loop
+    // Endless frame capturing and displaying loop
     while (true)
     {
         // Reading a frame
         camera.read(frame);
-        // Check for success
+        // Checking for success
         if (frame.empty()) {
             std::cout << "Blank frame grabbed." << std::endl;
             return 1;
