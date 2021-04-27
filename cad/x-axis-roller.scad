@@ -1,23 +1,26 @@
-// Uncomment before final render
+// Uncomment before rendering and exporting
 //$fa = 0.01;
 //$fs = 0.25;
 
+// Module for creating the roller
 module xAxisRoller()
 {
     difference()
     {
+        // Base shape
         union()
         {
-            cylinder(2.75, 10, 10);
-            translate([0, 0, 2.75])
+            cylinder(2.625, 10, 10);
+            translate([0, 0, 2.625])
             {
-                cylinder(4.5, 13, 13);
+                cylinder(4.75, 13, 13);
             }
-            translate([0, 0, 7.25])
+            translate([0, 0, 7.375])
             {
-                cylinder(2.75, 10, 10);
+                cylinder(2.625, 10, 10);
             }
         }
+        // Bearing cutout
         translate([0, 0, -1])
         {
             cylinder(12, 8, 8);
@@ -25,4 +28,5 @@ module xAxisRoller()
     }
 }
 
+// Using the module
 xAxisRoller();

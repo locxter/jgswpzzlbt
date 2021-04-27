@@ -1,13 +1,14 @@
-// Uncomment before final render
+// Uncomment before rendering and exporting
 //$fa = 0.01;
 //$fs = 0.25;
 
+// Importing all needed modules
 use <c-axis-motor-mount.scad>
 use <c-axis-servo-arm.scad>
 use <c-axis-servo-mount.scad>
 use <x-axis-bottom-carriage.scad>
 use <x-axis-camera-spacer.scad>
-use <x-axis-endstop-stop.scad>
+use <x-axis-stop.scad>
 use <x-axis-motor-mount.scad>
 use <x-axis-pulley.scad>
 use <x-axis-pulley-mount.scad>
@@ -18,8 +19,10 @@ use <x-axis-top-carriage.scad>
 use <y-axis-carriage.scad>
 use <y-axis-wheel.scad>
 
+// Module for assembling the parts
 module assembly()
 {
+    // Left wheels
     translate([0, 35.5, 35.5])
     {
         rotate([0, 90, 0])
@@ -34,147 +37,160 @@ module assembly()
             yAxisWheel();
         }
     }
-    translate([30.5, 12, 12])
+    // Left y axis carriage
+    translate([30.25, 12, 12])
     {
         rotate([90, 0, 90])
         {
             yAxisCarriage();
         }
     }
-    translate([71, 51.75, 187])
+    // X axis pulley
+    translate([70.5, 51.75, 187])
     {
         rotate([0, 0, 90])
         {
             xAxisPulleyMount();
         }
     }
-    translate([12.75, 102, 192])
+    translate([12.25, 102, 192])
     {
         xAxisPulleySpacer();
     }
-    translate([12.75, 102, 196])
+    translate([12.25, 102, 196])
     {
         xAxisPulley();
     }
-    translate([41, 57, 161.75])
+    // Extrusion dummy
+    translate([40.5, 57, 161.75])
     {
         cube([1000, 80, 20]);
     }
-    translate([115.5, 79.25, 161.75])
+    // X axis stop
+    translate([110, 79.25, 161.75])
     {
         rotate([180, 0, 90])
         {
-            xAxisEndstopStop();
+            xAxisStop();
         }
     }
-    translate([507.5, 34.25, 187.75])
+    // X axis carriage
+    translate([580.75, 34.25, 192.75])
     {
-        xAxisTopCarriage();
+        rotate([0, 180, 0])
+        {
+            xAxisTopCarriage();
+        }
     }
-    translate([515.25, 147, 187.75])
+    translate([508, 147, 187.75])
     {
         rotate([180, 0, 0])
         {
             xAxisRollerSpacer();
         }
     }
-    translate([515.25, 147, 166.75])
+    translate([508, 147, 166.75])
     {
         xAxisRoller();
     }
-    translate([515.25, 147, 155.75])
+    translate([508, 147, 155.75])
     {
         xAxisRollerSpacer();
     }
-    translate([527, 83, 138.75])
-    {
-        xAxisCameraSpacer();
-    }
-    translate([527, 111, 138.75])
-    {
-        xAxisCameraSpacer();
-    }
-    translate([541, 47, 187.75])
+    translate([540.5, 47, 187.75])
     {
         rotate([180, 0, 0]) {
             xAxisRollerSpacer();
         }
     }
-    translate([541, 47, 166.75])
+    translate([540.5, 47, 166.75])
     {
         xAxisRoller();
     }
-    translate([541, 47, 155.75])
+    translate([540.5, 47, 155.75])
     {
         xAxisRollerSpacer();
     }
-    translate([555, 83, 138.75])
-    {
-        xAxisCameraSpacer();
-    }
-    translate([555, 111, 138.75])
-    {
-        xAxisCameraSpacer();
-    }
-    translate([566.75, 147, 187.75])
+    translate([573, 147, 187.75])
     {
         rotate([180, 0, 0])
         {
             xAxisRollerSpacer();
         }
     }
-    translate([566.75, 147, 166.75])
+    translate([573, 147, 166.75])
     {
         xAxisRoller();
     }
-    translate([566.75, 147, 155.75])
+    translate([573, 147, 155.75])
     {
         xAxisRollerSpacer();
     }
-    translate([574.5, 34.25, 155.75])
+    translate([580.75, 34.25, 155.75])
     {
         rotate([0, 180, 0]) {
             xAxisBottomCarriage();
         }
     }
-    translate([523, 107.75, 91.25])
+    // Camera spacers
+    translate([526.5, 78, 138.75])
+    {
+        xAxisCameraSpacer();
+    }
+    translate([526.5, 106, 138.75])
+    {
+        xAxisCameraSpacer();
+    }
+    translate([554.5, 78, 138.75])
+    {
+        xAxisCameraSpacer();
+    }
+    translate([554.5, 106, 138.75])
+    {
+        xAxisCameraSpacer();
+    }
+    // C axis assembly
+    translate([521, 108, 108.75])
     {
         cAxisMotorMount();
     }
-    translate([541, 130.5, 90.75])
+    translate([540.5, 126, 108.5])
     {
         rotate([0, 180, 0]) {
             cAxisServoMount();
         }
     }
-    translate([541, 131.25, 72])
+    translate([540.5, 126.75, 89.75])
     {
         rotate([90, 90, 180]) {
             cAxisServoArm();
         }
     }
-    translate([1011, 142.25, 187])
+    // X axis motor mount
+    translate([1010.5, 51.75, 192])
     {
-        rotate([0, 0, 270])
+        rotate([0, 180, 270])
         {
             xAxisMotorMount();
         }
     }
-    translate([1051.5, 182, 12])
+    // Right y axis carriage
+    translate([1050.75, 182, 12])
     {
         rotate([90, 0, 270])
         {
             yAxisCarriage();
         }
     }
-    translate([1082, 35.5, 35.5])
+    // Right wheels
+    translate([1081, 35.5, 35.5])
     {
         rotate([0, 270, 0])
         {
             yAxisWheel();
         }
     }
-    translate([1082, 158.5, 35.5])
+    translate([1081, 158.5, 35.5])
     {
         rotate([0, 270, 0])
         {
@@ -183,4 +199,5 @@ module assembly()
     }
 }
 
+// Using the module
 assembly();

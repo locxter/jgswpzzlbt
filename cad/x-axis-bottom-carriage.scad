@@ -1,16 +1,19 @@
-// Uncomment before final render
+// Uncomment before rendering and exporting
 //$fa = 0.01;
 //$fs = 0.25;
 
+// Module for creating the carriage
 module xAxisBottomCarriage()
 {
     union()
     {
+        // Base plate
         difference()
         {
+            // Base shape
             hull()
             {
-                translate([25.75, 0, 0])
+                translate([32.5, 0, 0])
                 {
                     cube([15.5, 25.5, 5]);
                 }
@@ -18,7 +21,7 @@ module xAxisBottomCarriage()
                 {
                     cube([15.5, 15.5, 5]);
                 }
-                translate([51.5, 61, 0])
+                translate([65, 61, 0])
                 {
                     cube([15.5, 15.5, 5]);
                 }
@@ -26,102 +29,136 @@ module xAxisBottomCarriage()
                 {
                     cube([15.5, 15.5, 5]);
                 }
-                translate([51.5, 105, 0])
+                translate([65, 105, 0])
                 {
                     cube([15.5, 15.5, 5]);
                 }
+                translate([27.5, 121.5, 0])
+                {
+                    cube([25.5, 5, 5]);
+                }
             }
+            // Front wheel slot
             hull()
             {
-                translate([33.5, 7.75, -1])
+                translate([40.25, 7.75, -1])
                 {
                     cylinder(7, 2.75, 2.75);
                 }
-                translate([33.5, 17.75, -1])
+                translate([40.25, 17.75, -1])
                 {
                     cylinder(7, 2.75, 2.75);
                 }
             }
-            translate([19.5, 48.75, -1])
+            // Camera mounting holes
+            translate([26.25, 43.75, -1])
             {
                 cylinder(7, 1.25, 1.25);
             }
-            translate([19.5, 76.75, -1])
+            translate([26.25, 71.75, -1])
             {
                 cylinder(7, 1.25, 1.25);
             }
-            translate([47.5, 76.75, -1])
+            translate([54.25, 71.75, -1])
             {
                 cylinder(7, 1.25, 1.25);
             }
-            translate([47.5, 48.75, -1])
+            translate([54.25, 43.75, -1])
             {
                 cylinder(7, 1.25, 1.25);
             }
-            translate([64, 64.5, -1])
+            // Endstop mounting holes
+            translate([77.5, 64.5, -1])
             {
                 cylinder(7, 1.75, 1.75);
             }
-            translate([64, 83.5, -1])
+            translate([77.5, 83.5, -1])
             {
                 cylinder(7, 1.75, 1.75);
             }
+            // Rear wheel holes
             translate([7.75, 112.75, -1])
             {
                 cylinder(7, 2.75, 2.75);
             }
-            translate([59.25, 112.75, -1])
+            translate([72.75, 112.75, -1])
             {
                 cylinder(7, 2.75, 2.75);
             }
-        }
-        translate([15.5, 105.5, 5])
-        {
-            difference()
+            // Cable chain mount cutout
+            translate([27.25, 121.25, -1])
             {
-                cube([36, 15, 50]);
-                translate([-1, 0, 0])
-                {
-                    rotate([45, 0, 0])
-                    {
-                        cube([41, sqrt(200), sqrt(200)]);
-                    }
-                }
-                translate([-1, -1, 10])
-                {
-                    cube([41, 11, 41]);
-                }
+                cube([26, 6.25, 7]);
+            }
+        }
+        // Motor mount
+        translate([15.5, 78.5, 0])
+        {
+            union()
+            {
+                // Left support
                 hull()
                 {
-                    translate([7.75, 9, 17.75])
+                    cube([5, 42, 5]);
+                    translate([0, 37, 5])
                     {
-                        rotate([-90, 0, 0])
-                        {
-                            cylinder(7, 2.75, 2.75);
-                        }
+                        cube([5, 5, 37]);
                     }
-                    translate([7.75, 9, 42.25])
+                }
+                // Mounting plate
+                translate([5, 37, 5])
+                {
+                    difference()
                     {
-                        rotate([-90, 0, 0])
+                        // Base shape
+                        cube([39.5, 5, 37]);
+                        // Left slot
+                        hull()
                         {
-                            cylinder(7, 2.75, 2.75);
+                            translate([9.5, -1, 8])
+                            {
+                                rotate([-90, 0, 0])
+                                {
+                                    cylinder(7, 2.75, 2.75);
+                                }
+                            }
+                            translate([9.5, -1, 29.25])
+                            {
+                                rotate([-90, 0, 0])
+                                {
+                                    cylinder(7, 2.75, 2.75);
+                                }
+                            }
+                        }
+                        // Right slot
+                        hull()
+                        {
+                            translate([30, -1, 8])
+                            {
+                                rotate([-90, 0, 0])
+                                {
+                                    cylinder(7, 2.75, 2.75);
+                                }
+                            }
+                            translate([30, -1, 29.25])
+                            {
+                                rotate([-90, 0, 0])
+                                {
+                                    cylinder(7, 2.75, 2.75);
+                                }
+                            }
                         }
                     }
                 }
-                hull()
+                // Right support
+                translate([44.5, 0, 0])
                 {
-                    translate([28.25, 9, 17.75])
+                    hull()
                     {
-                        rotate([-90, 0, 0])
+                        cube([4, 42, 5]);
+                        translate([0, 37, 5])
                         {
-                            cylinder(7, 2.75, 2.75);
-                        }
-                    }
-                    translate([28.25, 9, 42.25])
-                    {
-                        rotate([-90, 0, 0])
-                        {
-                            cylinder(7, 2.75, 2.75);
+                            cube([4, 5, 37]);
                         }
                     }
                 }
@@ -130,4 +167,5 @@ module xAxisBottomCarriage()
     }
 }
 
+// Using the module
 xAxisBottomCarriage();

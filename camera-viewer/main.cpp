@@ -1,8 +1,10 @@
+// Including needed libraries
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui.hpp>
 
+// Setting default namespace
 using namespace cv;
 
 int main()
@@ -37,7 +39,7 @@ int main()
             return 1;
         }
         // Showing the frame
-        imshow("Camera", frame);
+        imshow("Camera viewer", frame);
         // Breaking the loop on user input
         if (waitKey(1000 / 30) >= 0)
         {

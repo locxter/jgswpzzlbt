@@ -1,0 +1,45 @@
+<h1 id="jgswpzzlbt">jgswpzzlbt</h1>
+<h2 id="overview">Overview</h2>
+<blockquote>
+<p>Please keep in mind that this is a <strong>very early work in progress</strong>.</p>
+</blockquote>
+<p><img src="overview.png" alt="Overview image" /></p>
+<p>This is a jigsaw puzzle solving robot I'm designing. It is programmed in C++ using OpenCV for image recognition and LibSerial for communicating with a custom Arduino firmware.</p>
+<h2 id="dependencies">Dependencies</h2>
+<p>I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Ubuntu based Linux distributions as I'm running Linux Mint myself. Anyway, you need to have the following packages installed for everything to work properly:</p>
+<ul>
+<li>OpenSCAD for rendering the CAD files. Install it with <code>sudo apt install openscad</code>.</li>
+<li>Arduino IDE as a way to compile the Arduino code. Install it with <code>sudo apt install arduino</code>.</li>
+<li>Code::Blocks as a C++ IDE. Install it with <code>sudo apt install codeblocks</code>.</li>
+<li>OpenCV as the used computer vision library. Install it with <code>sudo apt install libopencv-dev</code>.</li>
+<li>LibSerial as the used serial communication library. Install it with <code>sudo apt install libserial-dev</code>.</li>
+</ul>
+<h2 id="how-it-works">How it works</h2>
+<p>The process of solving a jigsaw puzzle automatically involves the following seven major steps:</p>
+<ol>
+<li>Locating all the randomly positioned pieces.</li>
+<li>Moving each piece to a known position inside a predefined matrix.</li>
+<li>Creating detailed pictures of all the pieces.</li>
+<li>Stitching all the pictures together to construct the final outcome.</li>
+<li>Locating each piece in the constructed picture.</li>
+<li>Translating the digital position to a real world one.</li>
+<li>Moving all the pieces to their final position.</li>
+</ol>
+<h2 id="how-to-build-it">How to build it</h2>
+<p><img src="cad/assembly.png" alt="Assembly image" /></p>
+<p>If you are interested in building a jgswpzzlbt, you can find a list of all needed non printable parts in the file <code>bill-of-materials.md</code>, an assembly overview image in <code>cad/assembly.png</code> as well as an assembly overview CAD model in <code>cad/assembly.scad</code>.</p>
+<p>But please don't expect any parts to fit perfectly or be easy to assamble as only one prototype has been build so far.</p>
+<p>All parts were printed on my Sovol SV01 in standard PLA with a custom super fast profile. These are the settings used with great success:</p>
+<ul>
+<li>0.3mm layer height</li>
+<li>0.6mm line width</li>
+<li>1.2mm wall thickness</li>
+<li>0.9mm top/bottom tickness</li>
+<li>20% cubic infill</li>
+<li>215°C nozzle temperature</li>
+<li>60°C build plate temperature</li>
+<li>20mm/s initial layer speed</li>
+<li>75mm/s print speed (75mm/s for infill, 37.5mm/s for walls, 187.5mm for travel)</li>
+<li>100% cooling from the third layer on</li>
+<li>Zig zag support everywhere for the pulley and rollers</li>
+</ul>
