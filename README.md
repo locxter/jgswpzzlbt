@@ -32,7 +32,7 @@ The process of solving a jigsaw puzzle automatically involves the following seve
 
 ## How to build it
 
-The jgswpzzlbt's mechanics mainly consist of a 1m long 20x80mm aluminium extrusion and some custom 3D printed parts. An assembly overview image can be found in `cad/assembly.png` as well as an assembly overview CAD model in `cad/assembly.scad`. But please don't expect any parts to fit perfectly or be easy to assamble as only one prototype has been build so far.
+jgswpzzlbt's mechanics mainly consist of a 1m long 20x80mm aluminium extrusion and some custom 3D printed parts. An assembly overview image can be found in `cad/assembly.png` as well as an assembly overview CAD model in `cad/assembly.scad`. But please don't expect any parts to fit perfectly or be easy to assamble as only one prototype has been build so far.
 
 ![Assembly image](cad/assembly.png)
 
