@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="camera-viewer" />
+		<Option title="manual-control" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/camera-viewer" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/manual-control" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -16,7 +16,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/camera-viewer" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/manual-control" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
@@ -27,12 +27,11 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="`pkg-config --cflags opencv4`" />
+			<Add option="`pkg-config --cflags opencv4 libserial`" />
 		</Compiler>
 		<Linker>
-			<Add option="`pkg-config --libs opencv4`" />
+			<Add option="`pkg-config --libs opencv4 libserial`" />
 		</Linker>
-		<Unit filename="camera-calibration.xml" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>

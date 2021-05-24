@@ -14,20 +14,13 @@ const int ENDSTOP_PIN = 3;
 const int VACUUM_PUMP_PIN = 8;
 const int LED_PIN = 9;
 
-// Defining global constants
+// Defining the minimum x axis step interval
 const int X_AXIS_MIN_STEP_INTERVAL = 100;
-const int Y_AXIS_MIN_STEP_INTERVAL = 300;
-const int C_AXIS_MIN_STEP_INTERVAL = 200;
-const String AVAILABILITY_MESSAGE = "R\n";
-const char MOTOR_SPEED_COMMAND = 'S';
-const char X_AXIS_COMMAND = 'X';
-const char Y_AXIS_COMMAND = 'Y';
-const char Z_AXIS_COMMAND = 'Z';
-const char C_AXIS_COMMAND = 'C';
-const char VACUUM_PUMP_COMMAND = 'V';
-const char LED_COMMAND = 'L';
+// Defining messages
+const char AVAILABILITY_MESSAGE = 'R';
+const char ERROR_MESSAGE = 'E';
 
-// Defining global variable
+// Defining motor speed
 int motorSpeed = 100;
 
 // Creating a new servo object
@@ -45,7 +38,7 @@ void controlLed(int newLedDutyCycle);
 
 void setup()
 {
-    // Defining pin constants
+    // Defining pins
     const int X_AXIS_ENA_PIN = 38;
     const int X_AXIS_MS1_PIN = 5;
     const int X_AXIS_MS2_PIN = 6;
@@ -110,12 +103,10 @@ void setup()
     pinMode(LED_PIN, OUTPUT);
     digitalWrite(LED_PIN, LOW);
     servo.attach(SERVO_PIN);
-    // Homing
-    homeAxis();
     // Opening the serial connection
     Serial.begin(115200);
-    // Printing an availability message
-    Serial.print(AVAILABILITY_MESSAGE);
+    // Homing
+    homeAxis();
 }
 
 void loop()
@@ -123,8 +114,14 @@ void loop()
     // Checking for new serial data
     if (Serial.available() > 0)
     {
-        // Defining error message
-        const String ERROR_MESSAGE = "E\n";
+        // Defining commands
+        const char MOTOR_SPEED_COMMAND = 'S';
+        const char X_AXIS_COMMAND = 'X';
+        const char Y_AXIS_COMMAND = 'Y';
+        const char Z_AXIS_COMMAND = 'Z';
+        const char C_AXIS_COMMAND = 'C';
+        const char VACUUM_PUMP_COMMAND = 'V';
+        const char LED_COMMAND = 'L';
         // Reading commands and their according parameters
         String serialInput = Serial.readStringUntil('\n');
         char serialCommand = serialInput.charAt(0);
@@ -154,7 +151,7 @@ void loop()
                 controlLed(serialCommandParameter);
                 break;
             default:
-                Serial.print(ERROR_MESSAGE);
+                Serial.print((String)ERROR_MESSAGE + '\n');
                 break;
         }
     }
@@ -163,13 +160,18 @@ void loop()
 // Defining a homing function
 void homeAxis()
 {
+    // Calculating the step interval
     static int stepInterval = round(2 * X_AXIS_MIN_STEP_INTERVAL) - 10;
+    // Creating variables for storing time before homing the x axis and success of that operation
+    unsigned long int start;
+    bool success = true;
     // Moving servo to a deactive position
     if (servo.read() != 180)
     {
         servo.write(180);
     }
     // Homing the x axis
+    start = millis();
     digitalWrite(X_AXIS_DIR_PIN, !digitalRead(X_AXIS_DIR_PIN));
     while(digitalRead(ENDSTOP_PIN) == HIGH)
     {
@@ -177,8 +179,22 @@ void homeAxis()
         delayMicroseconds(10);
         digitalWrite(X_AXIS_STP_PIN, LOW);
         delayMicroseconds(stepInterval);
+        if (millis() - start > 30000)
+        {
+            success = false;
+            break;
+        }
     }
     digitalWrite(X_AXIS_DIR_PIN, !digitalRead(X_AXIS_DIR_PIN));
+    // Checking for homing error and printing an according message
+    if (success)
+    {
+        Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    }
+    else
+    {
+        Serial.print((String)ERROR_MESSAGE + '\n');
+    }
 }
 
 // Defining a motor speed changing function
@@ -199,7 +215,7 @@ void setMotorSpeed(int newMotorSpeed)
         motorSpeed = newMotorSpeed;
     }
     // Printing an availability message
-    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a x axis motor controlling function
@@ -221,8 +237,10 @@ void moveXAxis(int newXAxisPosition)
     // Controlling the motor
     if (newXAxisPosition != xAxisPosition)
     {
+        // Defining the x axis movement per rotation
         const int X_AXIS_MOVEMENT_PER_ROTATION = 40;
         int mmToGo;
+        // Calculating the step inerval
         int stepInterval = round((100.0 / motorSpeed) * X_AXIS_MIN_STEP_INTERVAL) - 10;
         // Choosing a movement direction
         if (newXAxisPosition > xAxisPosition)
@@ -251,13 +269,13 @@ void moveXAxis(int newXAxisPosition)
         xAxisPosition = newXAxisPosition;
     }
     // Printing an availability message
-    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a y axis motor controlling function
 void moveYAxis(int newYAxisPosition)
 {
-    // Defining maximum y position
+    // Defining maximum y axis position
     const int Y_AXIS_MAX_POSITION = 750;
     // Defining variable to store current position
     static int yAxisPosition = 0;
@@ -273,8 +291,12 @@ void moveYAxis(int newYAxisPosition)
     // Controlling the motor
     if (newYAxisPosition != yAxisPosition)
     {
+        // Defining the minimum y axis step interval
+        const int Y_AXIS_MIN_STEP_INTERVAL = 300;
+        // Defining the x axis movement per rotation
         const int Y_AXIS_MOVEMENT_PER_ROTATION = 229;
         int mmToGo;
+        // Calculating the step interval
         int stepInterval = round((100.0 / motorSpeed) * Y_AXIS_MIN_STEP_INTERVAL) - 10;
         // Choosing a movement direction
         if (newYAxisPosition > yAxisPosition)
@@ -307,7 +329,7 @@ void moveYAxis(int newYAxisPosition)
         yAxisPosition = newYAxisPosition;
     }
     // Printing an availability message
-    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a z axis servo controlling function
@@ -332,7 +354,7 @@ void moveZAxis(int newZAxisPosition)
         servo.write(newZAxisPosition);
     }
     // Printing an availability message
-    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a c axis motor controlling function
@@ -352,7 +374,10 @@ void moveCAxis(int newCAxisPosition)
     // Controlling the motor
     if (newCAxisPosition != cAxisPosition)
     {
+        // Defining the minimum c axis step interval
+        const int C_AXIS_MIN_STEP_INTERVAL = 200;
         int angleToGo;
+        // Calculating the step interval
         int stepInterval = round((100.0 / motorSpeed) * C_AXIS_MIN_STEP_INTERVAL) - 10;
         // Changing the new position sometimes to avoid cable damage
         if (newCAxisPosition > 180)
@@ -395,7 +420,7 @@ void moveCAxis(int newCAxisPosition)
         cAxisPosition = newCAxisPosition;
     }
     // Printing an availability message
-    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a vacuum pump controlling function
@@ -420,7 +445,7 @@ void controlVacuumPump(int newVacuumPumpDutyCycle)
         vacuumPumpDutyCycle = newVacuumPumpDutyCycle;
     }
     // Printing an availability message
-    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a LED controlling function
@@ -445,5 +470,5 @@ void controlLed(int newLedDutyCycle)
         ledDutyCycle = newLedDutyCycle;
     }
     // Printing an availability message
-    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
 }
