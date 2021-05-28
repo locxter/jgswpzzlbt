@@ -10,9 +10,10 @@ This is a jigsaw puzzle solving robot I'm designing. It is programmed in C++ usi
 
 ## Dependencies
 
-I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Ubuntu based Linux distributions as I'm running Linux Mint myself. Anyway, you need to have the following packages installed for everything to work properly:
+I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Ubuntu as I'm running it myself. Anyway, you need to have the following packages installed for everything to work properly:
 
 - OpenSCAD for rendering the CAD files. Install it with `sudo apt install openscad`.
+- ImageMagick for resizing the rendered image. Install it with `sudo apt install imagemagick`.
 - Arduino IDE as a way to compile the Arduino code. Install it with `sudo apt install arduino`.
 - Code::Blocks as a C++ IDE. Install it with `sudo apt install codeblocks`.
 - OpenCV as the used computer vision library. Install it with `sudo apt install libopencv-dev`.
