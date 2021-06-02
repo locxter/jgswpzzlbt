@@ -32,8 +32,9 @@ int main()
     FileStorage cameraCalibration;
     // Creating a serial port object
     SerialStream serial;
-    // Creating a variable for storing serial input
+    // Creating variables for storing serial input and extracted response
     string serialInput;
+    string serialResponse;
     // Opening the camera calibration file
     cameraCalibration.open("camera-calibration.xml", FileStorage::READ);
     // Cheacking for success
@@ -70,7 +71,8 @@ int main()
     serial.SetBaudRate(BaudRate::BAUD_115200);
     // Checking for successful homing
     getline(serial, serialInput);
-    if (serialInput.at(0) == ERROR_MESSAGE)
+    serialResponse = serialInput.at(0);
+    if (serialResponse == ERROR_MESSAGE)
     {
         cout << "Homing the robot failed." << endl;
         return 1;
@@ -186,17 +188,19 @@ void sendCommand(SerialStream &serial, char command, int commandParameter)
 {
     for (int numberOfTries = 0; numberOfTries < 3; numberOfTries++)
     {
-        // Creating a variable for storing serial input
+        // Creating variables for storing serial input and extracted response
         string serialInput;
+        string serialResponse;
         // Sending the command to the robot
         serial << command << commandParameter << endl;
         // Checking for successful execution
         getline(serial, serialInput);
-        if (serialInput.at(0) == AVAILABILITY_MESSAGE)
+        serialResponse = serialInput.at(0);
+        if (serialResponse == AVAILABILITY_MESSAGE)
         {
             break;
         }
-        else if (serialInput.at(0) == ERROR_MESSAGE)
+        else if (serialResponse == ERROR_MESSAGE)
         {
             cout << "Robot was unable to execute the given command." << endl;
             exit(1);
