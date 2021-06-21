@@ -1,5 +1,6 @@
 // Including needed libraries
 #include <iostream>
+#include <fstream>
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui.hpp>
@@ -20,7 +21,7 @@ const char AVAILABILITY_MESSAGE = 'R';
 const char ERROR_MESSAGE = 'E';
 
 // Declaring command sending function
-void sendCommand(SerialStream &serial, char command, int commandParameter);
+void sendCommand(SerialStream& serial, char command, int commandParameter);
 
 int main()
 {
@@ -34,13 +35,17 @@ int main()
     SerialStream serial;
     // Creating variables for storing serial input and extracted response
     string serialInput;
-    string serialResponse;
+    char serialResponse;
     // Opening the camera calibration file
     cameraCalibration.open("camera-calibration.xml", FileStorage::READ);
-    // Cheacking for success
-    if (!cameraCalibration.isOpened())
+    // Checking for success
+    if (cameraCalibration.isOpened())
     {
-        cout << "Unable to open camera calibration." << endl;
+        cout << "Opened camera calibration successfully." << endl;
+    }
+    else
+    {
+        cout << "Failed to open camera calibration." << endl;
         return 1;
     }
     // Reading the calibration
@@ -51,9 +56,13 @@ int main()
     // Opening the camera
     camera.open(CAMERA_ID, CAP_V4L);
     // Checking for success
-    if (!camera.isOpened())
+    if (camera.isOpened())
     {
-        cout << "Unable to open camera." << endl;
+        cout << "Opened camera successfully." << endl;
+    }
+    else
+    {
+        cout << "Failed to open camera." << endl;
         return 1;
     }
     // Changing some camera settings
@@ -63,7 +72,11 @@ int main()
     // Opening the serial port
     serial.Open(SERIAL_PORT);
     // Checking for success
-    if (!serial.IsOpen())
+    if (serial.IsOpen())
+    {
+        cout << "Opened serial port successfully." << endl;
+    }
+    else
     {
         cout << "Unable to open serial port." << endl;
     }
@@ -72,9 +85,13 @@ int main()
     // Checking for successful homing
     getline(serial, serialInput);
     serialResponse = serialInput.at(0);
-    if (serialResponse == ERROR_MESSAGE)
+    if (serialResponse == AVAILABILITY_MESSAGE)
     {
-        cout << "Homing the robot failed." << endl;
+        cout << "Robot homed successfully." << endl;
+    }
+    else
+    {
+        cout << "Homing of the robot failed." << endl;
         return 1;
     }
     // Creating a new window
@@ -85,6 +102,8 @@ int main()
         // Creating image containers
         Mat rawFrame;
         Mat undistortedFrame;
+        // Creating variable for storing the key pressed
+        int keyPressed;
         // Creating variables for track bar values;
         static int motorSpeed = 0;
         static int newMotorSpeed = 100;
@@ -170,10 +189,28 @@ int main()
             ledDutyCyle = newLedDutyCycle;
             sendCommand(serial, LED_COMMAND, ledDutyCyle);
         }
-        // Breaking the loop on user input
-        if (waitKey(1000 / 30) >= 0)
+        // Reacting to user input
+        keyPressed = waitKey(1000 / 30);
+        if (keyPressed == 113)
         {
             break;
+        }
+        else if (keyPressed == 115)
+        {
+            ifstream testFile;
+            static int counter = 0;
+            string fileName = to_string(counter) + ".jpg";
+            testFile.open(fileName);
+            while (testFile.is_open())
+            {
+                testFile.close();
+                counter++;
+                fileName = to_string(counter) + ".jpg";
+                testFile.open(fileName);
+            }
+            testFile.close();
+            imwrite(fileName, undistortedFrame);
+            cout << "Successfully saved picture " << fileName << '.' << endl;
         }
     }
     // Closing the camera
@@ -184,13 +221,13 @@ int main()
 }
 
 // Defining command sending function
-void sendCommand(SerialStream &serial, char command, int commandParameter)
+void sendCommand(SerialStream& serial, char command, int commandParameter)
 {
     for (int numberOfTries = 0; numberOfTries < 3; numberOfTries++)
     {
         // Creating variables for storing serial input and extracted response
         string serialInput;
-        string serialResponse;
+        char serialResponse;
         // Sending the command to the robot
         serial << command << commandParameter << endl;
         // Checking for successful execution
@@ -202,7 +239,7 @@ void sendCommand(SerialStream &serial, char command, int commandParameter)
         }
         else if (serialResponse == ERROR_MESSAGE)
         {
-            cout << "Robot was unable to execute the given command." << endl;
+            cout << "Robot failed to execute the command " << command << commandParameter << '.' << endl;
             exit(1);
         }
     }

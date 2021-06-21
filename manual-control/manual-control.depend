@@ -1,0 +1,232 @@
+# depslib dependency file v1.0
+1624201846 source:/media/locxter/data/tech-stuff/cpp/jgswpzzlbt/manual-control/main.cpp
+	<iostream>
+	<opencv2/core.hpp>
+	<opencv2/videoio.hpp>
+	<opencv2/highgui.hpp>
+	<opencv2/calib3d.hpp>
+	<libserial/SerialStream.h>
+
+1608580898 /usr/include/opencv4/opencv2/core.hpp
+	"opencv2/core/cvdef.h"
+	"opencv2/core/version.hpp"
+	"opencv2/core/base.hpp"
+	"opencv2/core/cvstd.hpp"
+	"opencv2/core/traits.hpp"
+	"opencv2/core/matx.hpp"
+	"opencv2/core/types.hpp"
+	"opencv2/core/mat.hpp"
+	"opencv2/core/persistence.hpp"
+	"opencv2/core/operations.hpp"
+	"opencv2/core/cvstd.inl.hpp"
+	"opencv2/core/utility.hpp"
+	"opencv2/core/optim.hpp"
+	"opencv2/core/ovx.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/core/cvdef.h
+	"cvconfig.h"
+	<limits>
+	<limits.h>
+	"opencv2/core/hal/interface.h"
+	"cv_cpu_dispatch.h"
+	<intrin.h>
+	<array>
+	<cstdint>
+	<stdint.h>
+	<stdint.h>
+	"opencv2/core/fast_math.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/core/hal/interface.h
+	<cstddef>
+	<stddef.h>
+	<stdbool.h>
+	<cstdint>
+	<stdint.h>
+
+1608580898 /usr/include/opencv4/opencv2/core/cv_cpu_dispatch.h
+	"cv_cpu_config.h"
+	"cv_cpu_helper.h"
+	<emmintrin.h>
+	<pmmintrin.h>
+	<tmmintrin.h>
+	<smmintrin.h>
+	<nmmintrin.h>
+	<nmmintrin.h>
+	<popcntintrin.h>
+	<immintrin.h>
+	<arm_neon.h>
+	<immintrin.h>
+	<immintrin.h>
+	<immintrin.h>
+	<Intrin.h>
+	<arm_neon.h>
+	<arm_neon.h>
+	<arm_neon.h>
+	<altivec.h>
+	"hal/msa_macros.h"
+	<wasm_simd128.h>
+	<riscv_vector.h>
+	<emmintrin.h>
+	<Intrin.h>
+	<arm_neon.h>
+	<arm_neon.h>
+	<altivec.h>
+	<immintrin.h>
+
+1608580898 /usr/include/opencv4/opencv2/core/cv_cpu_helper.h
+
+1608580898 /usr/include/opencv4/opencv2/core/hal/msa_macros.h
+	"msa.h"
+	<stdint.h>
+
+1608580898 /usr/include/opencv4/opencv2/core/fast_math.hpp
+	"opencv2/core/cvdef.h"
+	<cmath>
+	<fastmath.h>
+	<math.h>
+	<emmintrin.h>
+	<altivec.h>
+
+1608580898 /usr/include/opencv4/opencv2/core/version.hpp
+
+1608580898 /usr/include/opencv4/opencv2/core/base.hpp
+	"opencv2/opencv_modules.hpp"
+	<climits>
+	<algorithm>
+	"opencv2/core/cvdef.h"
+	"opencv2/core/cvstd.hpp"
+	"opencv2/core/neon_utils.hpp"
+	"opencv2/core/vsx_utils.hpp"
+	"opencv2/core/check.hpp"
+
+1614950806 /usr/include/opencv4/opencv2/opencv_modules.hpp
+
+1608580898 /usr/include/opencv4/opencv2/core/cvstd.hpp
+	"opencv2/core/cvdef.h"
+	<cstddef>
+	<cstring>
+	<cctype>
+	<string>
+	<algorithm>
+	<utility>
+	<cstdlib>
+	<cmath>
+	"cvstd_wrapper.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/core/cvstd_wrapper.hpp
+	"opencv2/core/cvdef.h"
+	<string>
+	<memory>
+	<type_traits>
+
+1608580898 /usr/include/opencv4/opencv2/core/neon_utils.hpp
+	"opencv2/core/cvdef.h"
+
+1608580898 /usr/include/opencv4/opencv2/core/vsx_utils.hpp
+	"opencv2/core/cvdef.h"
+	<assert.h>
+
+1608580898 /usr/include/opencv4/opencv2/core/check.hpp
+	<opencv2/core/base.hpp>
+
+1608580898 /usr/include/opencv4/opencv2/core/traits.hpp
+	"opencv2/core/cvdef.h"
+
+1608580898 /usr/include/opencv4/opencv2/core/matx.hpp
+	"opencv2/core/cvdef.h"
+	"opencv2/core/base.hpp"
+	"opencv2/core/traits.hpp"
+	"opencv2/core/saturate.hpp"
+	<initializer_list>
+
+1608580898 /usr/include/opencv4/opencv2/core/saturate.hpp
+	"opencv2/core/cvdef.h"
+	"opencv2/core/fast_math.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/core/types.hpp
+	<climits>
+	<cfloat>
+	<vector>
+	<limits>
+	"opencv2/core/cvdef.h"
+	"opencv2/core/cvstd.hpp"
+	"opencv2/core/matx.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/core/mat.hpp
+	"opencv2/core/matx.hpp"
+	"opencv2/core/types.hpp"
+	"opencv2/core/bufferpool.hpp"
+	<type_traits>
+	"opencv2/core/mat.inl.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/core/bufferpool.hpp
+
+1608580898 /usr/include/opencv4/opencv2/core/mat.inl.hpp
+
+1608580898 /usr/include/opencv4/opencv2/core/persistence.hpp
+	"opencv2/core/types.hpp"
+	"opencv2/core/mat.hpp"
+	"opencv2/core.hpp"
+	<time.h>
+
+1608580898 /usr/include/opencv4/opencv2/core/operations.hpp
+	<cstdio>
+
+1608580898 /usr/include/opencv4/opencv2/core/cvstd.inl.hpp
+	<complex>
+	<ostream>
+	<sstream>
+
+1608580898 /usr/include/opencv4/opencv2/core/utility.hpp
+	"opencv2/core.hpp"
+	<ostream>
+	<functional>
+	<mutex>
+	"opencv2/core/utils/instrumentation.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/core/utils/instrumentation.hpp
+	<opencv2/core/utility.hpp>
+	<opencv2/core/utils/tls.hpp>
+
+1608580898 /usr/include/opencv4/opencv2/core/utils/tls.hpp
+	<opencv2/core/utility.hpp>
+
+1608580898 /usr/include/opencv4/opencv2/core/optim.hpp
+	"opencv2/core.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/core/ovx.hpp
+	"cvdef.h"
+
+1608580898 /usr/include/opencv4/opencv2/videoio.hpp
+	"opencv2/core.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/highgui.hpp
+	"opencv2/core.hpp"
+	"opencv2/imgcodecs.hpp"
+	"opencv2/videoio.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/imgcodecs.hpp
+	"opencv2/core.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/calib3d.hpp
+	"opencv2/core.hpp"
+	"opencv2/features2d.hpp"
+	"opencv2/core/affine.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/features2d.hpp
+	"opencv2/opencv_modules.hpp"
+	"opencv2/core.hpp"
+	"opencv2/flann/miniflann.hpp"
+
+1608580898 /usr/include/opencv4/opencv2/flann/miniflann.hpp
+	"opencv2/core.hpp"
+	"opencv2/flann/defines.h"
+
+1608580898 /usr/include/opencv4/opencv2/flann/defines.h
+	"config.h"
+
+1608580898 /usr/include/opencv4/opencv2/flann/config.h
+
+1608580898 /usr/include/opencv4/opencv2/core/affine.hpp
+	<opencv2/core.hpp>
+

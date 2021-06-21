@@ -37,7 +37,7 @@ jgswpzzlbt's mechanics mainly consist of a 1m long 20x80mm aluminium extrusion a
 
 ![Assembly image](cad/assembly.png)
 
-Below is a full bill of materials with German sources for all non printable parts.
+Below is a full bill of materials with German sources for all non printable parts:
 
 | Quantity: | Item: | Source: |
 | --- | --- | --- |
@@ -91,16 +91,15 @@ Below is a full bill of materials with German sources for all non printable part
 | 2 | Y axis carriage | 3D printer |
 | 4 | Y axis wheel | 3D printer |
 
-All parts were printed on my Sovol SV01 in standard PLA with a custom super fast profile. The following settings were used with great success.
+All parts were printed on my Sovol SV01 in standard PLA with a custom super fast profile. The following settings were used with great success:
 
 - 0.3mm layer height
 - 0.6mm line width
 - 1.2mm wall thickness
 - 0.9mm top/bottom tickness
-- 20% cubic infill
+- 20% line infill
 - 215°C nozzle temperature
 - 60°C build plate temperature
-- 20mm/s initial layer speed
-- 75mm/s print speed (75mm/s for infill, 37.5mm/s for walls, 187.5mm for travel)
-- 100% cooling from the third layer on
+- 75mm/s print speed (37.5mm/s for the initial layer, 75mm/s for infill, 37.5mm/s for walls, 120mm for travel)
+- 100% cooling from the second layer on
 - Zig zag support everywhere for the pulley and rollers
