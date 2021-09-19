@@ -12,8 +12,7 @@ This is a jigsaw puzzle solving robot I'm designing. It is programmed in C++ usi
 
 I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Ubuntu as I'm running it myself. Anyway, you need to have the following packages installed for everything to work properly:
 
-- OpenSCAD for rendering the CAD files. Install it with `sudo apt install openscad`.
-- ImageMagick for resizing the rendered image. Install it with `sudo apt install imagemagick`.
+- FreeCAD for editing and exporting the CAD file. Install it with `sudo apt install freecad`.
 - Arduino IDE as a way to compile the Arduino code. Install it with `sudo apt install arduino`.
 - Code::Blocks as a C++ IDE. Install it with `sudo apt install codeblocks`.
 - OpenCV as the used computer vision library. Install it with `sudo apt install libopencv-dev`.
@@ -21,19 +20,18 @@ I generally try to minimize dependencies, but I'm a one man crew and can therefo
 
 ## How it works
 
-The process of solving a jigsaw puzzle automatically involves the following seven major steps:
+The process of solving a jigsaw puzzle automatically involves the following six major steps:
 
 1. Locating all the randomly positioned pieces.
 2. Moving each piece to a known position inside a predefined matrix.
 3. Creating detailed pictures of all the pieces.
-4. Stitching all the pictures together to construct the final outcome.
-5. Locating each piece in the constructed picture.
-6. Translating the digital position to a real world one.
-7. Moving all the pieces to their final position.
+4. Locating each piece in the provided overview picture of the puzzle.
+5. Translating the digital positions to a real world ones.
+6. Moving all the pieces to their final position.
 
 ## How to build it
 
-jgswpzzlbt's mechanics mainly consist of a 1m long 20x80mm aluminium extrusion and some custom 3D printed parts. An assembly overview image can be found in `cad/assembly.png` as well as an assembly overview CAD model in `cad/assembly.scad`. But please don't expect any parts to fit perfectly or be easy to assamble as only one prototype has been build so far.
+jgswpzzlbt's mechanics mainly consist of a 1m long 20x80mm aluminium extrusion and some custom 3D printed parts. An assembly overview image can be found in `cad/assembly.png` as well as an assembly overview CAD model in `cad/assembly.FCStd`. But please don't expect any parts to fit perfectly or be easy to assamble as only one prototype has been build so far.
 
 ![Assembly image](cad/assembly.png)
 
@@ -60,6 +58,7 @@ Below is a full bill of materials with German sources for all non printable part
 | 1 | Cable chain | [Amazon](https://www.amazon.de/Haobase-Plastic-Towline-Cable-Chain/dp/B06XKZ35VH) |
 | 1 | Cables | [Amazon](https://www.amazon.de/Donau-Elektronik-GMBH-Original-Kupfer/dp/B01BI1G88C) |
 | 1 | Pin header | [Amazon](https://www.amazon.de/IZOKEE-Männlich-Stiftleiste-Buchsenleiste-Lochrasterplatine/dp/B07DBY753C) |
+| 1 | Jigsaw puzzle mat | [Amazon](https://www.amazon.de/maDDma-Bastelfilz-Meterware-Taschenfilz-Filzstoff/dp/B0797QR4LL) |
 | 1 | Aluminium profile 20x80 I-type slot 5 1000mm | [Motedis](https://www.motedis.com/shop/Aluprofile/20-I-Typ-Nut-5/Aluprofil-20x80-I-Typ-Nut-5::3798.html) |
 | 10 | M5 t-nut I-type groove 5 | [Motedis](https://www.motedis.com/shop/Nutprofil-Zubehoer/In-der-Nut/Nutenstein-Glatt-I-Typ-Nut-5-M5::5846.html) |
 | 1 | GT2 motor pulley 20 teeth, 5mm bore | [Motedis](https://www.motedis.com/shop/Dynamik/Zahnriemen-und-Zahnraeder/GT2-Riemenscheibe-20-Zaehne-5mm-Bohrung-fuer-6mm-Riemen::4248.html) |
@@ -67,8 +66,8 @@ Below is a full bill of materials with German sources for all non printable part
 | 4 | DIN 912 M2x20 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m2-8-8-galvanisch-verzinkt-zylinderschraube_200581_13656) |
 | 4 | DIN 934 M2x0.4 nut | [Schraubenkasten](https://www.schraubenkasten.de/muttern/sechskantmutter/din-934/edelstahl-a2_202500_23008) |
 | 4 | DIN 912 M2.5x8 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m2-5-8-8-galvanisch-verzinkt-zylinderschraube_200582_13676) |
-| 25 | DIN 912 M3x8 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m3-8-8-galvanisch-verzinkt-zylinderschraube_200583_13715) |
-| 11 | DIN 934 M3x0.5 nut | [Schraubenkasten](https://www.schraubenkasten.de/muttern/sechskantmutter/din-934/edelstahl-a2_202502_23016) |
+| 30 | DIN 912 M3x8 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m3-8-8-galvanisch-verzinkt-zylinderschraube_200583_13715) |
+| 16 | DIN 934 M3x0.5 nut | [Schraubenkasten](https://www.schraubenkasten.de/muttern/sechskantmutter/din-934/edelstahl-a2_202502_23016) |
 | 12 | DIN 912 M5x14 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m5-8-8-galvanisch-verzinkt-zylinderschraube_200585_13871) |
 | 5 | DIN 912 M5x25 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m5-8-8-galvanisch-verzinkt-zylinderschraube_200585_13883) |
 | 3 | DIN 912 M5x50 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m5-8-8-galvanisch-verzinkt-zylinderschraube_200585_13899) |
@@ -80,13 +79,13 @@ Below is a full bill of materials with German sources for all non printable part
 | 1 | C axis servo mount | 3D printer |
 | 1 | X axis bottom carriage | 3D printer |
 | 4 | X axis camera spacer | 3D printer |
-| 1 | X axis endstop stop | 3D printer |
 | 1 | X axis motor mount | 3D printer |
 | 1 | X axis pulley | 3D printer |
 | 1 | X axis pulley mount | 3D printer |
 | 1 | X axis pulley spacer | 3D printer |
 | 3 | X axis roller | 3D printer |
 | 6 | X axis roller spacer | 3D printer |
+| 1 | X axis stop | 3D printer |
 | 1 | X axis top carriage | 3D printer |
 | 2 | Y axis carriage | 3D printer |
 | 4 | Y axis wheel | 3D printer |

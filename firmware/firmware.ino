@@ -1,7 +1,7 @@
-// Including the needed library
+// Including needed header
 #include <Servo.h>
 
-// Defining global pins
+// Defining pins
 const int X_AXIS_STP_PIN = A0;
 const int X_AXIS_DIR_PIN = A1;
 const int Y_AXIS_0_STP_PIN = A6;
@@ -36,6 +36,7 @@ void moveCAxis(int newCAxisPosition);
 void controlVacuumPump(int newVacuumPumpDutyCycle);
 void controlLed(int newLedDutyCycle);
 
+// Main setup function
 void setup()
 {
     // Defining pins
@@ -109,6 +110,7 @@ void setup()
     homeAxis();
 }
 
+// Main function
 void loop()
 {
     // Checking for new serial data
@@ -124,34 +126,34 @@ void loop()
         const char LED_COMMAND = 'L';
         // Reading commands and their according parameters
         String serialInput = Serial.readStringUntil('\n');
-        char serialCommand = serialInput.charAt(0);
-        int serialCommandParameter = serialInput.substring(1).toInt();
+        char command = serialInput.charAt(0);
+        int commandParameter = serialInput.substring(1).toInt();
         // Executing known commands or printing an error
-        switch (serialCommand)
+        switch (command)
         {
             case MOTOR_SPEED_COMMAND:
-                setMotorSpeed(serialCommandParameter);
+                setMotorSpeed(commandParameter);
                 break;
             case X_AXIS_COMMAND:
-                moveXAxis(serialCommandParameter);
+                moveXAxis(commandParameter);
                 break;
             case Y_AXIS_COMMAND:
-                moveYAxis(serialCommandParameter);
+                moveYAxis(commandParameter);
                 break;
             case Z_AXIS_COMMAND:
-                moveZAxis(serialCommandParameter);
+                moveZAxis(commandParameter);
                 break;
             case C_AXIS_COMMAND:
-                moveCAxis(serialCommandParameter);
+                moveCAxis(commandParameter);
                 break;
             case VACUUM_PUMP_COMMAND:
-                controlVacuumPump(serialCommandParameter);
+                controlVacuumPump(commandParameter);
                 break;
             case LED_COMMAND:
-                controlLed(serialCommandParameter);
+                controlLed(commandParameter);
                 break;
             default:
-                Serial.print((String)ERROR_MESSAGE + '\n');
+                Serial.print((String) ERROR_MESSAGE + '\n');
                 break;
         }
     }
@@ -163,7 +165,7 @@ void homeAxis()
     // Calculating the step interval
     static int stepInterval = round(2 * X_AXIS_MIN_STEP_INTERVAL) - 10;
     // Creating variables for storing time before homing the x axis and success of that operation
-    unsigned long int start;
+    unsigned long start;
     bool success = true;
     // Moving servo to a deactive position
     if (servo.read() != 180)
@@ -189,21 +191,23 @@ void homeAxis()
     // Checking for homing error and printing an according message
     if (success)
     {
-        Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+        Serial.print((String) AVAILABILITY_MESSAGE + '\n');
     }
     else
     {
-        Serial.print((String)ERROR_MESSAGE + '\n');
+        Serial.print((String) ERROR_MESSAGE + '\n');
     }
 }
 
 // Defining a motor speed changing function
 void setMotorSpeed(int newMotorSpeed)
 {
+    // Defining maximum motor speed
+    const int MOTOR_SPEED_MAX = 100;
     // Limiting the parameter range
-    if (newMotorSpeed > 100)
+    if (newMotorSpeed > MOTOR_SPEED_MAX)
     {
-        newMotorSpeed = 100;
+        newMotorSpeed = MOTOR_SPEED_MAX;
     }
     else if (newMotorSpeed < 1)
     {
@@ -215,20 +219,20 @@ void setMotorSpeed(int newMotorSpeed)
         motorSpeed = newMotorSpeed;
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a x axis motor controlling function
 void moveXAxis(int newXAxisPosition)
 {
     // Defining maximum x axis position
-    const int X_AXIS_MAX_POSITION = 750;
+    const int X_AXIS_POSITION_MAX = 750;
     // Defining variable to store current position
     static int xAxisPosition = 0;
     // Limiting the parameter range
-    if (newXAxisPosition > X_AXIS_MAX_POSITION)
+    if (newXAxisPosition > X_AXIS_POSITION_MAX)
     {
-        newXAxisPosition = X_AXIS_MAX_POSITION;
+        newXAxisPosition = X_AXIS_POSITION_MAX;
     }
     else if (newXAxisPosition < 0)
     {
@@ -253,7 +257,7 @@ void moveXAxis(int newXAxisPosition)
             digitalWrite(X_AXIS_DIR_PIN, !digitalRead(X_AXIS_DIR_PIN));
         }
         // Sending the step signals
-        for (unsigned long long int stepsToGo = round(((float)mmToGo / X_AXIS_MOVEMENT_PER_ROTATION) * 3200); stepsToGo > 0; stepsToGo--)
+        for (unsigned long long stepsToGo = round(((float) mmToGo / X_AXIS_MOVEMENT_PER_ROTATION) * 3200); stepsToGo > 0; stepsToGo--)
         {
             digitalWrite(X_AXIS_STP_PIN, HIGH);
             delayMicroseconds(10);
@@ -269,20 +273,20 @@ void moveXAxis(int newXAxisPosition)
         xAxisPosition = newXAxisPosition;
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a y axis motor controlling function
 void moveYAxis(int newYAxisPosition)
 {
     // Defining maximum y axis position
-    const int Y_AXIS_MAX_POSITION = 750;
+    const int Y_AXIS_POSITION_MAX = 750;
     // Defining variable to store current position
-    static int yAxisPosition = 0;
+    static int yAxisPosition = 750;
     // Limiting the parameter range
-    if (newYAxisPosition > Y_AXIS_MAX_POSITION)
+    if (newYAxisPosition > Y_AXIS_POSITION_MAX)
     {
-        newYAxisPosition = Y_AXIS_MAX_POSITION;
+        newYAxisPosition = Y_AXIS_POSITION_MAX;
     }
     else if (newYAxisPosition < 0)
     {
@@ -310,7 +314,7 @@ void moveYAxis(int newYAxisPosition)
             digitalWrite(Y_AXIS_1_DIR_PIN, !digitalRead(Y_AXIS_1_DIR_PIN));
         }
         // Sending the step signals
-        for (unsigned long long int stepsToGo = round(((float)mmToGo / Y_AXIS_MOVEMENT_PER_ROTATION) * 3200); stepsToGo > 0; stepsToGo--)
+        for (unsigned long long stepsToGo = round(((float) mmToGo / Y_AXIS_MOVEMENT_PER_ROTATION) * 3200); stepsToGo > 0; stepsToGo--)
         {
             digitalWrite(Y_AXIS_0_STP_PIN, HIGH);
             digitalWrite(Y_AXIS_1_STP_PIN, HIGH);
@@ -329,18 +333,18 @@ void moveYAxis(int newYAxisPosition)
         yAxisPosition = newYAxisPosition;
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a z axis servo controlling function
 void moveZAxis(int newZAxisPosition)
 {
     // Defining maximum z axis position
-    const int Z_AXIS_MAX_POSITION = 90;
+    const int Z_AXIS_POSITION_MAX = 90;
     // Limiting the parameter range
-    if (newZAxisPosition > Z_AXIS_MAX_POSITION)
+    if (newZAxisPosition > Z_AXIS_POSITION_MAX)
     {
-        newZAxisPosition = Z_AXIS_MAX_POSITION;
+        newZAxisPosition = Z_AXIS_POSITION_MAX;
     }
     else if (newZAxisPosition < 0)
     {
@@ -354,18 +358,20 @@ void moveZAxis(int newZAxisPosition)
         servo.write(newZAxisPosition);
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a c axis motor controlling function
 void moveCAxis(int newCAxisPosition)
 {
+    // Defining maximum c axis position
+    const int C_AXIS_POSITION_MAX = 359;
     // Defining variable to store current position
     static int cAxisPosition = 0;
     // Limiting the parameter range
-    if (newCAxisPosition > 359)
+    if (newCAxisPosition > C_AXIS_POSITION_MAX)
     {
-        newCAxisPosition = 359;
+        newCAxisPosition = C_AXIS_POSITION_MAX;
     }
     else if (newCAxisPosition < 0)
     {
@@ -399,7 +405,7 @@ void moveCAxis(int newCAxisPosition)
             digitalWrite(C_AXIS_DIR_PIN, !digitalRead(C_AXIS_DIR_PIN));
         }
         // Sending the step signals
-        for (unsigned long long int stepsToGo = round(((float)angleToGo / 360) * 3200); stepsToGo > 0; stepsToGo--)
+        for (unsigned long long stepsToGo = round(((float) angleToGo / 360) * 3200); stepsToGo > 0; stepsToGo--)
         {
             digitalWrite(C_AXIS_STP_PIN, HIGH);
             delayMicroseconds(10);
@@ -420,18 +426,19 @@ void moveCAxis(int newCAxisPosition)
         cAxisPosition = newCAxisPosition;
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a vacuum pump controlling function
 void controlVacuumPump(int newVacuumPumpDutyCycle)
 {
+    // Defining maximum vacuum pump duty cycle
+    const int VACUUM_PUMP_DUTY_CYCLE_MAX = 255;
     // Defining variable to store current vacuum pump duty cycle
     static int vacuumPumpDutyCycle = 0;
     // Limiting the parameter range
-    if (newVacuumPumpDutyCycle > 255)
+    if (newVacuumPumpDutyCycle > VACUUM_PUMP_DUTY_CYCLE_MAX)
     {
-        newVacuumPumpDutyCycle = 255;
     }
     else if (newVacuumPumpDutyCycle < 0)
     {
@@ -445,18 +452,20 @@ void controlVacuumPump(int newVacuumPumpDutyCycle)
         vacuumPumpDutyCycle = newVacuumPumpDutyCycle;
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a LED controlling function
 void controlLed(int newLedDutyCycle)
 {
+    // Defining maximum LED duty cycle
+    const int LED_DUTY_CYCLE_MAX = 255;
     // Defining variable to store current LED duty cycle
     static int ledDutyCycle = 0;
     // Limiting the parameter range
-    if (newLedDutyCycle > 255)
+    if (newLedDutyCycle > LED_DUTY_CYCLE_MAX)
     {
-        newLedDutyCycle = 255;
+        newLedDutyCycle = LED_DUTY_CYCLE_MAX;
     }
     else if (newLedDutyCycle < 0)
     {
@@ -470,5 +479,5 @@ void controlLed(int newLedDutyCycle)
         ledDutyCycle = newLedDutyCycle;
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }

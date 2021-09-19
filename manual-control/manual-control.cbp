@@ -11,6 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="camera-calibration.xml 0 /dev/ttyUSB0" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -20,6 +21,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
+				<Option parameters="camera-calibration.xml 0 /dev/ttyUSB0" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-s" />
