@@ -10,9 +10,10 @@ This is a jigsaw puzzle solving robot I'm designing. It is programmed in C++ usi
 
 ## Dependencies
 
-I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Ubuntu as I'm running it myself. Anyway, you need to have the following packages installed for everything to work properly:
+I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Debian as I'm running it myself. Anyway, you need to have the following packages installed for everything to work properly:
 
 - FreeCAD for editing and exporting the CAD file. Install it with `sudo apt install freecad`.
+- A2Plus for assemblying to robot virtually in FreeCAD. Install it via the integrated addon manager.
 - Arduino IDE as a way to compile the Arduino code. Install it with `sudo apt install arduino`.
 - Code::Blocks as a C++ IDE. Install it with `sudo apt install codeblocks`.
 - OpenCV as the used computer vision library. Install it with `sudo apt install libopencv-dev`.
@@ -52,13 +53,15 @@ Below is a full bill of materials with German sources for all non printable part
 | 1 | LED strip| [Amazon](https://www.amazon.de/Streifen-kaltwei%C3%9F-Streifenlicht-Lichtleiste-klebeband/dp/B00HSF65MC) |
 | 1 | GT2 belt | [Amazon](https://www.amazon.de/OZUAR-Zahnriemen-3D-Drucker-Breite-Abstand/dp/B07D4GCYXW) |
 | 1 | Cable ties and cable tie mounts | [Amazon](https://www.amazon.de/Hipeqia-Nylon-Kabelbinder-Kabelbinderhalter-Selbstklebend-Hitzebest%C3%A4ndig/dp/B08CL2JFCH) |
-| 1 | Double sided tape | [Amazon](https://www.amazon.de/Pattex-Kleben-Montage-Klebeband-superstark/dp/B000S6799Q) |
+| 1 | Double sided tape | [Amazon](https://www.amazon.de/doppelseitiges-Klebeband-klebend-verschiedene-Breiten/dp/B00G6SCYCM) |
 | 1 | Instant glue | [Amazon](https://www.amazon.de/Pattex-Sekundenkleber-L%C3%B6sungsmittelfreier-Gel-Kleber-Transparent/dp/B00O23B8IE) |
-| 12 | Rubber bands for wheels| [Amazon](https://www.amazon.de/Alco-Albert-7521-Gummib%C3%A4nder-Rot/dp/B004WC1XB2) |
+| 2 | 6.5x10mm spring for z axis | [Amazon](https://www.amazon.de/Kraftmann-9806-Federn-Sortiment-Druckfedern-Sortimentskasten/dp/B07WFPPXXX) |
 | 1 | Cable chain | [Amazon](https://www.amazon.de/Haobase-Plastic-Towline-Cable-Chain/dp/B06XKZ35VH) |
 | 1 | Cables | [Amazon](https://www.amazon.de/Donau-Elektronik-GMBH-Original-Kupfer/dp/B01BI1G88C) |
 | 1 | Pin header | [Amazon](https://www.amazon.de/IZOKEE-Männlich-Stiftleiste-Buchsenleiste-Lochrasterplatine/dp/B07DBY753C) |
 | 1 | Jigsaw puzzle mat | [Amazon](https://www.amazon.de/maDDma-Bastelfilz-Meterware-Taschenfilz-Filzstoff/dp/B0797QR4LL) |
+| 1 | 110x120cm chipboard 8mm | [Globus Baumarkt](https://www.globus-baumarkt.de/spanplatte-roh-8-mm) |
+| 40 | 3x12mm TX10 wood screw | [Globus Baumarkt](https://www.globus-baumarkt.de/detail/index/sArticle/27670/fs/116194815/sCategory/47135) |
 | 1 | Aluminium profile 20x80 I-type slot 5 1000mm | [Motedis](https://www.motedis.com/shop/Aluprofile/20-I-Typ-Nut-5/Aluprofil-20x80-I-Typ-Nut-5::3798.html) |
 | 10 | M5 t-nut I-type groove 5 | [Motedis](https://www.motedis.com/shop/Nutprofil-Zubehoer/In-der-Nut/Nutenstein-Glatt-I-Typ-Nut-5-M5::5846.html) |
 | 1 | GT2 motor pulley 20 teeth, 5mm bore | [Motedis](https://www.motedis.com/shop/Dynamik/Zahnriemen-und-Zahnraeder/GT2-Riemenscheibe-20-Zaehne-5mm-Bohrung-fuer-6mm-Riemen::4248.html) |
@@ -74,9 +77,10 @@ Below is a full bill of materials with German sources for all non printable part
 | 14 | DIN 934 M5 nut | [Schraubenkasten](https://www.schraubenkasten.de/muttern/sechskantmutter/din-934/edelstahl-a2_202504_23024) |
 | 3 | DIN 7349 M5 washer | [Schraubenkasten](https://www.schraubenkasten.de/scheiben/unterlegscheiben/din-7349-schweren-spannstift/5-3-din-7349-scheiben-schrauben-mit-spannstifte-a2-edelstahl_203612_23840) |
 | 9 | Cable clip | 3D printer |
+| 8 | Cable tie mount | 3D printer |
 | 1 | C axis motor mount | 3D printer |
-| 1 | C axis servo arm | 3D printer |
-| 1 | C axis servo mount | 3D printer |
+| 8 | Puzzle mat clamp | 3D printer |
+| 1 | Vacuum tube guide | 3D printer |
 | 1 | X axis bottom carriage | 3D printer |
 | 4 | X axis camera spacer | 3D printer |
 | 1 | X axis motor mount | 3D printer |
@@ -88,9 +92,13 @@ Below is a full bill of materials with German sources for all non printable part
 | 1 | X axis stop | 3D printer |
 | 1 | X axis top carriage | 3D printer |
 | 2 | Y axis carriage | 3D printer |
-| 4 | Y axis wheel | 3D printer |
+| 4 | Y axis gear | 3D printer |
+| 12 | Y axis track | 3D printer |
+| 1 | Z axis carriage | 3D printer |
+| 1 | Z axis mount | 3D printer |
+| 1 | Z axis servo mount | 3D printer |
 
-All parts were printed on my Sovol SV01 in standard PLA with a custom super fast profile. The following settings were used with great success:
+All parts were printed on my Sovol SV01 in standard PLA with a custom super fast profile. The following settings have been used with great success:
 
 - 0.3mm layer height
 - 0.6mm line width
@@ -101,4 +109,4 @@ All parts were printed on my Sovol SV01 in standard PLA with a custom super fast
 - 60°C build plate temperature
 - 75mm/s print speed (37.5mm/s for the initial layer, 75mm/s for infill, 37.5mm/s for walls, 120mm for travel)
 - 100% cooling from the second layer on
-- Zig zag support everywhere for the pulley and rollers
+- Zig zag support and 5mm raft, where necessary

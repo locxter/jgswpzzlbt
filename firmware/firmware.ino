@@ -168,9 +168,9 @@ void homeAxis()
     unsigned long start;
     bool success = true;
     // Moving servo to a deactive position
-    if (servo.read() != 180)
+    if (servo.read() != 0)
     {
-        servo.write(180);
+        servo.write(0);
     }
     // Homing the x axis
     start = millis();
@@ -282,7 +282,7 @@ void moveYAxis(int newYAxisPosition)
     // Defining maximum y axis position
     const int Y_AXIS_POSITION_MAX = 750;
     // Defining variable to store current position
-    static int yAxisPosition = 750;
+    static int yAxisPosition = 0;
     // Limiting the parameter range
     if (newYAxisPosition > Y_AXIS_POSITION_MAX)
     {
@@ -296,9 +296,9 @@ void moveYAxis(int newYAxisPosition)
     if (newYAxisPosition != yAxisPosition)
     {
         // Defining the minimum y axis step interval
-        const int Y_AXIS_MIN_STEP_INTERVAL = 300;
+        const int Y_AXIS_MIN_STEP_INTERVAL = 600;
         // Defining the x axis movement per rotation
-        const int Y_AXIS_MOVEMENT_PER_ROTATION = 229;
+        const int Y_AXIS_MOVEMENT_PER_ROTATION = 220;
         int mmToGo;
         // Calculating the step interval
         int stepInterval = round((100.0 / motorSpeed) * Y_AXIS_MIN_STEP_INTERVAL) - 10;
@@ -340,7 +340,7 @@ void moveYAxis(int newYAxisPosition)
 void moveZAxis(int newZAxisPosition)
 {
     // Defining maximum z axis position
-    const int Z_AXIS_POSITION_MAX = 90;
+    const int Z_AXIS_POSITION_MAX = 75;
     // Limiting the parameter range
     if (newZAxisPosition > Z_AXIS_POSITION_MAX)
     {
@@ -350,8 +350,6 @@ void moveZAxis(int newZAxisPosition)
     {
         newZAxisPosition = 0;
     }
-    // Adapting the new position to a sevro angle
-    newZAxisPosition += 90;
     // Controlling the servo
     if (newZAxisPosition != servo.read())
     {
@@ -417,7 +415,7 @@ void moveCAxis(int newCAxisPosition)
         {
             digitalWrite(C_AXIS_DIR_PIN, !digitalRead(C_AXIS_DIR_PIN));
         }
-        // Recreating the original new position after changing it to avoid cable damage
+        // Recreating the original new position after changing it
         if (newCAxisPosition < 0)
         {
             newCAxisPosition += 360;
@@ -433,12 +431,13 @@ void moveCAxis(int newCAxisPosition)
 void controlVacuumPump(int newVacuumPumpDutyCycle)
 {
     // Defining maximum vacuum pump duty cycle
-    const int VACUUM_PUMP_DUTY_CYCLE_MAX = 255;
+    const int VACUUM_PUMP_DUTY_CYCLE_MAX = 100;
     // Defining variable to store current vacuum pump duty cycle
     static int vacuumPumpDutyCycle = 0;
     // Limiting the parameter range
     if (newVacuumPumpDutyCycle > VACUUM_PUMP_DUTY_CYCLE_MAX)
     {
+        newVacuumPumpDutyCycle = VACUUM_PUMP_DUTY_CYCLE_MAX;
     }
     else if (newVacuumPumpDutyCycle < 0)
     {
@@ -447,7 +446,7 @@ void controlVacuumPump(int newVacuumPumpDutyCycle)
     // Controlling the vacuum pump
     if (newVacuumPumpDutyCycle != vacuumPumpDutyCycle)
     {
-        analogWrite(VACUUM_PUMP_PIN, newVacuumPumpDutyCycle);
+        analogWrite(VACUUM_PUMP_PIN, round(((float) newVacuumPumpDutyCycle / 100) * 255));
         // Updating the known vacuum pump duty cycle
         vacuumPumpDutyCycle = newVacuumPumpDutyCycle;
     }
@@ -459,7 +458,7 @@ void controlVacuumPump(int newVacuumPumpDutyCycle)
 void controlLed(int newLedDutyCycle)
 {
     // Defining maximum LED duty cycle
-    const int LED_DUTY_CYCLE_MAX = 255;
+    const int LED_DUTY_CYCLE_MAX = 100;
     // Defining variable to store current LED duty cycle
     static int ledDutyCycle = 0;
     // Limiting the parameter range
@@ -474,7 +473,7 @@ void controlLed(int newLedDutyCycle)
     // Controlling the LED
     if (newLedDutyCycle != ledDutyCycle)
     {
-        analogWrite(LED_PIN, newLedDutyCycle);
+        analogWrite(LED_PIN, round(((float) newLedDutyCycle / 100) * 255));
         // Updating the known LED duty cycle
         ledDutyCycle = newLedDutyCycle;
     }
