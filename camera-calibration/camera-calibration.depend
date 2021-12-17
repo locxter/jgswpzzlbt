@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1638983435 source:/media/locxter/data/tech-stuff/cpp/jgswpzzlbt/software/main.cpp
+1639758446 source:/media/locxter/data/tech-stuff/cpp/jgswpzzlbt/camera-calibration/main.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -172,96 +172,6 @@
 	"opencv2/opencv.hpp"
 	<time.h>
 
-1576849456 /usr/include/opencv4/opencv2/core/operations.hpp
-	<cstdio>
-
-1576849456 /usr/include/opencv4/opencv2/core/cvstd.inl.hpp
-	<complex>
-	<ostream>
-
-1576849456 /usr/include/opencv4/opencv2/core/utility.hpp
-	"opencv2/core.hpp"
-	<ostream>
-	<functional>
-	<mutex>
-	"opencv2/core/utils/instrumentation.hpp"
-
-1576849456 /usr/include/opencv4/opencv2/core/utils/instrumentation.hpp
-	<opencv2/core/utility.hpp>
-	<opencv2/core/utils/tls.hpp>
-
-1576849456 /usr/include/opencv4/opencv2/core/utils/tls.hpp
-	<opencv2/core/utility.hpp>
-
-1576849456 /usr/include/opencv4/opencv2/core/optim.hpp
-	"opencv2/core.hpp"
-
-1576849456 /usr/include/opencv4/opencv2/core/ovx.hpp
-	"cvdef.h"
-
-1576849456 /usr/include/opencv4/opencv2/imgcodecs.hpp
-	"opencv2/core.hpp"
-
-1576849456 /usr/include/opencv4/opencv2/videoio.hpp
-	"opencv2/core.hpp"
-
-1576849456 /usr/include/opencv4/opencv2/highgui.hpp
-	"opencv2/core.hpp"
-	"opencv2/imgcodecs.hpp"
-	"opencv2/videoio.hpp"
-
-1576849456 /usr/include/opencv4/opencv2/calib3d.hpp
-	"opencv2/core.hpp"
-	"opencv2/features2d.hpp"
-	"opencv2/core/affine.hpp"
-
-1576849456 /usr/include/opencv4/opencv2/features2d.hpp
-	"opencv2/opencv_modules.hpp"
-	"opencv2/core.hpp"
-	"opencv2/flann/miniflann.hpp"
-
-1576849456 /usr/include/opencv4/opencv2/flann/miniflann.hpp
-	"opencv2/core.hpp"
-	"opencv2/flann/defines.h"
-
-1576849456 /usr/include/opencv4/opencv2/flann/defines.h
-	"config.h"
-
-1576849456 /usr/include/opencv4/opencv2/flann/config.h
-
-1576849456 /usr/include/opencv4/opencv2/core/affine.hpp
-	<opencv2/core.hpp>
-
-1576849456 /usr/include/opencv4/opencv2/stitching.hpp
-	"opencv2/core.hpp"
-	"opencv2/features2d.hpp"
-	"opencv2/stitching/warpers.hpp"
-	"opencv2/stitching/detail/matchers.hpp"
-	"opencv2/stitching/detail/motion_estimators.hpp"
-	"opencv2/stitching/detail/exposure_compensate.hpp"
-	"opencv2/stitching/detail/seam_finders.hpp"
-	"opencv2/stitching/detail/blenders.hpp"
-	"opencv2/stitching/detail/camera.hpp"
-
-1576849456 /usr/include/opencv4/opencv2/stitching/warpers.hpp
-	"opencv2/stitching/detail/warpers.hpp"
-	<string>
-
-1576849456 /usr/include/opencv4/opencv2/stitching/detail/warpers.hpp
-	"opencv2/core.hpp"
-	"opencv2/core/cuda.hpp"
-	"opencv2/imgproc.hpp"
-	"opencv2/opencv_modules.hpp"
-	"warpers_inl.hpp"
-
-1576849456 /usr/include/opencv4/opencv2/core/cuda.hpp
-	"opencv2/core.hpp"
-	"opencv2/core/cuda_types.hpp"
-	<opencv2/opencv.hpp>
-	"opencv2/core/cuda.inl.hpp"
-
-1576849456 /usr/include/opencv4/opencv2/core/cuda_types.hpp
-
 1576849456 /usr/include/opencv4/opencv2/opencv.hpp
 	"opencv2/opencv_modules.hpp"
 	"opencv2/core.hpp"
@@ -292,6 +202,28 @@
 	"opencv2/cudaoptflow.hpp"
 	"opencv2/cudastereo.hpp"
 	"opencv2/cudawarping.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/calib3d.hpp
+	"opencv2/core.hpp"
+	"opencv2/features2d.hpp"
+	"opencv2/core/affine.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/features2d.hpp
+	"opencv2/opencv_modules.hpp"
+	"opencv2/core.hpp"
+	"opencv2/flann/miniflann.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/flann/miniflann.hpp
+	"opencv2/core.hpp"
+	"opencv2/flann/defines.h"
+
+1576849456 /usr/include/opencv4/opencv2/flann/defines.h
+	"config.h"
+
+1576849456 /usr/include/opencv4/opencv2/flann/config.h
+
+1576849456 /usr/include/opencv4/opencv2/core/affine.hpp
+	<opencv2/core.hpp>
 
 1576849456 /usr/include/opencv4/opencv2/dnn.hpp
 	<opencv2/dnn/dnn.hpp>
@@ -559,9 +491,34 @@
 	"opencv2/core.hpp"
 	"opencv2/core/utility.hpp"
 
+1576849456 /usr/include/opencv4/opencv2/core/utility.hpp
+	"opencv2/core.hpp"
+	<ostream>
+	<functional>
+	<mutex>
+	"opencv2/core/utils/instrumentation.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/core/utils/instrumentation.hpp
+	<opencv2/core/utility.hpp>
+	<opencv2/core/utils/tls.hpp>
+
+1576849456 /usr/include/opencv4/opencv2/core/utils/tls.hpp
+	<opencv2/core/utility.hpp>
+
 1576849456 /usr/include/opencv4/opencv2/flann/sampling.h
 	"matrix.h"
 	"random.h"
+
+1576849456 /usr/include/opencv4/opencv2/highgui.hpp
+	"opencv2/core.hpp"
+	"opencv2/imgcodecs.hpp"
+	"opencv2/videoio.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/imgcodecs.hpp
+	"opencv2/core.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/videoio.hpp
+	"opencv2/core.hpp"
 
 1576849456 /usr/include/opencv4/opencv2/imgproc.hpp
 	"opencv2/core.hpp"
@@ -587,16 +544,57 @@
 	"opencv2/core.hpp"
 	"opencv2/imgproc.hpp"
 
-1576849456 /usr/include/opencv4/opencv2/video.hpp
-	"opencv2/video/tracking.hpp"
-	"opencv2/video/background_segm.hpp"
+1576753323 /usr/include/opencv4/opencv2/shape.hpp
+	"opencv2/shape/emdL1.hpp"
+	"opencv2/shape/shape_transformer.hpp"
+	"opencv2/shape/hist_cost.hpp"
+	"opencv2/shape/shape_distance.hpp"
 
-1576849456 /usr/include/opencv4/opencv2/video/tracking.hpp
+1576753323 /usr/include/opencv4/opencv2/shape/emdL1.hpp
+	"opencv2/core.hpp"
+
+1576753323 /usr/include/opencv4/opencv2/shape/shape_transformer.hpp
+	<vector>
 	"opencv2/core.hpp"
 	"opencv2/imgproc.hpp"
 
-1576849456 /usr/include/opencv4/opencv2/video/background_segm.hpp
+1576753323 /usr/include/opencv4/opencv2/shape/hist_cost.hpp
+	"opencv2/imgproc.hpp"
+
+1576753323 /usr/include/opencv4/opencv2/shape/shape_distance.hpp
 	"opencv2/core.hpp"
+	"opencv2/shape/hist_cost.hpp"
+	"opencv2/shape/shape_transformer.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/stitching.hpp
+	"opencv2/core.hpp"
+	"opencv2/features2d.hpp"
+	"opencv2/stitching/warpers.hpp"
+	"opencv2/stitching/detail/matchers.hpp"
+	"opencv2/stitching/detail/motion_estimators.hpp"
+	"opencv2/stitching/detail/exposure_compensate.hpp"
+	"opencv2/stitching/detail/seam_finders.hpp"
+	"opencv2/stitching/detail/blenders.hpp"
+	"opencv2/stitching/detail/camera.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/stitching/warpers.hpp
+	"opencv2/stitching/detail/warpers.hpp"
+	<string>
+
+1576849456 /usr/include/opencv4/opencv2/stitching/detail/warpers.hpp
+	"opencv2/core.hpp"
+	"opencv2/core/cuda.hpp"
+	"opencv2/imgproc.hpp"
+	"opencv2/opencv_modules.hpp"
+	"warpers_inl.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/core/cuda.hpp
+	"opencv2/core.hpp"
+	"opencv2/core/cuda_types.hpp"
+	<opencv2/opencv.hpp>
+	"opencv2/core/cuda.inl.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/core/cuda_types.hpp
 
 1576849456 /usr/include/opencv4/opencv2/core/cuda.inl.hpp
 	"opencv2/core/cuda.hpp"
@@ -642,36 +640,22 @@
 	"opencv2/core.hpp"
 	"opencv2/core/cuda.hpp"
 
-1633794506 /usr/include/opencv4/opencv2/imgproc/segmentation.hpp
-	"opencv2/imgproc.hpp"
-
-1576753323 /usr/include/opencv4/opencv2/shape.hpp
-	"opencv2/shape/emdL1.hpp"
-	"opencv2/shape/shape_transformer.hpp"
-	"opencv2/shape/hist_cost.hpp"
-	"opencv2/shape/shape_distance.hpp"
-
-1576753323 /usr/include/opencv4/opencv2/shape/emdL1.hpp
-	"opencv2/core.hpp"
-
-1576753323 /usr/include/opencv4/opencv2/shape/shape_transformer.hpp
-	<vector>
-	"opencv2/core.hpp"
-	"opencv2/imgproc.hpp"
-
-1576753323 /usr/include/opencv4/opencv2/shape/hist_cost.hpp
-	"opencv2/imgproc.hpp"
-
-1576753323 /usr/include/opencv4/opencv2/shape/shape_distance.hpp
-	"opencv2/core.hpp"
-	"opencv2/shape/hist_cost.hpp"
-	"opencv2/shape/shape_transformer.hpp"
-
 1576753323 /usr/include/opencv4/opencv2/superres.hpp
 	"opencv2/core.hpp"
 	"opencv2/superres/optical_flow.hpp"
 
 1576753323 /usr/include/opencv4/opencv2/superres/optical_flow.hpp
+	"opencv2/core.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/video.hpp
+	"opencv2/video/tracking.hpp"
+	"opencv2/video/background_segm.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/video/tracking.hpp
+	"opencv2/core.hpp"
+	"opencv2/imgproc.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/video/background_segm.hpp
 	"opencv2/core.hpp"
 
 1576753323 /usr/include/opencv4/opencv2/videostab.hpp
@@ -785,4 +769,17 @@
 	<opencv2/viz/types.hpp>
 	<opencv2/viz/widgets.hpp>
 	<opencv2/viz/viz3d.hpp>
+
+1576849456 /usr/include/opencv4/opencv2/core/operations.hpp
+	<cstdio>
+
+1576849456 /usr/include/opencv4/opencv2/core/cvstd.inl.hpp
+	<complex>
+	<ostream>
+
+1576849456 /usr/include/opencv4/opencv2/core/optim.hpp
+	"opencv2/core.hpp"
+
+1576849456 /usr/include/opencv4/opencv2/core/ovx.hpp
+	"cvdef.h"
 

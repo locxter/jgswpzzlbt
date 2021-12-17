@@ -20,11 +20,20 @@ using namespace LibSerial;
 const char AVAILABILITY_MESSAGE = 'R';
 const char ERROR_MESSAGE = 'E';
 
-// Declaring text showing function
-Mat showText(Mat image, string text);
+// Declaring a text drawing function
+Mat drawText(Mat image, string text);
 
-// Declaring command sending function
+// Declaring an image showing function
+void showImage(String windowName, Mat image);
+
+// Declaring a command sending function
 void sendCommand(SerialStream &serial, char command, int commandParameter);
+
+// Declaring a picture saving function
+void savePicture(Mat image, string fileName);
+
+// Declaing a picture capturing function
+Mat capturePicture(VideoCapture &camera, Mat cameraMatrix, Mat distortionCoefficients);
 
 // Main function
 int main(int argc, char *argv[])
@@ -39,7 +48,7 @@ int main(int argc, char *argv[])
         const string WINDOW_NAME = "jgswpzzlbt manual control";
         // Creating a camera object
         VideoCapture camera;
-        // Creating camera calibration objects;
+        // Creating camera calibration objects
         Mat cameraMatrix;
         Mat distortionCoefficients;
         FileStorage cameraCalibration;
@@ -48,28 +57,6 @@ int main(int argc, char *argv[])
         // Creating variables for storing serial input and extracted response
         string serialInput;
         char serialResponse;
-        // Defining help message
-        const string HELP_MESSAGE =
-            "This program is fully keyboard driven. Here is a full list of all available actions:\n"
-            "Q: Quit the program\n"
-            "F: Save the current frame\n"
-            "1 to 9: Set the value change to 1, 5, 10, 25, 50, 75, 100, 250 or 500\n"
-            "INSERT: Increase motor speed\n"
-            "DELETE: Decrease motor speed\n"
-            "D: Increase x axis position\n"
-            "A Decrease x axis position\n"
-            "W: Increase y axis position\n"
-            "S: Decrease y axis position\n"
-            "UP ARROW: Increase z axis position\n"
-            "DOWN ARROW : Decrease z axis position\n"
-            "RIGHT ARROW: Increase c axis position\n"
-            "LEFT ARROW: Decrease c axis position\n"
-            "HOME: Increase vacuum pump duty cycle\n"
-            "END: Decrease vacuum pump duty cycle\n"
-            "PAGE UP: Increase LED duty cycle\n"
-            "PAGE DOWN: Decrease LED duty cycle\n"
-            "To close this help, press R."
-        ;
         // Opening the camera calibration file
         cameraCalibration.open("camera-calibration.xml", FileStorage::READ);
         // Checking for success
@@ -133,44 +120,30 @@ int main(int argc, char *argv[])
         // Creating a new window
         namedWindow(WINDOW_NAME);
         // Displaying a small help at startup
-        while (true)
-        {
-            Mat help = showText(Mat::zeros(Size(1920, 1080), CV_8UC3), HELP_MESSAGE);
-            imshow(WINDOW_NAME, help);
-            int keyPressed = waitKey(1000 / 30);
-            // Closing the help when R is pressed
-            if (keyPressed == 114)
-            {
-                break;
-            }
-        }
+        showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: Quit the program\nF: Save the current frame\n1 to 9: Set the value change to 1, 5, 10, 25, 50, 75, 100, 250 or 500\nINSERT: Increase motor speed\nDELETE: Decrease motor speed\nD: Increase x axis coordinate\nA Decrease x axis coordinate\nW: Increase y axis coordinate\nS: Decrease y axis coordinate\nUP ARROW: Increase z axis coordinate\nDOWN ARROW : Decrease z axis coordinate\nRIGHT ARROW: Increase c axis coordinate\nLEFT ARROW: Decrease c axis coordinate\nHOME: Increase vacuum pump duty cycle\nEND: Decrease vacuum pump duty cycle\nPAGE UP: Increase LED duty cycle\nPAGE DOWN: Decrease LED duty cycle\nR: Indicate that the next operation can be performed"));
         // Endless frame capturing, displaying and communcating loop
         while (true)
         {
             // Creating image containers
             Mat rawFrame;
-            Mat undistortedFrame;
-            Mat flippedFrame;
             Mat annotatedFrame;
             // Creating variable for storing the key pressed
             int keyPressed;
-            // Creating variables for robot values
+            // Defining robot control related variables
             static int motorSpeed = 100;
-            static int xAxisPosition = 0;
-            static int yAxisPosition = 0;
-            static int zAxisPosition = 0;
-            static int cAxisPosition = 0;
+            static int xAxisCoordinate = 0;
+            static int yAxisCoordinate = 0;
+            static int zAxisCoordinate = 0;
+            static int cAxisCoordinate = 0;
             static int vacuumPumpDutyCyle = 0;
             static int ledDutyCyle = 0;
-            // Defining maximum robot values
             const int MOTOR_SPEED_MAX = 100;
-            const int X_AXIS_POSITION_MAX = 750;
-            const int Y_AXIS_POSITION_MAX = 750;
-            const int Z_AXIS_POSITION_MAX = 75;
-            const int C_AXIS_POSITION_MAX = 359;
+            const int X_AXIS_COORDINATE_MAX = 750;
+            const int Y_AXIS_COORDINATE_MAX = 750;
+            const int Z_AXIS_COORDINATE_MAX = 75;
+            const int C_AXIS_COORDINATE_MAX = 359;
             const int VACUUM_PUMP_DUTY_CYCLE_MAX = 100;
             const int LED_DUTY_CYCLE_MAX = 100;
-            // Defining serial commands
             const char MOTOR_SPEED_COMMAND = 'S';
             const char X_AXIS_COMMAND = 'X';
             const char Y_AXIS_COMMAND = 'Y';
@@ -180,21 +153,10 @@ int main(int argc, char *argv[])
             const char LED_COMMAND = 'L';
             // Creating variable for storing the increment/decrement
             static int valueChange = 10;
-            // Reading a frame
-            camera.grab();
-            camera.read(rawFrame);
-            // Checking for success
-            if (rawFrame.empty())
-            {
-                cout << "Blank frame grabbed." << endl;
-                return 1;
-            }
-            // Undistorting the frame
-            undistort(rawFrame, undistortedFrame, cameraMatrix, distortionCoefficients);
-            // Flipping the frame to match the used coordinate system
-            flip(undistortedFrame, flippedFrame, -1);
+            // Capturing a frame
+            rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
             // Adding some status information to the frame
-            annotatedFrame = showText(flippedFrame, "VC: " + to_string(valueChange) + " S: " + to_string(motorSpeed) + " X: " + to_string(xAxisPosition) + " Y: " + to_string(yAxisPosition) + " Z: " + to_string(zAxisPosition) + " C: " + to_string(cAxisPosition) +  " V: " + to_string(vacuumPumpDutyCyle) + " L: " + to_string(ledDutyCyle));
+            annotatedFrame = drawText(rawFrame, "VC: " + to_string(valueChange) + " S: " + to_string(motorSpeed) + " X: " + to_string(xAxisCoordinate) + " Y: " + to_string(yAxisCoordinate) + " Z: " + to_string(zAxisCoordinate) + " C: " + to_string(cAxisCoordinate) +  " V: " + to_string(vacuumPumpDutyCyle) + " L: " + to_string(ledDutyCyle));
             // Showing the frame
             imshow(WINDOW_NAME, annotatedFrame);
             // Fetching user input
@@ -207,20 +169,7 @@ int main(int argc, char *argv[])
             // Saving the current frame when F is pressed
             else if (keyPressed == 102)
             {
-                ifstream testFile;
-                int counter = 0;
-                string fileName = to_string(counter) + ".jpeg";
-                testFile.open(fileName);
-                while (testFile.is_open())
-                {
-                    testFile.close();
-                    counter++;
-                    fileName = to_string(counter) + ".jpeg";
-                    testFile.open(fileName);
-                }
-                testFile.close();
-                imwrite(fileName, flippedFrame);
-                cout << "Successfully saved picture " << fileName << '.' << endl;
+                savePicture(rawFrame, "manual-control");
             }
             // Setting the value change to one of the presets
             else if (keyPressed == 49)
@@ -290,93 +239,93 @@ int main(int argc, char *argv[])
                 sendCommand(serial, MOTOR_SPEED_COMMAND, motorSpeed);
                 cout << "Motor speed changed to " << motorSpeed << '.' << endl;
             }
-            // Increasing x axis position when D is pressed
+            // Increasing x axis coordinate when D is pressed
             else if (keyPressed == 100)
             {
-                xAxisPosition += valueChange;
-                if (xAxisPosition > X_AXIS_POSITION_MAX)
+                xAxisCoordinate += valueChange;
+                if (xAxisCoordinate > X_AXIS_COORDINATE_MAX)
                 {
-                    xAxisPosition = X_AXIS_POSITION_MAX;
+                    xAxisCoordinate = X_AXIS_COORDINATE_MAX;
                 }
-                sendCommand(serial, X_AXIS_COMMAND, xAxisPosition);
-                cout << "X axis position changed to " << xAxisPosition << '.' << endl;
+                sendCommand(serial, X_AXIS_COMMAND, xAxisCoordinate);
+                cout << "X axis coordinate changed to " << xAxisCoordinate << '.' << endl;
             }
-            // Decreasing x axis position when A is pressed
+            // Decreasing x axis coordinate when A is pressed
             else if (keyPressed == 97)
             {
-                xAxisPosition -= valueChange;
-                if (xAxisPosition < 0)
+                xAxisCoordinate -= valueChange;
+                if (xAxisCoordinate < 0)
                 {
-                    xAxisPosition = 0;
+                    xAxisCoordinate = 0;
                 }
-                sendCommand(serial, X_AXIS_COMMAND, xAxisPosition);
-                cout << "X axis position changed to " << xAxisPosition << '.' << endl;
+                sendCommand(serial, X_AXIS_COMMAND, xAxisCoordinate);
+                cout << "X axis coordinate changed to " << xAxisCoordinate << '.' << endl;
             }
-            // Increasing y axis position when W is pressed
+            // Increasing y axis coordinate when W is pressed
             else if (keyPressed == 119)
             {
-                yAxisPosition += valueChange;
-                if (yAxisPosition > Y_AXIS_POSITION_MAX)
+                yAxisCoordinate += valueChange;
+                if (yAxisCoordinate > Y_AXIS_COORDINATE_MAX)
                 {
-                    yAxisPosition = Y_AXIS_POSITION_MAX;
+                    yAxisCoordinate = Y_AXIS_COORDINATE_MAX;
                 }
-                sendCommand(serial, Y_AXIS_COMMAND, yAxisPosition);
-                cout << "Y axis position changed to " << yAxisPosition << '.' << endl;
+                sendCommand(serial, Y_AXIS_COMMAND, yAxisCoordinate);
+                cout << "Y axis coordinate changed to " << yAxisCoordinate << '.' << endl;
             }
-            // Decreasing y axis position when S is pressed
+            // Decreasing y axis coordinate when S is pressed
             else if (keyPressed == 115)
             {
-                yAxisPosition -= valueChange;
-                if (yAxisPosition < 0)
+                yAxisCoordinate -= valueChange;
+                if (yAxisCoordinate < 0)
                 {
-                    yAxisPosition = 0;
+                    yAxisCoordinate = 0;
                 }
-                sendCommand(serial, Y_AXIS_COMMAND, yAxisPosition);
-                cout << "Y axis position changed to " << yAxisPosition << '.' << endl;
+                sendCommand(serial, Y_AXIS_COMMAND, yAxisCoordinate);
+                cout << "Y axis coordinate changed to " << yAxisCoordinate << '.' << endl;
             }
-            // Increasing z axis position when UP ARROW is pressed
+            // Increasing z axis coordinate when UP ARROW is pressed
             else if (keyPressed == 82)
             {
-                zAxisPosition += valueChange;
-                if (zAxisPosition > Z_AXIS_POSITION_MAX)
+                zAxisCoordinate += valueChange;
+                if (zAxisCoordinate > Z_AXIS_COORDINATE_MAX)
                 {
-                    zAxisPosition = Z_AXIS_POSITION_MAX;
+                    zAxisCoordinate = Z_AXIS_COORDINATE_MAX;
                 }
-                sendCommand(serial, Z_AXIS_COMMAND, zAxisPosition);
-                cout << "Z axis position changed to " << zAxisPosition << '.' << endl;
+                sendCommand(serial, Z_AXIS_COMMAND, zAxisCoordinate);
+                cout << "Z axis coordinate changed to " << zAxisCoordinate << '.' << endl;
             }
-            // Decreasing z axis position when DOWN ARROW is pressed
+            // Decreasing z axis coordinate when DOWN ARROW is pressed
             else if (keyPressed == 84)
             {
-                zAxisPosition -= valueChange;
-                if (zAxisPosition < 0)
+                zAxisCoordinate -= valueChange;
+                if (zAxisCoordinate < 0)
                 {
-                    zAxisPosition = 0;
+                    zAxisCoordinate = 0;
                 }
-                sendCommand(serial, Z_AXIS_COMMAND, zAxisPosition);
-                cout << "Z axis position changed to " << zAxisPosition << '.' << endl;
+                sendCommand(serial, Z_AXIS_COMMAND, zAxisCoordinate);
+                cout << "Z axis coordinate changed to " << zAxisCoordinate << '.' << endl;
             }
-            // Increasing c axis position when RIGHT ARROW is pressed
+            // Increasing c axis coordinate when RIGHT ARROW is pressed
             else if (keyPressed == 83)
             {
-                cAxisPosition += valueChange;
-                if (cAxisPosition > C_AXIS_POSITION_MAX)
+                cAxisCoordinate += valueChange;
+                if (cAxisCoordinate > C_AXIS_COORDINATE_MAX)
                 {
-                    cAxisPosition = C_AXIS_POSITION_MAX;
+                    cAxisCoordinate = C_AXIS_COORDINATE_MAX;
                 }
-                sendCommand(serial, C_AXIS_COMMAND, yAxisPosition);
-                cout << "C axis position changed to " << cAxisPosition << '.' << endl;
+                sendCommand(serial, C_AXIS_COMMAND, yAxisCoordinate);
+                cout << "C axis coordinate changed to " << cAxisCoordinate << '.' << endl;
             }
-            // Decreasing c axis position when LEFT ARROW is pressed
+            // Decreasing c axis coordinate when LEFT ARROW is pressed
             else if (keyPressed == 81)
             {
-                cAxisPosition -= valueChange;
-                if (cAxisPosition < 0)
+                cAxisCoordinate -= valueChange;
+                if (cAxisCoordinate < 0)
                 {
-                    cAxisPosition = 0;
+                    cAxisCoordinate = 0;
                 }
-                sendCommand(serial, C_AXIS_COMMAND, cAxisPosition);
-                cout << "C axis position changed to " << cAxisPosition << '.' << endl;
+                sendCommand(serial, C_AXIS_COMMAND, cAxisCoordinate);
+                cout << "C axis coordinate changed to " << cAxisCoordinate << '.' << endl;
             }
             // Increasing vacuum pump duty cycle when HOME is pressed
             else if (keyPressed == 80)
@@ -438,8 +387,8 @@ int main(int argc, char *argv[])
     }
 }
 
-// Defining text showing function
-Mat showText(Mat image, string text)
+// Defining text drawing function
+Mat drawText(Mat image, string text)
 {
     // Creating needed variables
     string lineBuffer;
@@ -454,9 +403,29 @@ Mat showText(Mat image, string text)
     }
     for (int i = 0; i < lines.size(); i++)
     {
-        putText(imageBuffer, lines[i], Point(0, 40 * (i + 1)), FONT_HERSHEY_SIMPLEX, 1.5, Scalar(255, 255, 255), 2);
+        putText(imageBuffer, lines[i], Point(0, (50 * i) + 40), FONT_HERSHEY_SIMPLEX, 1.5, Scalar(0, 255, 0), 2);
     }
     return imageBuffer;
+}
+
+// Defining an image showing function
+void showImage(String windowName, Mat image)
+{
+    while (true)
+    {
+        imshow(windowName, image);
+        int keyPressed = waitKey(1000 / 30);
+        // Quiting when Q is pressed
+        if (keyPressed == 113)
+        {
+            exit(0);
+        }
+        // Moving forward when R is pressed
+        else if (keyPressed == 114)
+        {
+            break;
+        }
+    }
 }
 
 // Defining command sending function
@@ -483,4 +452,45 @@ void sendCommand(SerialStream &serial, char command, int commandParameter)
             exit(1);
         }
     }
+}
+
+// Definining a picture saving function
+void savePicture(Mat image, string fileName)
+{
+    ifstream testFile;
+    int counter = 0;
+    string finalFileName = fileName + '-' + to_string(counter) + ".jpeg";
+    testFile.open(finalFileName);
+    while (testFile.is_open())
+    {
+        testFile.close();
+        counter++;
+        finalFileName = fileName + '-' + to_string(counter) + ".jpeg";
+        testFile.open(finalFileName);
+    }
+    testFile.close();
+    imwrite(finalFileName, image);
+}
+
+// Defining picture capturing function
+Mat capturePicture(VideoCapture &camera, Mat cameraMatrix, Mat distortionCoefficients)
+{
+    // Creating image containers
+    Mat rawFrame;
+    Mat undistortedFrame;
+    Mat flippedFrame;
+    // Reading a frame
+    camera.grab();
+    camera.read(rawFrame);
+    // Checking for success
+    if (rawFrame.empty())
+    {
+        cout << "Blank frame grabbed." << endl;
+        exit(1);
+    }
+    // Undistorting the frame
+    undistort(rawFrame, undistortedFrame, cameraMatrix, distortionCoefficients);
+    // Flipping the frame to match the used coordinate system
+    flip(undistortedFrame, flippedFrame, -1);
+    return flippedFrame;
 }

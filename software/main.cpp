@@ -21,13 +21,16 @@ using namespace LibSerial;
 const char AVAILABILITY_MESSAGE = 'R';
 const char ERROR_MESSAGE = 'E';
 
-// Declaring text showing function
-Mat showText(Mat image, string text);
+// Declaring a text drawing function
+Mat drawText(Mat image, string text);
 
-// Declaring command sending function
+// Declaring an image showing function
+void showImage(String windowName, Mat image);
+
+// Declaring a command sending function
 void sendCommand(SerialStream &serial, char command, int commandParameter);
 
-// Declaing picture capturing function
+// Declaing a picture capturing function
 Mat capturePicture(VideoCapture &camera, Mat cameraMatrix, Mat distortionCoefficients);
 
 // Main function
@@ -36,19 +39,55 @@ int main(int argc, char *argv[])
     // Checking for the right number of command line arguments
     if (argc == 9)
     {
-        // Defining camera calibration file, camera ID, serial port and window name
+        // Defining camera calibration file, camera ID, serial port, overview image, jigsaw puzzle column, row and part count as well as width and height and window name
         const string CAMERA_CALIBRATION_FILE = argv[1];
         const int CAMERA_ID = stoi(argv[2]);
         const string SERIAL_PORT = argv[3];
         const string OVERVIEW_IMAGE = argv[4];
         const int COLUMN_COUNT = stoi(argv[5]);
         const int ROW_COUNT = stoi(argv[6]);
-        const float WIDTH = stof(argv[7]);
-        const float HEIGHT = stof(argv[8]);
+        const int PART_COUNT = COLUMN_COUNT * ROW_COUNT;
+        const int WIDTH = stof(argv[7]);
+        const int HEIGHT = stof(argv[8]);
         const string WINDOW_NAME = "jgswpzzlbt";
+        // Defining robot control related variables
+        const int MOTOR_SPEED_MAX = 100;
+        const int X_AXIS_COORDINATE_MAX = 750;
+        const int Y_AXIS_COORDINATE_MAX = 750;
+        const int Z_AXIS_COORDINATE_MAX = 75;
+        const int C_AXIS_COORDINATE_MAX = 359;
+        const int VACUUM_PUMP_DUTY_CYCLE_MAX = 100;
+        const int LED_DUTY_CYCLE_MAX = 100;
+        const char MOTOR_SPEED_COMMAND = 'S';
+        const char X_AXIS_COMMAND = 'X';
+        const char Y_AXIS_COMMAND = 'Y';
+        const char Z_AXIS_COMMAND = 'Z';
+        const char C_AXIS_COMMAND = 'C';
+        const char VACUUM_PUMP_COMMAND = 'V';
+        const char LED_COMMAND = 'L';
+        // Defining part storage related variables
+        const int STORAGE_COLUMN_WIDTH = round((((float) WIDTH / COLUMN_COUNT) * 2));
+        const int STORAGE_COLUMN_COUNT = floor((float) X_AXIS_COORDINATE_MAX / STORAGE_COLUMN_WIDTH);
+        const int STORAGE_ROW_HEIGHT = round((((float) HEIGHT / ROW_COUNT) * 2));
+        const int STORAGE_ROW_COUNT = ceil((float) PART_COUNT / STORAGE_COLUMN_COUNT);
+        vector<vector<int>> PARTS_STORAGE_COORDINATES;
+        for (int i = 0; i < STORAGE_ROW_COUNT; i++)
+        {
+            for (int j = 0; j < STORAGE_COLUMN_COUNT; j++)
+            {
+                vector<int> PART_STORAGE_COORDINATES;
+                if (PARTS_STORAGE_COORDINATES.size() == PART_COUNT)
+                {
+                    break;
+                }
+                PART_STORAGE_COORDINATES.push_back(floor((STORAGE_COLUMN_WIDTH * .5) + (STORAGE_COLUMN_WIDTH * j)));
+                PART_STORAGE_COORDINATES.push_back(floor(Y_AXIS_COORDINATE_MAX - (((float) STORAGE_ROW_HEIGHT * .5) + (STORAGE_ROW_HEIGHT * i))));
+                PARTS_STORAGE_COORDINATES.push_back(PART_STORAGE_COORDINATES);
+            }
+        }
         // Creating a camera object
         VideoCapture camera;
-        // Creating camera calibration objects;
+        // Creating camera calibration objects
         Mat cameraMatrix;
         Mat distortionCoefficients;
         FileStorage cameraCalibration;
@@ -57,14 +96,6 @@ int main(int argc, char *argv[])
         // Creating variables for storing serial input and extracted response
         string serialInput;
         char serialResponse;
-        // Defining help message
-        const string HELP_MESSAGE =
-            "This program is fully keyboard driven. Here is a full list of all available actions:\n"
-            "Q: Quit the program\n"
-            "F: Save the current frame\n"
-            "R: Indicate that the next operation can be performed\n"
-            "To close this help, press R."
-        ;
         // Opening the camera calibration file
         cameraCalibration.open("camera-calibration.xml", FileStorage::READ);
         // Checking for success
@@ -128,58 +159,79 @@ int main(int argc, char *argv[])
         // Creating a new window
         namedWindow(WINDOW_NAME);
         // Displaying a small help at startup
-        while (true)
+        showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: Quit the program\nF: Save the current frame\nR: Indicate that the next operation can be performed"));
+        // Setting the speed to 3/4 throttle for testing
+        sendCommand(serial, MOTOR_SPEED_COMMAND, 75);
+        // Moving the head up out of the way
+        sendCommand(serial, Z_AXIS_COMMAND, Z_AXIS_COORDINATE_MAX);
+        // Moving all parts to their storage coordinates
+        for (int i = 0; i < PART_COUNT; i++)
         {
-            Mat help = showText(Mat::zeros(Size(1920, 1080), CV_8UC3), HELP_MESSAGE);
-            imshow(WINDOW_NAME, help);
-            int keyPressed = waitKey(1000 / 30);
-            // Closing the help when R is pressed
-            if (keyPressed == 114)
+            // Creating image containers
+            Mat rawFrame;
+            Mat preprocessedFrame;
+            Mat cannyFrame;
+            Mat processedFrame;
+            // Creating other image processing variables
+            vector<vector<Point>> contours;
+            RotatedRect minRect;
+            vector<Point> minRectContour;
+            Scalar color = Scalar(255, 255, 255);
+            Point2f minRectPoints[4];
+            // Moving the head to the pick up coordinates
+            sendCommand(serial, X_AXIS_COMMAND, 38);
+            sendCommand(serial, Y_AXIS_COMMAND, 38);
+            // Prompting the user to lay down a jigsaw puzzle part
+            showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "Please lay down the next piece in the bottom left corner of the work area.\nReady?"));
+            // Capturing and preprocessing a picture of the part for position correction
+            rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
+            cvtColor(rawFrame, preprocessedFrame, COLOR_BGR2GRAY);
+            medianBlur(preprocessedFrame, preprocessedFrame, 5);
+            threshold(preprocessedFrame, preprocessedFrame, 0, 255, THRESH_OTSU);
+            showImage(WINDOW_NAME, preprocessedFrame);
+            // Performing canny edge detection
+            Canny(preprocessedFrame, cannyFrame, 128, 255);
+            showImage(WINDOW_NAME, cannyFrame);
+            // Finding contours and selecting only the largest one together with it's minimum bounding rectangle
+            findContours(cannyFrame, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+            for(int j = 0; j < contours.size(); j++)
             {
-                break;
-            }
-        }
-
-        // Defining serial commands
-        const char MOTOR_SPEED_COMMAND = 'S';
-        const char X_AXIS_COMMAND = 'X';
-        const char Y_AXIS_COMMAND = 'Y';
-        const char Z_AXIS_COMMAND = 'Z';
-        const char C_AXIS_COMMAND = 'C';
-        const char VACUUM_PUMP_COMMAND = 'V';
-        const char LED_COMMAND = 'L';
-
-        sendCommand(serial, MOTOR_SPEED_COMMAND, 50);
-        for (int i = 0; i < ROW_COUNT; i++)
-        {
-            for (int j = 0; j < COLUMN_COUNT; j++)
-            {
-                sendCommand(serial, X_AXIS_COMMAND, 38);
-                sendCommand(serial, Y_AXIS_COMMAND, 38);
-                sendCommand(serial, Z_AXIS_COMMAND, 75);
-                while (true)
+                RotatedRect buffer = minAreaRect(contours[j]);
+                static float largestArea = 0;
+                cout << buffer.size.area() << endl;
+                if (buffer.size.area() > largestArea)
                 {
-                    Mat instruction = showText(Mat::zeros(Size(1920, 1080), CV_8UC3), "Please lay down the next piece in the bottom left corner of the work area.\nReady?");
-                    imshow(WINDOW_NAME, instruction);
-                    int keyPressed = waitKey(1000 / 30);
-                    // Moving forward when R is pressed
-                    if (keyPressed == 114)
-                    {
-                        break;
-                    }
+                    minRect = buffer;
+                    minRectContour = contours[j];
+                    largestArea = buffer.size.area();
                 }
-                sendCommand(serial, Z_AXIS_COMMAND, 0);
-                sendCommand(serial, VACUUM_PUMP_COMMAND, 100);
-                sleep(1);
-                sendCommand(serial, Z_AXIS_COMMAND, 75);
-                sendCommand(serial, X_AXIS_COMMAND, round(((750.0 / COLUMN_COUNT) * .5) + ((750.0 / COLUMN_COUNT) * j)));
-                sendCommand(serial, Y_AXIS_COMMAND, round(750 - (((750.0 / ROW_COUNT) * .5) + ((750.0 / ROW_COUNT) * i))));
-                sendCommand(serial, Z_AXIS_COMMAND, 0);
-                sendCommand(serial, VACUUM_PUMP_COMMAND, 0);
-                sleep(1);
             }
-        }
+            // Extracting the important information
+            cout << "center x: " << round(minRect.center.x) << " center y: " << round(minRect.center.y) << " angle: " << round(minRect.angle) << endl;
+            // Creating and showing the processed frame
+            processedFrame = Mat::zeros( cannyFrame.size(), CV_8UC3);
+            drawContours(processedFrame, vector<vector<Point>>(1, minRectContour), 0, color);
+            minRect.points(minRectPoints);
+            for (int j = 0; j < 4; j++)
+            {
+                line(processedFrame, minRectPoints[j], minRectPoints[(j + 1) % 4], color);
+            }
+            circle(processedFrame, minRect.center, 4, color, -1);
+            showImage(WINDOW_NAME, processedFrame);
 
+            // Picking the part up
+            sendCommand(serial, Z_AXIS_COMMAND, 0);
+            sendCommand(serial, VACUUM_PUMP_COMMAND, 100);
+            sleep(1);
+            sendCommand(serial, Z_AXIS_COMMAND, Z_AXIS_COORDINATE_MAX);
+            sleep(1);
+            // Moving to the part's storage coordinates
+            sendCommand(serial, X_AXIS_COMMAND, PARTS_STORAGE_COORDINATES[i][0]);
+            sendCommand(serial, Y_AXIS_COMMAND, PARTS_STORAGE_COORDINATES[i][1]);
+            // Releasing the part
+            sendCommand(serial, VACUUM_PUMP_COMMAND, 0);
+            sleep(1);
+        }
         // Closing the camera
         camera.release();
         // Closing the serial port
@@ -189,14 +241,14 @@ int main(int argc, char *argv[])
     else
     {
         // Throwing an error on invalid number of command line arguments
-        cout << "Wrong number of arguments. Eight arguments containing the path of the camera calibration file, camera ID, serial port as well as overview image, column count, row count, width and height of the jigsaw puzzle expected." << endl;
-        cout << "Example: " << argv[0] << " camera-calibration.xml 0 /dev/ttyUSB0 overview.png 9 7 35.5 23" << endl;
+        cout << "Wrong number of arguments. Eight arguments containing the path of the camera calibration file, camera ID, serial port as well as overview image, column count, row count, width and height in mm of the jigsaw puzzle expected." << endl;
+        cout << "Example: " << argv[0] << " camera-calibration.xml 0 /dev/ttyUSB0 overview.png 9 7 355 230" << endl;
         return 1;
     }
 }
 
-// Defining text showing function
-Mat showText(Mat image, string text)
+// Defining text drawing function
+Mat drawText(Mat image, string text)
 {
     // Creating needed variables
     string lineBuffer;
@@ -211,9 +263,29 @@ Mat showText(Mat image, string text)
     }
     for (int i = 0; i < lines.size(); i++)
     {
-        putText(imageBuffer, lines[i], Point(0, 40 * (i + 1)), FONT_HERSHEY_SIMPLEX, 1.5, Scalar(255, 255, 255), 2);
+        putText(imageBuffer, lines[i], Point(0, (50 * i) + 40), FONT_HERSHEY_SIMPLEX, 1.5, Scalar(0, 255, 0), 2);
     }
     return imageBuffer;
+}
+
+// Defining an image showing function
+void showImage(String windowName, Mat image)
+{
+    while (true)
+    {
+        imshow(windowName, image);
+        int keyPressed = waitKey(1000 / 30);
+        // Quiting when Q is pressed
+        if (keyPressed == 113)
+        {
+            exit(0);
+        }
+        // Moving forward when R is pressed
+        else if (keyPressed == 114)
+        {
+            break;
+        }
+    }
 }
 
 // Defining command sending function

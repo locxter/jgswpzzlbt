@@ -10,11 +10,12 @@ This is a jigsaw puzzle solving robot I'm designing. It is programmed in C++ usi
 
 ## Dependencies
 
-I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Debian as I'm running it myself. Anyway, you need to have the following packages installed for everything to work properly:
+I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Linux Mint as I'm running it myself. Anyway, you need to have the following packages installed for everything to work properly:
 
-- FreeCAD for editing and exporting the CAD file. Install it with `sudo apt install freecad`.
-- A2Plus for assemblying to robot virtually in FreeCAD. Install it via the integrated addon manager.
-- Arduino IDE as a way to compile the Arduino code. Install it with `sudo apt install arduino`.
+- FreeCAD for editing and exporting the CAD file. Install it with `sudo flatpak install flathub org.freecadweb.FreeCAD`.
+- A2Plus for assemblying the robot virtually in FreeCAD. Install it via the integrated addon manager.
+- fcgear for creating the needed gears in FreeCAD. Install it via the integrated addon manager.
+- Arduino IDE as a way to compile the Arduino code. Install it with `sudo flatpak install flathub cc.arduino.arduinoide`.
 - Code::Blocks as a C++ IDE. Install it with `sudo apt install codeblocks`.
 - OpenCV as the used computer vision library. Install it with `sudo apt install libopencv-dev`.
 - LibSerial as the used serial communication library. Install it with `sudo apt install libserial-dev`.
@@ -47,7 +48,7 @@ Below is a full bill of materials with German sources for all non printable part
 | 1 | NEMA 11 1.8deg stepper motor | [Amazon](https://www.amazon.de/Iverntech-Schrittmotor-Schrittwinkel-3D-Drucker-CNC-Maschine/dp/B07PNV7RBW) |
 | 1 | Power supply | [Amazon](https://www.amazon.de/Netzteil-Netzadapter-Transformator-Kaltger%C3%A4testecker-Streifen/dp/B07FNMKTBL) |
 | 1 | SG90 micro servo | [Amazon](https://www.amazon.de/ARCELI-Flugzeug-Zubeh%C3%B6r-Arduino-Hubschrauber/dp/B07MY2Y253) |
-| 1 | Endstop | [Amazon](https://www.amazon.de/GTIWUNG-Mechanischer-Endschalter-3D-Drucker-Makerbot/dp/B07VWRS24K) |
+| 2 | Endstop | [Amazon](https://www.amazon.de/GTIWUNG-Mechanischer-Endschalter-3D-Drucker-Makerbot/dp/B07VWRS24K) |
 | 1 | Vacuum pump | [Amazon](https://www.amazon.de/KSTE-Vakuumpumpe-Mikrovakuumpumpe-Mini-Luftpumpe-Behandlungsinstrument/dp/B08BJWLKBW) |
 | 1 | Vacuum tubing | [Amazon](https://www.amazon.de/JBL-Luftschlauch-Länge-Durchmesser-Aquaschlauch/dp/B000H6SRMU) |
 | 1 | LED strip| [Amazon](https://www.amazon.de/Streifen-kaltwei%C3%9F-Streifenlicht-Lichtleiste-klebeband/dp/B00HSF65MC) |
@@ -61,7 +62,7 @@ Below is a full bill of materials with German sources for all non printable part
 | 1 | Pin header | [Amazon](https://www.amazon.de/IZOKEE-Männlich-Stiftleiste-Buchsenleiste-Lochrasterplatine/dp/B07DBY753C) |
 | 1 | Jigsaw puzzle mat | [Amazon](https://www.amazon.de/maDDma-Bastelfilz-Meterware-Taschenfilz-Filzstoff/dp/B0797QR4LL) |
 | 1 | 110x120cm chipboard 8mm | [Globus Baumarkt](https://www.globus-baumarkt.de/spanplatte-roh-8-mm) |
-| 40 | 3x12mm TX10 wood screw | [Globus Baumarkt](https://www.globus-baumarkt.de/detail/index/sArticle/27670/fs/116194815/sCategory/47135) |
+| 42 | 3x12mm TX10 wood screw | [Globus Baumarkt](https://www.globus-baumarkt.de/detail/index/sArticle/27670/fs/116194815/sCategory/47135) |
 | 1 | Aluminium profile 20x80 I-type slot 5 1000mm | [Motedis](https://www.motedis.com/shop/Aluprofile/20-I-Typ-Nut-5/Aluprofil-20x80-I-Typ-Nut-5::3798.html) |
 | 10 | M5 t-nut I-type groove 5 | [Motedis](https://www.motedis.com/shop/Nutprofil-Zubehoer/In-der-Nut/Nutenstein-Glatt-I-Typ-Nut-5-M5::5846.html) |
 | 1 | GT2 motor pulley 20 teeth, 5mm bore | [Motedis](https://www.motedis.com/shop/Dynamik/Zahnriemen-und-Zahnraeder/GT2-Riemenscheibe-20-Zaehne-5mm-Bohrung-fuer-6mm-Riemen::4248.html) |
@@ -69,8 +70,8 @@ Below is a full bill of materials with German sources for all non printable part
 | 4 | DIN 912 M2x20 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m2-8-8-galvanisch-verzinkt-zylinderschraube_200581_13656) |
 | 4 | DIN 934 M2x0.4 nut | [Schraubenkasten](https://www.schraubenkasten.de/muttern/sechskantmutter/din-934/edelstahl-a2_202500_23008) |
 | 4 | DIN 912 M2.5x8 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m2-5-8-8-galvanisch-verzinkt-zylinderschraube_200582_13676) |
-| 30 | DIN 912 M3x8 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m3-8-8-galvanisch-verzinkt-zylinderschraube_200583_13715) |
-| 16 | DIN 934 M3x0.5 nut | [Schraubenkasten](https://www.schraubenkasten.de/muttern/sechskantmutter/din-934/edelstahl-a2_202502_23016) |
+| 32 | DIN 912 M3x8 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m3-8-8-galvanisch-verzinkt-zylinderschraube_200583_13715) |
+| 18 | DIN 934 M3x0.5 nut | [Schraubenkasten](https://www.schraubenkasten.de/muttern/sechskantmutter/din-934/edelstahl-a2_202502_23016) |
 | 12 | DIN 912 M5x14 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m5-8-8-galvanisch-verzinkt-zylinderschraube_200585_13871) |
 | 5 | DIN 912 M5x25 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m5-8-8-galvanisch-verzinkt-zylinderschraube_200585_13883) |
 | 3 | DIN 912 M5x50 screw | [Schraubenkasten](https://www.schraubenkasten.de/din-912-mit-innensechskant/m5-8-8-galvanisch-verzinkt-zylinderschraube_200585_13899) |
@@ -93,6 +94,7 @@ Below is a full bill of materials with German sources for all non printable part
 | 1 | X axis top carriage | 3D printer |
 | 2 | Y axis carriage | 3D printer |
 | 4 | Y axis gear | 3D printer |
+| 1 | Y axis stop | 3D printer |
 | 12 | Y axis track | 3D printer |
 | 1 | Z axis carriage | 3D printer |
 | 1 | Z axis mount | 3D printer |

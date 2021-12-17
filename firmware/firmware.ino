@@ -10,12 +10,14 @@ const int Y_AXIS_1_STP_PIN = 46;
 const int Y_AXIS_1_DIR_PIN = 48;
 const int C_AXIS_STP_PIN = 26;
 const int C_AXIS_DIR_PIN = 28;
-const int ENDSTOP_PIN = 3;
+const int X_AXIS_ENDSTOP_PIN = 3;
+const int Y_AXIS_ENDSTOP_PIN = 14;
 const int VACUUM_PUMP_PIN = 8;
 const int LED_PIN = 9;
 
-// Defining the minimum x axis step interval
-const int X_AXIS_MIN_STEP_INTERVAL = 100;
+// Defining the minimum x and y axis step interval
+const int X_AXIS_MIN_STEP_INTERVAL = 150;
+const int Y_AXIS_MIN_STEP_INTERVAL = 600;
 // Defining messages
 const char AVAILABILITY_MESSAGE = 'R';
 const char ERROR_MESSAGE = 'E';
@@ -29,10 +31,10 @@ Servo servo;
 // Declaring own functions
 void homeAxis();
 void setMotorSpeed(int newMotorSpeed);
-void moveXAxis(int newXAxisPosition);
-void moveYAxis(int newYAxisPosition);
-void moveZAxis(int newZAxisPosition);
-void moveCAxis(int newCAxisPosition);
+void moveXAxis(int newXAxisCoordinate);
+void moveYAxis(int newYAxisCoordinate);
+void moveZAxis(int newZAxisCoordinate);
+void moveCAxis(int newCAxisCoordinate);
 void controlVacuumPump(int newVacuumPumpDutyCycle);
 void controlLed(int newLedDutyCycle);
 
@@ -98,7 +100,8 @@ void setup()
     digitalWrite(C_AXIS_MS1_PIN, HIGH);
     pinMode(C_AXIS_MS2_PIN, OUTPUT);
     digitalWrite(C_AXIS_MS2_PIN, HIGH);
-    pinMode(ENDSTOP_PIN, INPUT);
+    pinMode(X_AXIS_ENDSTOP_PIN, INPUT);
+    pinMode(Y_AXIS_ENDSTOP_PIN, INPUT);
     pinMode(VACUUM_PUMP_PIN, OUTPUT);
     digitalWrite(VACUUM_PUMP_PIN, LOW);
     pinMode(LED_PIN, OUTPUT);
@@ -162,12 +165,13 @@ void loop()
 // Defining a homing function
 void homeAxis()
 {
-    // Calculating the step interval
-    static int stepInterval = round(2 * X_AXIS_MIN_STEP_INTERVAL) - 10;
+    // Calculating the step intervals
+    static int xAxisStepInterval = round((100.0 / 75) * X_AXIS_MIN_STEP_INTERVAL) - 10;
+    static int yAxisStepInterval = round((100.0 / 75) * Y_AXIS_MIN_STEP_INTERVAL) - 10;
     // Creating variables for storing time before homing the x axis and success of that operation
     unsigned long start;
     bool success = true;
-    // Moving servo to a deactive position
+    // Moving servo to a deactive coordinate
     if (servo.read() != 0)
     {
         servo.write(0);
@@ -175,12 +179,12 @@ void homeAxis()
     // Homing the x axis
     start = millis();
     digitalWrite(X_AXIS_DIR_PIN, !digitalRead(X_AXIS_DIR_PIN));
-    while(digitalRead(ENDSTOP_PIN) == HIGH)
+    while(digitalRead(X_AXIS_ENDSTOP_PIN) == HIGH)
     {
         digitalWrite(X_AXIS_STP_PIN, HIGH);
         delayMicroseconds(10);
         digitalWrite(X_AXIS_STP_PIN, LOW);
-        delayMicroseconds(stepInterval);
+        delayMicroseconds(xAxisStepInterval);
         if (millis() - start > 30000)
         {
             success = false;
@@ -188,6 +192,26 @@ void homeAxis()
         }
     }
     digitalWrite(X_AXIS_DIR_PIN, !digitalRead(X_AXIS_DIR_PIN));
+    // Homing the y axis
+    start = millis();
+    digitalWrite(Y_AXIS_0_DIR_PIN, !digitalRead(Y_AXIS_0_DIR_PIN));
+    digitalWrite(Y_AXIS_1_DIR_PIN, !digitalRead(Y_AXIS_1_DIR_PIN));
+    while(digitalRead(Y_AXIS_ENDSTOP_PIN) == HIGH)
+    {
+        digitalWrite(Y_AXIS_0_STP_PIN, HIGH);
+        digitalWrite(Y_AXIS_1_STP_PIN, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(Y_AXIS_0_STP_PIN, LOW);
+        digitalWrite(Y_AXIS_1_STP_PIN, LOW);
+        delayMicroseconds(yAxisStepInterval);
+        if (millis() - start > 30000)
+        {
+            success = false;
+            break;
+        }
+    }
+    digitalWrite(Y_AXIS_0_DIR_PIN, !digitalRead(Y_AXIS_0_DIR_PIN));
+    digitalWrite(Y_AXIS_1_DIR_PIN, !digitalRead(Y_AXIS_1_DIR_PIN));
     // Checking for homing error and printing an according message
     if (success)
     {
@@ -223,23 +247,23 @@ void setMotorSpeed(int newMotorSpeed)
 }
 
 // Defining a x axis motor controlling function
-void moveXAxis(int newXAxisPosition)
+void moveXAxis(int newXAxisCoordinate)
 {
-    // Defining maximum x axis position
-    const int X_AXIS_POSITION_MAX = 750;
-    // Defining variable to store current position
-    static int xAxisPosition = 0;
+    // Defining maximum x axis coordinate
+    const int X_AXIS_COORDINATE_MAX = 750;
+    // Defining variable to store current coordinate
+    static int xAxisCoordinate = 0;
     // Limiting the parameter range
-    if (newXAxisPosition > X_AXIS_POSITION_MAX)
+    if (newXAxisCoordinate > X_AXIS_COORDINATE_MAX)
     {
-        newXAxisPosition = X_AXIS_POSITION_MAX;
+        newXAxisCoordinate = X_AXIS_COORDINATE_MAX;
     }
-    else if (newXAxisPosition < 0)
+    else if (newXAxisCoordinate < 0)
     {
-        newXAxisPosition = 0;
+        newXAxisCoordinate = 0;
     }
     // Controlling the motor
-    if (newXAxisPosition != xAxisPosition)
+    if (newXAxisCoordinate != xAxisCoordinate)
     {
         // Defining the x axis movement per rotation
         const int X_AXIS_MOVEMENT_PER_ROTATION = 40;
@@ -247,17 +271,17 @@ void moveXAxis(int newXAxisPosition)
         // Calculating the step inerval
         int stepInterval = round((100.0 / motorSpeed) * X_AXIS_MIN_STEP_INTERVAL) - 10;
         // Choosing a movement direction
-        if (newXAxisPosition > xAxisPosition)
+        if (newXAxisCoordinate > xAxisCoordinate)
         {
-            mmToGo = newXAxisPosition - xAxisPosition;
+            mmToGo = newXAxisCoordinate - xAxisCoordinate;
         }
-        else if (newXAxisPosition < xAxisPosition)
+        else if (newXAxisCoordinate < xAxisCoordinate)
         {
-            mmToGo = xAxisPosition - newXAxisPosition;
+            mmToGo = xAxisCoordinate - newXAxisCoordinate;
             digitalWrite(X_AXIS_DIR_PIN, !digitalRead(X_AXIS_DIR_PIN));
         }
         // Sending the step signals
-        for (unsigned long long stepsToGo = round(((float) mmToGo / X_AXIS_MOVEMENT_PER_ROTATION) * 3200); stepsToGo > 0; stepsToGo--)
+        for (unsigned long long i = round(((float) mmToGo / X_AXIS_MOVEMENT_PER_ROTATION) * 3200); i > 0; i--)
         {
             digitalWrite(X_AXIS_STP_PIN, HIGH);
             delayMicroseconds(10);
@@ -265,56 +289,54 @@ void moveXAxis(int newXAxisPosition)
             delayMicroseconds(stepInterval);
         }
         // Resetting the movement direction
-        if(newXAxisPosition < xAxisPosition)
+        if(newXAxisCoordinate < xAxisCoordinate)
         {
             digitalWrite(X_AXIS_DIR_PIN, !digitalRead(X_AXIS_DIR_PIN));
         }
-        // Updating the known x position
-        xAxisPosition = newXAxisPosition;
+        // Updating the known x coordinate
+        xAxisCoordinate = newXAxisCoordinate;
     }
     // Printing an availability message
     Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a y axis motor controlling function
-void moveYAxis(int newYAxisPosition)
+void moveYAxis(int newYAxisCoordinate)
 {
-    // Defining maximum y axis position
-    const int Y_AXIS_POSITION_MAX = 750;
-    // Defining variable to store current position
-    static int yAxisPosition = 0;
+    // Defining maximum y axis coordinate
+    const int Y_AXIS_COORDINATE_MAX = 800;
+    // Defining variable to store current coordinate
+    static int yAxisCoordinate = 0;
     // Limiting the parameter range
-    if (newYAxisPosition > Y_AXIS_POSITION_MAX)
+    if (newYAxisCoordinate > Y_AXIS_COORDINATE_MAX)
     {
-        newYAxisPosition = Y_AXIS_POSITION_MAX;
+        newYAxisCoordinate = Y_AXIS_COORDINATE_MAX;
     }
-    else if (newYAxisPosition < 0)
+    else if (newYAxisCoordinate < 0)
     {
-        newYAxisPosition = 0;
+        newYAxisCoordinate = 0;
     }
     // Controlling the motor
-    if (newYAxisPosition != yAxisPosition)
+    if (newYAxisCoordinate != yAxisCoordinate)
     {
-        // Defining the minimum y axis step interval
-        const int Y_AXIS_MIN_STEP_INTERVAL = 600;
-        // Defining the x axis movement per rotation
+        // Defining the y axis movement per rotation
         const int Y_AXIS_MOVEMENT_PER_ROTATION = 220;
         int mmToGo;
         // Calculating the step interval
         int stepInterval = round((100.0 / motorSpeed) * Y_AXIS_MIN_STEP_INTERVAL) - 10;
         // Choosing a movement direction
-        if (newYAxisPosition > yAxisPosition)
+        if (newYAxisCoordinate > yAxisCoordinate)
         {
-            mmToGo = newYAxisPosition - yAxisPosition;
+            mmToGo = newYAxisCoordinate - yAxisCoordinate;
         }
-        else if (newYAxisPosition < yAxisPosition)
+        else if (newYAxisCoordinate < yAxisCoordinate)
         {
-            mmToGo = yAxisPosition - newYAxisPosition;
+            mmToGo = yAxisCoordinate - newYAxisCoordinate;
             digitalWrite(Y_AXIS_0_DIR_PIN, !digitalRead(Y_AXIS_0_DIR_PIN));
             digitalWrite(Y_AXIS_1_DIR_PIN, !digitalRead(Y_AXIS_1_DIR_PIN));
         }
         // Sending the step signals
-        for (unsigned long long stepsToGo = round(((float) mmToGo / Y_AXIS_MOVEMENT_PER_ROTATION) * 3200); stepsToGo > 0; stepsToGo--)
+        for (unsigned long long i = round(((float) mmToGo / Y_AXIS_MOVEMENT_PER_ROTATION) * 3200); i > 0; i--)
         {
             digitalWrite(Y_AXIS_0_STP_PIN, HIGH);
             digitalWrite(Y_AXIS_1_STP_PIN, HIGH);
@@ -324,86 +346,86 @@ void moveYAxis(int newYAxisPosition)
             delayMicroseconds(stepInterval);
         }
         // Resetting the movement direction
-        if(newYAxisPosition < yAxisPosition)
+        if(newYAxisCoordinate < yAxisCoordinate)
         {
             digitalWrite(Y_AXIS_0_DIR_PIN, !digitalRead(Y_AXIS_0_DIR_PIN));
             digitalWrite(Y_AXIS_1_DIR_PIN, !digitalRead(Y_AXIS_1_DIR_PIN));
         }
-        // Updating the known y position
-        yAxisPosition = newYAxisPosition;
+        // Updating the known y coordinate
+        yAxisCoordinate = newYAxisCoordinate;
     }
     // Printing an availability message
     Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a z axis servo controlling function
-void moveZAxis(int newZAxisPosition)
+void moveZAxis(int newZAxisCoordinate)
 {
-    // Defining maximum z axis position
-    const int Z_AXIS_POSITION_MAX = 75;
+    // Defining maximum z axis coordinate
+    const int Z_AXIS_COORDINATE_MAX = 75;
     // Limiting the parameter range
-    if (newZAxisPosition > Z_AXIS_POSITION_MAX)
+    if (newZAxisCoordinate > Z_AXIS_COORDINATE_MAX)
     {
-        newZAxisPosition = Z_AXIS_POSITION_MAX;
+        newZAxisCoordinate = Z_AXIS_COORDINATE_MAX;
     }
-    else if (newZAxisPosition < 0)
+    else if (newZAxisCoordinate < 0)
     {
-        newZAxisPosition = 0;
+        newZAxisCoordinate = 0;
     }
     // Controlling the servo
-    if (newZAxisPosition != servo.read())
+    if (newZAxisCoordinate != servo.read())
     {
-        servo.write(newZAxisPosition);
+        servo.write(newZAxisCoordinate);
     }
     // Printing an availability message
     Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Defining a c axis motor controlling function
-void moveCAxis(int newCAxisPosition)
+void moveCAxis(int newCAxisCoordinate)
 {
-    // Defining maximum c axis position
-    const int C_AXIS_POSITION_MAX = 359;
-    // Defining variable to store current position
-    static int cAxisPosition = 0;
+    // Defining maximum c axis coordinate
+    const int C_AXIS_COORDINATE_MAX = 359;
+    // Defining variable to store current coordinate
+    static int cAxisCoordinate = 0;
     // Limiting the parameter range
-    if (newCAxisPosition > C_AXIS_POSITION_MAX)
+    if (newCAxisCoordinate > C_AXIS_COORDINATE_MAX)
     {
-        newCAxisPosition = C_AXIS_POSITION_MAX;
+        newCAxisCoordinate = C_AXIS_COORDINATE_MAX;
     }
-    else if (newCAxisPosition < 0)
+    else if (newCAxisCoordinate < 0)
     {
-        newCAxisPosition = 0;
+        newCAxisCoordinate = 0;
     }
     // Controlling the motor
-    if (newCAxisPosition != cAxisPosition)
+    if (newCAxisCoordinate != cAxisCoordinate)
     {
         // Defining the minimum c axis step interval
         const int C_AXIS_MIN_STEP_INTERVAL = 200;
         int angleToGo;
         // Calculating the step interval
         int stepInterval = round((100.0 / motorSpeed) * C_AXIS_MIN_STEP_INTERVAL) - 10;
-        // Changing the new position sometimes to avoid cable damage
-        if (newCAxisPosition > 180)
+        // Changing the new coordinate sometimes to avoid cable damage
+        if (newCAxisCoordinate > 180)
         {
-            newCAxisPosition -= 360;
+            newCAxisCoordinate -= 360;
         }
-        if (cAxisPosition > 180)
+        if (cAxisCoordinate > 180)
         {
-            cAxisPosition -= 360;
+            cAxisCoordinate -= 360;
         }
         // Choosing a movement direction
-        if (newCAxisPosition > cAxisPosition)
+        if (newCAxisCoordinate > cAxisCoordinate)
         {
-            angleToGo = newCAxisPosition - cAxisPosition;
+            angleToGo = newCAxisCoordinate - cAxisCoordinate;
         }
-        else if (newCAxisPosition < cAxisPosition)
+        else if (newCAxisCoordinate < cAxisCoordinate)
         {
-            angleToGo = cAxisPosition - newCAxisPosition;
+            angleToGo = cAxisCoordinate - newCAxisCoordinate;
             digitalWrite(C_AXIS_DIR_PIN, !digitalRead(C_AXIS_DIR_PIN));
         }
         // Sending the step signals
-        for (unsigned long long stepsToGo = round(((float) angleToGo / 360) * 3200); stepsToGo > 0; stepsToGo--)
+        for (unsigned long long i = round(((float) angleToGo / 360) * 3200); i > 0; i--)
         {
             digitalWrite(C_AXIS_STP_PIN, HIGH);
             delayMicroseconds(10);
@@ -411,17 +433,17 @@ void moveCAxis(int newCAxisPosition)
             delayMicroseconds(stepInterval);
         }
         // Resetting the movement direction
-        if(newCAxisPosition < cAxisPosition)
+        if(newCAxisCoordinate < cAxisCoordinate)
         {
             digitalWrite(C_AXIS_DIR_PIN, !digitalRead(C_AXIS_DIR_PIN));
         }
-        // Recreating the original new position after changing it
-        if (newCAxisPosition < 0)
+        // Recreating the original new coordinate after changing it
+        if (newCAxisCoordinate < 0)
         {
-            newCAxisPosition += 360;
+            newCAxisCoordinate += 360;
         }
-        // Updating the known c axis position
-        cAxisPosition = newCAxisPosition;
+        // Updating the known c axis coordinate
+        cAxisCoordinate = newCAxisCoordinate;
     }
     // Printing an availability message
     Serial.print((String) AVAILABILITY_MESSAGE + '\n');
