@@ -372,6 +372,8 @@ void moveZAxis(int newZAxisCoordinate)
     {
         newZAxisCoordinate = 0;
     }
+    // Translating it to the real coordinate
+    newZAxisCoordinate = 75 - newZAxisCoordinate;
     // Controlling the servo
     if (newZAxisCoordinate != servo.read())
     {

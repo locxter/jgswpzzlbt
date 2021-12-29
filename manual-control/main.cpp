@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
             return 1;
         }
         // Reading the calibration
-        cameraCalibration["camera_matrix"] >> cameraMatrix;
-        cameraCalibration["distortion_coefficients"] >> distortionCoefficients;
+        cameraCalibration["camera-matrix"] >> cameraMatrix;
+        cameraCalibration["distortion-coefficients"] >> distortionCoefficients;
         // Closing the file
         cameraCalibration.release();
         // Opening the camera
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
         camera.set(CAP_PROP_FOURCC, VideoWriter::fourcc('M', 'J', 'P', 'G'));
         camera.set(CAP_PROP_FRAME_WIDTH, 1920);
         camera.set(CAP_PROP_FRAME_HEIGHT, 1080);
-        camera.set(CAP_PROP_FPS, 30);
+        camera.set(CAP_PROP_FPS, 25);
         camera.set(CAP_PROP_BUFFERSIZE, 1);
         // Opening the serial port
         serial.Open(SERIAL_PORT);
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
             static int motorSpeed = 100;
             static int xAxisCoordinate = 0;
             static int yAxisCoordinate = 0;
-            static int zAxisCoordinate = 0;
+            static int zAxisCoordinate = 75;
             static int cAxisCoordinate = 0;
             static int vacuumPumpDutyCyle = 0;
             static int ledDutyCyle = 0;
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
             // Showing the frame
             imshow(WINDOW_NAME, annotatedFrame);
             // Fetching user input
-            keyPressed = waitKey(1000 / 30);
+            keyPressed = waitKey(1000 / 25);
             // Quiting when Q is pressed
             if (keyPressed == 113)
             {
@@ -414,7 +414,7 @@ void showImage(String windowName, Mat image)
     while (true)
     {
         imshow(windowName, image);
-        int keyPressed = waitKey(1000 / 30);
+        int keyPressed = waitKey(1000 / 25);
         // Quiting when Q is pressed
         if (keyPressed == 113)
         {

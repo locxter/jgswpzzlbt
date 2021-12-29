@@ -109,8 +109,8 @@ int main(int argc, char *argv[])
             return 1;
         }
         // Reading the calibration
-        cameraCalibration["camera_matrix"] >> cameraMatrix;
-        cameraCalibration["distortion_coefficients"] >> distortionCoefficients;
+        cameraCalibration["camera-matrix"] >> cameraMatrix;
+        cameraCalibration["distortion-coefficients"] >> distortionCoefficients;
         // Closing the file
         cameraCalibration.release();
         // Opening the camera
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
         camera.set(CAP_PROP_FOURCC, VideoWriter::fourcc('M', 'J', 'P', 'G'));
         camera.set(CAP_PROP_FRAME_WIDTH, 1920);
         camera.set(CAP_PROP_FRAME_HEIGHT, 1080);
-        camera.set(CAP_PROP_FPS, 30);
+        camera.set(CAP_PROP_FPS, 25);
         camera.set(CAP_PROP_BUFFERSIZE, 1);
         // Opening the serial port
         serial.Open(SERIAL_PORT);
@@ -159,46 +159,52 @@ int main(int argc, char *argv[])
         // Creating a new window
         namedWindow(WINDOW_NAME);
         // Displaying a small help at startup
-        showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: Quit the program\nF: Save the current frame\nR: Indicate that the next operation can be performed"));
+        showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: Quit the program\nR: Indicate that the next operation can be performed"));
         // Setting the speed to 3/4 throttle for testing
         sendCommand(serial, MOTOR_SPEED_COMMAND, 75);
-        // Moving the head up out of the way
-        sendCommand(serial, Z_AXIS_COMMAND, Z_AXIS_COORDINATE_MAX);
         // Moving all parts to their storage coordinates
         for (int i = 0; i < PART_COUNT; i++)
         {
+            // Defining variables for pickup coordinates and position adjustments
+            const int X_PICKUP_COORDINATE = 120;
+            const int Y_PICKUP_COORDINATE = 67;
+            int X_COORDINATE_ADJUSTMENT = 0;
+            int Y_COORDINATE_ADJUSTMENT = 0;
+            int C_COORDINATE_ADJUSTMENT = 0;
             // Creating image containers
             Mat rawFrame;
+            Mat grayFrame;
             Mat preprocessedFrame;
             Mat cannyFrame;
             Mat processedFrame;
-            // Creating other image processing variables
+            // Creating image processing variables
             vector<vector<Point>> contours;
             RotatedRect minRect;
             vector<Point> minRectContour;
-            Scalar color = Scalar(255, 255, 255);
+            Scalar color = Scalar(0, 255, 0);
             Point2f minRectPoints[4];
-            // Moving the head to the pick up coordinates
-            sendCommand(serial, X_AXIS_COMMAND, 38);
-            sendCommand(serial, Y_AXIS_COMMAND, 38);
+            // Moving the head to the pickup coordinates
+            sendCommand(serial, X_AXIS_COMMAND, X_PICKUP_COORDINATE);
+            sendCommand(serial, Y_AXIS_COMMAND, Y_PICKUP_COORDINATE);
+            cout << "Moved the pickup coordinates successfully" << endl;
             // Prompting the user to lay down a jigsaw puzzle part
-            showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "Please lay down the next piece in the bottom left corner of the work area.\nReady?"));
+            showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "Please lay down the next piece in the bottom left corner of the work area."));
             // Capturing and preprocessing a picture of the part for position correction
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
-            cvtColor(rawFrame, preprocessedFrame, COLOR_BGR2GRAY);
-            medianBlur(preprocessedFrame, preprocessedFrame, 5);
-            threshold(preprocessedFrame, preprocessedFrame, 0, 255, THRESH_OTSU);
+            cout << "Captured part image successfully." << endl;
+            showImage(WINDOW_NAME, rawFrame);
+            cvtColor(rawFrame, grayFrame, COLOR_BGR2GRAY);
+            bilateralFilter(grayFrame, preprocessedFrame, 8, 64, 64);
             showImage(WINDOW_NAME, preprocessedFrame);
+            threshold(preprocessedFrame, preprocessedFrame, 0, 255, THRESH_OTSU);
             // Performing canny edge detection
             Canny(preprocessedFrame, cannyFrame, 128, 255);
-            showImage(WINDOW_NAME, cannyFrame);
             // Finding contours and selecting only the largest one together with it's minimum bounding rectangle
             findContours(cannyFrame, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
             for(int j = 0; j < contours.size(); j++)
             {
                 RotatedRect buffer = minAreaRect(contours[j]);
                 static float largestArea = 0;
-                cout << buffer.size.area() << endl;
                 if (buffer.size.area() > largestArea)
                 {
                     minRect = buffer;
@@ -206,8 +212,7 @@ int main(int argc, char *argv[])
                     largestArea = buffer.size.area();
                 }
             }
-            // Extracting the important information
-            cout << "center x: " << round(minRect.center.x) << " center y: " << round(minRect.center.y) << " angle: " << round(minRect.angle) << endl;
+            cout << "Contour detection finished successfully." << endl;
             // Creating and showing the processed frame
             processedFrame = Mat::zeros( cannyFrame.size(), CV_8UC3);
             drawContours(processedFrame, vector<vector<Point>>(1, minRectContour), 0, color);
@@ -218,18 +223,37 @@ int main(int argc, char *argv[])
             }
             circle(processedFrame, minRect.center, 4, color, -1);
             showImage(WINDOW_NAME, processedFrame);
-
+            // Extracting the important information
+            X_COORDINATE_ADJUSTMENT = round((minRect.center.x - 984) / 8);
+            Y_COORDINATE_ADJUSTMENT = round(((1080.0 - 868) - minRect.center.y) / 8);
+            C_COORDINATE_ADJUSTMENT = abs(minRect.angle);
+            cout << "X adjustment: " << X_COORDINATE_ADJUSTMENT << endl;
+            cout << "Y adjustment: " << Y_COORDINATE_ADJUSTMENT << endl;
+            cout << "C adjustment: " << C_COORDINATE_ADJUSTMENT << endl;
+            // Moving the head to the adjusted coordinates
+            sendCommand(serial, X_AXIS_COMMAND, X_PICKUP_COORDINATE + X_COORDINATE_ADJUSTMENT);
+            sendCommand(serial, Y_AXIS_COMMAND, Y_PICKUP_COORDINATE + Y_COORDINATE_ADJUSTMENT);
             // Picking the part up
             sendCommand(serial, Z_AXIS_COMMAND, 0);
             sendCommand(serial, VACUUM_PUMP_COMMAND, 100);
             sleep(1);
             sendCommand(serial, Z_AXIS_COMMAND, Z_AXIS_COORDINATE_MAX);
             sleep(1);
+            // Applying the c axis adjustment
+            sendCommand(serial, C_AXIS_COMMAND, C_COORDINATE_ADJUSTMENT);
+            sleep(1);
+
+            waitKey();
+
             // Moving to the part's storage coordinates
             sendCommand(serial, X_AXIS_COMMAND, PARTS_STORAGE_COORDINATES[i][0]);
             sendCommand(serial, Y_AXIS_COMMAND, PARTS_STORAGE_COORDINATES[i][1]);
             // Releasing the part
             sendCommand(serial, VACUUM_PUMP_COMMAND, 0);
+            sleep(1);
+            cout << "Moved the part to it's storage location successfully." << endl;
+            // Moving the c axis back to it's start position
+            sendCommand(serial, C_AXIS_COMMAND, 0);
             sleep(1);
         }
         // Closing the camera
@@ -274,7 +298,7 @@ void showImage(String windowName, Mat image)
     while (true)
     {
         imshow(windowName, image);
-        int keyPressed = waitKey(1000 / 30);
+        int keyPressed = waitKey(1000 / 25);
         // Quiting when Q is pressed
         if (keyPressed == 113)
         {

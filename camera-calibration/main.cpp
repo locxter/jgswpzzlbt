@@ -39,16 +39,16 @@ int main(int argc, char *argv[])
     // Checking for the right number of command line arguments
     if (argc == 3)
     {
-        // Defining camera ID, serial port and window as well as file name
+        // Defining camera ID, serial port, camera calibration file and window name
         const int CAMERA_ID = stoi(argv[1]);
         const string SERIAL_PORT = argv[2];
+        const string CAMERA_CALIBRATION_FILE = argv[3];
         const string WINDOW_NAME = "jgswpzzlbt camera calibration";
         // Defining image capture related variables
         const int X_AXIS_CAPTURE_RANGE = 120;
         const int Y_AXIS_CAPTURE_RANGE = 40;
         const int X_AXIS_CAPTURE_STEP_SIZE = 20;
         const int Y_AXIS_CAPTURE_STEP_SIZE = 10;
-        const string FILE_NAME = "camera-calibration";
         // Defining robot control related variables
         const int MOTOR_SPEED_MAX = 100;
         const int X_AXIS_COORDINATE_MAX = 750;
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
         camera.set(CAP_PROP_FOURCC, VideoWriter::fourcc('M', 'J', 'P', 'G'));
         camera.set(CAP_PROP_FRAME_WIDTH, 1920);
         camera.set(CAP_PROP_FRAME_HEIGHT, 1080);
-        camera.set(CAP_PROP_FPS, 30);
+        camera.set(CAP_PROP_FPS, 25);
         camera.set(CAP_PROP_BUFFERSIZE, 1);
         // Opening the serial port
         serial.Open(SERIAL_PORT);
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
         sendCommand(serial, Y_AXIS_COMMAND, Y_AXIS_COORDINATE_CENTER);
         cout << "Moved to start coordinates." << endl;
         // Prompting the user to align the calibration pattern
-        showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "Please lay down the calibration pattern in the center of the camera viewport.\nThe next screen will help you with the alignment.\nReady?"));
+        showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "Please lay down the calibration pattern in the center of the camera viewport.\nThe next screen will help you with the alignment."));
         // Showing a life camera feed with alignment helps
         while (true)
         {
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
             // Showing the frame
             imshow(WINDOW_NAME, frame);
             // Fetching user input
-            keyPressed = waitKey(1000 / 30);
+            keyPressed = waitKey(1000 / 25);
             // Quiting when Q is pressed
             if (keyPressed == 113)
             {
@@ -178,8 +178,9 @@ int main(int argc, char *argv[])
                 break;
             }
         }
+        // Telling the user that the program is capturing images
         cout << "Started the image capture." << endl;
-
+        imshow(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "Image capture in progress.\nPlease wait..."));
         // Moving to the required coordinates and taking the pictures
         vector<Mat> FRAMES;
         for (int i = Y_AXIS_COORDINATE_CENTER; i < Y_AXIS_COORDINATE_CENTER + (Y_AXIS_CAPTURE_RANGE + 1); i += Y_AXIS_CAPTURE_STEP_SIZE)
@@ -224,7 +225,7 @@ int main(int argc, char *argv[])
         serial.Close();
         // Telling the user to look at every frame
         cout << "Started the chessboard search." << endl;
-        showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "The next screen will show you all the captured images together with the found chessboard patterns.\nReady?"));
+        showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "The next screen will show you all the captured images together with the found\nchessboard patterns."));
         // Looping over all the images and trying to find the chessboard in them
         for(int i = 0; i < FRAMES.size(); i++)
         {
@@ -265,13 +266,15 @@ int main(int argc, char *argv[])
             // Showing the current frame
             showImage(WINDOW_NAME, annotatedFrame);
         }
-        // Performing the calibration
+        // Telling the user that the program is calculating the calibraton
         cout << "Started the calibration." << endl;
+        imshow(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "Camera calibration in progress.\nPlease wait..."));
+        // Performing the calibration
         calibrateCamera(objectPoints, imagePoints, Size(IMAGE_SIZE[0], IMAGE_SIZE[1]), cameraMatrix, distortionCoefficients, rotationVector, translationVector);
         cout << "Camera matrix: " << cameraMatrix << endl;
         cout << "Distortion coefficients : " << distortionCoefficients << endl;
         // Opening the calibration file
-        cameraCalibration.open("camera-calibration.xml", FileStorage::WRITE);
+        cameraCalibration.open(CAMERA_CALIBRATION_FILE, FileStorage::WRITE);
         // Writing the calibration to the file
         cameraCalibration << "camera-matrix" << cameraMatrix;
         cameraCalibration << "distortion-coefficients" << distortionCoefficients;
@@ -315,7 +318,7 @@ void showImage(String windowName, Mat image)
     while (true)
     {
         imshow(windowName, image);
-        int keyPressed = waitKey(1000 / 30);
+        int keyPressed = waitKey(1000 / 25);
         // Quiting when Q is pressed
         if (keyPressed == 113)
         {
@@ -370,6 +373,7 @@ Mat capturePicture(VideoCapture &camera)
         cout << "Blank frame grabbed." << endl;
         exit(1);
     }
+    // Blurring the frame
     bilateralFilter(rawFrame, blurredFrame, 8, 64, 64);
     return blurredFrame;
 }
