@@ -1,8 +1,6 @@
 // Including needed headers
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <vector>
 #include <unistd.h>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -28,17 +26,15 @@ Mat drawText(Mat image, string text);
 void showImage(String windowName, Mat image);
 
 // Declaring a command sending function
-void sendCommand(SerialStream &serial, char command, int commandParameter);
+void sendCommand(SerialStream& serial, char command, int commandParameter);
 
 // Declaing a picture capturing function
-Mat capturePicture(VideoCapture &camera);
+Mat capturePicture(VideoCapture& camera);
 
 // Main function
-int main(int argc, char *argv[])
-{
+int main(int argc, char** argv) {
     // Checking for the right number of command line arguments
-    if (argc == 3)
-    {
+    if (argc == 3) {
         // Defining camera ID, serial port, camera calibration file and window name
         const int CAMERA_ID = stoi(argv[1]);
         const string SERIAL_PORT = argv[2];
@@ -51,11 +47,11 @@ int main(int argc, char *argv[])
         const int Y_AXIS_CAPTURE_STEP_SIZE = 10;
         // Defining robot control related variables
         const int MOTOR_SPEED_MAX = 100;
-        const int X_AXIS_COORDINATE_MAX = 750;
-        const int X_AXIS_COORDINATE_CENTER = round((float) X_AXIS_COORDINATE_MAX / 2);
-        const int Y_AXIS_COORDINATE_MAX = 750;
-        const int Y_AXIS_COORDINATE_CENTER = round((float) Y_AXIS_COORDINATE_MAX / 2);
-        const int Z_AXIS_COORDINATE_MAX = 75;
+        const int X_AXIS_COORDINATE_MAX = 825;
+        const int X_AXIS_COORDINATE_CENTER = round((float)X_AXIS_COORDINATE_MAX / 2);
+        const int Y_AXIS_COORDINATE_MAX = 725;
+        const int Y_AXIS_COORDINATE_CENTER = round((float)Y_AXIS_COORDINATE_MAX / 2);
+        const int Z_AXIS_COORDINATE_MAX = 40;
         const int C_AXIS_COORDINATE_MAX = 359;
         const int VACUUM_PUMP_DUTY_CYCLE_MAX = 100;
         const int LED_DUTY_CYCLE_MAX = 100;
@@ -68,16 +64,13 @@ int main(int argc, char *argv[])
         const char LED_COMMAND = 'L';
         // Defining calibration related variables
         int IMAGE_SIZE[2];
-        const int CHECKBOARD_SIZE[] =
-        {
+        const int CHECKBOARD_SIZE[] = {
             6,
             9
         };
         vector<Point3f> OBJECT_POINTS_TEMPLATE;
-        for(int i = 0; i < CHECKBOARD_SIZE[1]; i++)
-        {
-            for(int j = 0; j < CHECKBOARD_SIZE[0]; j++)
-            {
+        for (int i = 0; i < CHECKBOARD_SIZE[1]; i++) {
+            for (int j = 0; j < CHECKBOARD_SIZE[0]; j++) {
                 OBJECT_POINTS_TEMPLATE.push_back(Point3f(j, i, 0));
             }
         }
@@ -98,12 +91,9 @@ int main(int argc, char *argv[])
         // Opening the camera
         camera.open(CAMERA_ID, CAP_V4L);
         // Checking for success
-        if (camera.isOpened())
-        {
+        if (camera.isOpened()) {
             cout << "Opened camera successfully." << endl;
-        }
-        else
-        {
+        } else {
             cout << "Failed to open camera." << endl;
             return 1;
         }
@@ -116,12 +106,9 @@ int main(int argc, char *argv[])
         // Opening the serial port
         serial.Open(SERIAL_PORT);
         // Checking for success
-        if (serial.IsOpen())
-        {
+        if (serial.IsOpen()) {
             cout << "Opened serial port successfully." << endl;
-        }
-        else
-        {
+        } else {
             cout << "Unable to open serial port." << endl;
         }
         // Changing the baud rate
@@ -129,12 +116,9 @@ int main(int argc, char *argv[])
         // Checking for successful homing
         getline(serial, serialInput);
         serialResponse = serialInput.at(0);
-        if (serialResponse == AVAILABILITY_MESSAGE)
-        {
+        if (serialResponse == AVAILABILITY_MESSAGE) {
             cout << "Robot homed successfully." << endl;
-        }
-        else
-        {
+        } else {
             cout << "Homing of the robot failed." << endl;
             return 1;
         }
@@ -151,8 +135,7 @@ int main(int argc, char *argv[])
         // Prompting the user to align the calibration pattern
         showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "Please lay down the calibration pattern in the center of the camera viewport.\nThe next screen will help you with the alignment."));
         // Showing a life camera feed with alignment helps
-        while (true)
-        {
+        while (true) {
             // Creating image container
             Mat frame;
             // Creating variable for storing the key pressed
@@ -168,13 +151,11 @@ int main(int argc, char *argv[])
             // Fetching user input
             keyPressed = waitKey(1000 / 25);
             // Quiting when Q is pressed
-            if (keyPressed == 113)
-            {
+            if (keyPressed == 113) {
                 return 0;
             }
             // Moving forward when R is pressed
-            else if (keyPressed == 114)
-            {
+            else if (keyPressed == 114) {
                 break;
             }
         }
@@ -183,36 +164,30 @@ int main(int argc, char *argv[])
         imshow(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "Image capture in progress.\nPlease wait..."));
         // Moving to the required coordinates and taking the pictures
         vector<Mat> FRAMES;
-        for (int i = Y_AXIS_COORDINATE_CENTER; i < Y_AXIS_COORDINATE_CENTER + (Y_AXIS_CAPTURE_RANGE + 1); i += Y_AXIS_CAPTURE_STEP_SIZE)
-        {
+        for (int i = Y_AXIS_COORDINATE_CENTER; i < Y_AXIS_COORDINATE_CENTER + (Y_AXIS_CAPTURE_RANGE + 1); i += Y_AXIS_CAPTURE_STEP_SIZE) {
             sendCommand(serial, Y_AXIS_COMMAND, i);
-            for (int j = X_AXIS_COORDINATE_CENTER; j < X_AXIS_COORDINATE_CENTER + (X_AXIS_CAPTURE_RANGE + 1); j += X_AXIS_CAPTURE_STEP_SIZE)
-            {
+            for (int j = X_AXIS_COORDINATE_CENTER; j < X_AXIS_COORDINATE_CENTER + (X_AXIS_CAPTURE_RANGE + 1); j += X_AXIS_CAPTURE_STEP_SIZE) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 FRAMES.push_back(capturePicture(camera));
                 cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.' << endl;
             }
-            for (int j = X_AXIS_COORDINATE_CENTER - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_COORDINATE_CENTER - (X_AXIS_CAPTURE_RANGE + 1); j -= X_AXIS_CAPTURE_STEP_SIZE)
-            {
+            for (int j = X_AXIS_COORDINATE_CENTER - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_COORDINATE_CENTER - (X_AXIS_CAPTURE_RANGE + 1); j -= X_AXIS_CAPTURE_STEP_SIZE) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 FRAMES.push_back(capturePicture(camera));
                 cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.' << endl;
             }
         }
-        for (int i = Y_AXIS_COORDINATE_CENTER - Y_AXIS_CAPTURE_STEP_SIZE; i > Y_AXIS_COORDINATE_CENTER - (Y_AXIS_CAPTURE_RANGE + 1); i -= Y_AXIS_CAPTURE_STEP_SIZE)
-        {
+        for (int i = Y_AXIS_COORDINATE_CENTER - Y_AXIS_CAPTURE_STEP_SIZE; i > Y_AXIS_COORDINATE_CENTER - (Y_AXIS_CAPTURE_RANGE + 1); i -= Y_AXIS_CAPTURE_STEP_SIZE) {
             sendCommand(serial, Y_AXIS_COMMAND, i);
-            for (int j = X_AXIS_COORDINATE_CENTER; j < X_AXIS_COORDINATE_CENTER + (X_AXIS_CAPTURE_RANGE + 1); j += X_AXIS_CAPTURE_STEP_SIZE)
-            {
+            for (int j = X_AXIS_COORDINATE_CENTER; j < X_AXIS_COORDINATE_CENTER + (X_AXIS_CAPTURE_RANGE + 1); j += X_AXIS_CAPTURE_STEP_SIZE) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 FRAMES.push_back(capturePicture(camera));
                 cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.' << endl;
             }
-            for (int j = X_AXIS_COORDINATE_CENTER - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_COORDINATE_CENTER - (X_AXIS_CAPTURE_RANGE + 1); j -= X_AXIS_CAPTURE_STEP_SIZE)
-            {
+            for (int j = X_AXIS_COORDINATE_CENTER - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_COORDINATE_CENTER - (X_AXIS_CAPTURE_RANGE + 1); j -= X_AXIS_CAPTURE_STEP_SIZE) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 FRAMES.push_back(capturePicture(camera));
@@ -227,8 +202,7 @@ int main(int argc, char *argv[])
         cout << "Started the chessboard search." << endl;
         showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "The next screen will show you all the captured images together with the found\nchessboard patterns."));
         // Looping over all the images and trying to find the chessboard in them
-        for(int i = 0; i < FRAMES.size(); i++)
-        {
+        for (int i = 0; i < FRAMES.size(); i++) {
             // Creating image containers
             Mat rawFrame;
             Mat grayFrame;
@@ -239,8 +213,7 @@ int main(int argc, char *argv[])
             // Loading a picture
             rawFrame = FRAMES[i];
             // Reading it's width and height on the first iteration
-            if (i == 0)
-            {
+            if (i == 0) {
                 IMAGE_SIZE[0] = rawFrame.cols;
                 IMAGE_SIZE[1] = rawFrame.rows;
             }
@@ -250,17 +223,14 @@ int main(int argc, char *argv[])
             // Trying to find chessboard corners
             chessboardFound = findChessboardCornersSB(grayFrame, Size(CHECKBOARD_SIZE[0], CHECKBOARD_SIZE[1]), cornerPoints);
             // Checking for success
-            if(chessboardFound)
-            {
+            if (chessboardFound) {
                 cout << "Algorithm detected the chessboard on image " << i << '.' << endl;
                 // Annotating the current frame
                 drawChessboardCorners(annotatedFrame, Size(CHECKBOARD_SIZE[0], CHECKBOARD_SIZE[1]), cornerPoints, chessboardFound);
                 // Adding the extracted data to the lists
                 objectPoints.push_back(OBJECT_POINTS_TEMPLATE);
                 imagePoints.push_back(cornerPoints);
-            }
-            else
-            {
+            } else {
                 cout << "Algorithm failed to detect the chessboard on image " << i << '.' << endl;
             }
             // Showing the current frame
@@ -281,9 +251,7 @@ int main(int argc, char *argv[])
         // Closing the calibration file
         cameraCalibration.release();
         return 0;
-    }
-    else
-    {
+    } else {
         // Throwing an error on invalid number of command line arguments
         cout << "Wrong number of arguments. Two arguments containing the camera ID and serial port expected." << endl;
         cout << "Example: " << argv[0] << " 0 /dev/ttyUSB0" << endl;
@@ -292,8 +260,7 @@ int main(int argc, char *argv[])
 }
 
 // Defining text drawing function
-Mat drawText(Mat image, string text)
-{
+Mat drawText(Mat image, string text) {
     // Creating needed variables
     string lineBuffer;
     vector<string> lines;
@@ -301,43 +268,35 @@ Mat drawText(Mat image, string text)
     // Copying the image to buffer for non distructive drawing
     Mat imageBuffer = image.clone();
     // Splitting the text into lines and adding them one by one to the image
-    while(getline(textStream, lineBuffer, '\n'))
-    {
+    while (getline(textStream, lineBuffer, '\n')) {
         lines.push_back(lineBuffer);
     }
-    for (int i = 0; i < lines.size(); i++)
-    {
+    for (int i = 0; i < lines.size(); i++) {
         putText(imageBuffer, lines[i], Point(0, (50 * i) + 40), FONT_HERSHEY_SIMPLEX, 1.5, Scalar(0, 255, 0), 2);
     }
     return imageBuffer;
 }
 
 // Defining an image showing function
-void showImage(String windowName, Mat image)
-{
-    while (true)
-    {
+void showImage(String windowName, Mat image) {
+    while (true) {
         imshow(windowName, image);
         int keyPressed = waitKey(1000 / 25);
         // Quiting when Q is pressed
-        if (keyPressed == 113)
-        {
+        if (keyPressed == 113) {
             exit(0);
         }
         // Moving forward when R is pressed
-        else if (keyPressed == 114)
-        {
+        else if (keyPressed == 114) {
             break;
         }
     }
 }
 
 // Defining command sending function
-void sendCommand(SerialStream &serial, char command, int commandParameter)
-{
+void sendCommand(SerialStream& serial, char command, int commandParameter) {
     // Trying 3 times to send the command if necessary
-    for (int numberOfTries = 0; numberOfTries < 3; numberOfTries++)
-    {
+    for (int numberOfTries = 0; numberOfTries < 3; numberOfTries++) {
         // Creating variables for storing serial input and extracted response
         string serialInput;
         char serialResponse;
@@ -346,12 +305,9 @@ void sendCommand(SerialStream &serial, char command, int commandParameter)
         // Checking for successful execution
         getline(serial, serialInput);
         serialResponse = serialInput.at(0);
-        if (serialResponse == AVAILABILITY_MESSAGE)
-        {
+        if (serialResponse == AVAILABILITY_MESSAGE) {
             break;
-        }
-        else if (serialResponse == ERROR_MESSAGE)
-        {
+        } else if (serialResponse == ERROR_MESSAGE) {
             cout << "Robot failed to execute the command " << command << commandParameter << '.' << endl;
             exit(1);
         }
@@ -359,8 +315,7 @@ void sendCommand(SerialStream &serial, char command, int commandParameter)
 }
 
 // Defining picture capturing function
-Mat capturePicture(VideoCapture &camera)
-{
+Mat capturePicture(VideoCapture& camera) {
     // Creating image containers
     Mat rawFrame;
     Mat blurredFrame;
@@ -368,8 +323,7 @@ Mat capturePicture(VideoCapture &camera)
     camera.grab();
     camera.read(rawFrame);
     // Checking for success
-    if (rawFrame.empty())
-    {
+    if (rawFrame.empty()) {
         cout << "Blank frame grabbed." << endl;
         exit(1);
     }
