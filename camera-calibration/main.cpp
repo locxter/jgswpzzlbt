@@ -126,8 +126,6 @@ int main(int argc, char** argv) {
         namedWindow(WINDOW_NAME);
         // Displaying a small help at startup
         showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1920, 1080), CV_8UC3), "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: Quit the program\nR: Indicate that the next operation can be performed"));
-        // Setting the speed to 3/4 throttle for testing
-        sendCommand(serial, MOTOR_SPEED_COMMAND, 75);
         // Moving to the start coordinates
         sendCommand(serial, X_AXIS_COMMAND, X_AXIS_COORDINATE_CENTER);
         sendCommand(serial, Y_AXIS_COMMAND, Y_AXIS_COORDINATE_CENTER);

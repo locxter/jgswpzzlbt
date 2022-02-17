@@ -116,14 +116,14 @@ int main(int argc, char** argv) {
             static int motorSpeed = 100;
             static int xAxisCoordinate = 0;
             static int yAxisCoordinate = 0;
-            static int zAxisCoordinate = 40;
+            static int zAxisCoordinate = 90;
             static int cAxisCoordinate = 0;
             static int vacuumPumpDutyCyle = 0;
             static int ledDutyCyle = 0;
             const int MOTOR_SPEED_MAX = 100;
             const int X_AXIS_COORDINATE_MAX = 825;
             const int Y_AXIS_COORDINATE_MAX = 725;
-            const int Z_AXIS_COORDINATE_MAX = 40;
+            const int Z_AXIS_COORDINATE_MAX = 90;
             const int C_AXIS_COORDINATE_MAX = 359;
             const int VACUUM_PUMP_DUTY_CYCLE_MAX = 100;
             const int LED_DUTY_CYCLE_MAX = 100;
@@ -334,7 +334,7 @@ Mat drawText(Mat image, string text) {
         lines.push_back(lineBuffer);
     }
     for (int i = 0; i < lines.size(); i++) {
-        putText(imageBuffer, lines[i], Point(0, (50 * i) + 40), FONT_HERSHEY_SIMPLEX, 1.5, Scalar(0, 255, 0), 2);
+        putText(imageBuffer, lines[i], Point(0, (50 * i) + 40), FONT_HERSHEY_SIMPLEX, 1.5, Scalar(255, 255, 255), 2);
     }
     return imageBuffer;
 }

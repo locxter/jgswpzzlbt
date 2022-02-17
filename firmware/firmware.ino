@@ -31,7 +31,7 @@ const int X_AXIS_MIN_STEP_INTERVAL = 150;
 const int Y_AXIS_MIN_STEP_INTERVAL = 600;
 const int C_AXIS_MIN_STEP_INTERVAL = 200;
 
-// Defining maximum x, y and z axis coordinate maximum
+// Defining maximum x, y and z axis coordinates
 const int X_AXIS_COORDINATE_MAX = 825;
 const int Y_AXIS_COORDINATE_MAX = 725;
 const int Z_AXIS_COORDINATE_MAX = 90;
@@ -172,7 +172,7 @@ void loop() {
 void homeAxis() {
     // Calculating the step intervals
     const long xAxisStepInterval = 2 * X_AXIS_MIN_STEP_INTERVAL - 10;
-    const long yAxisStepInterval = 4 * Y_AXIS_MIN_STEP_INTERVAL - 10;
+    const long yAxisStepInterval = 2 * Y_AXIS_MIN_STEP_INTERVAL - 10;
     // Creating variables for storing time before homing the x or y axis and success of that operation
     unsigned long start;
     bool success = true;
@@ -363,52 +363,32 @@ void moveZAxis(int newZAxisCoordinate) {
 }
 
 // Defining a c axis motor controlling function
-void moveCAxis(int newCAxisCoordinate) {
-    // Defining the c axis coordinate maximum
-    const int C_AXIS_COORDINATE_MAX = 359;
-    // Defining variable to store current coordinate
-    static int cAxisCoordinate = 0;
-    // Limiting the parameter range
-    if (newCAxisCoordinate > C_AXIS_COORDINATE_MAX) {
-        newCAxisCoordinate = C_AXIS_COORDINATE_MAX;
-    } else if (newCAxisCoordinate < 0) {
-        newCAxisCoordinate = 0;
+void moveCAxis(int angle) {
+    unsigned long long stepsToGo = round(((float)abs(angle) / 90) * 3200);
+    // Calculating step interval related variables
+    const long maxStepInterval = (long)100 * C_AXIS_MIN_STEP_INTERVAL;
+    long minStepInterval = round((100.0 / motorSpeed) * C_AXIS_MIN_STEP_INTERVAL);
+    float stepIntervalChange = ((float)maxStepInterval - minStepInterval) / 200;
+    // Choosing a movement direction
+    if (angle < 0) {
+        digitalWrite(C_AXIS_DIR_PIN, !digitalRead(C_AXIS_DIR_PIN));
     }
-    // Controlling the motor
-    if (newCAxisCoordinate != cAxisCoordinate) {
-        int angleToGo;
-        unsigned long long stepsToGo;
-        // Calculating step interval related variables
-        const long maxStepInterval = (long)100 * C_AXIS_MIN_STEP_INTERVAL;
-        long minStepInterval = round((100.0 / motorSpeed) * C_AXIS_MIN_STEP_INTERVAL);
-        float stepIntervalChange = ((float)maxStepInterval - minStepInterval) / 200;
-        // Choosing a movement direction
-        if (newCAxisCoordinate > cAxisCoordinate) {
-            angleToGo = newCAxisCoordinate - cAxisCoordinate;
-        } else if (newCAxisCoordinate < cAxisCoordinate) {
-            angleToGo = cAxisCoordinate - newCAxisCoordinate;
-            digitalWrite(C_AXIS_DIR_PIN, !digitalRead(C_AXIS_DIR_PIN));
+    // Sending the step signals
+    for (unsigned long long i = 0; i < stepsToGo; i++) {
+        long stepInterval = minStepInterval - 10;
+        if (i < 201) {
+            stepInterval = round(maxStepInterval - (i * stepIntervalChange)) - 10;
+        } else if (i > (stepsToGo - 201)) {
+            stepInterval = round(minStepInterval + ((i - (stepsToGo - 200)) * stepIntervalChange)) - 10;
         }
-        stepsToGo = round(((float)angleToGo / 90) * 3200);
-        // Sending the step signals
-        for (unsigned long long i = 0; i < stepsToGo; i++) {
-            long stepInterval = minStepInterval - 10;
-            if (i < 201) {
-                stepInterval = round(maxStepInterval - (i * stepIntervalChange)) - 10;
-            } else if (i > (stepsToGo - 201)) {
-                stepInterval = round(minStepInterval + ((i - (stepsToGo - 200)) * stepIntervalChange)) - 10;
-            }
-            digitalWrite(C_AXIS_STP_PIN, HIGH);
-            delayMicroseconds(10);
-            digitalWrite(C_AXIS_STP_PIN, LOW);
-            delayMicroseconds(stepInterval);
-        }
-        // Resetting the movement direction
-        if (newCAxisCoordinate < cAxisCoordinate) {
-            digitalWrite(C_AXIS_DIR_PIN, !digitalRead(C_AXIS_DIR_PIN));
-        }
-        // Updating the known c axis coordinate
-        cAxisCoordinate = newCAxisCoordinate;
+        digitalWrite(C_AXIS_STP_PIN, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(C_AXIS_STP_PIN, LOW);
+        delayMicroseconds(stepInterval);
+    }
+    // Resetting the movement direction
+    if (angle < 0) {
+        digitalWrite(C_AXIS_DIR_PIN, !digitalRead(C_AXIS_DIR_PIN));
     }
     // Printing an availability message
     Serial.print((String)AVAILABILITY_MESSAGE + '\n');
