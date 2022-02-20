@@ -23,12 +23,12 @@ I generally try to minimize dependencies, but I'm a one man crew and can therefo
 
 ## How it works
 
-The process of solving a jigsaw puzzle automatically involves the following six major steps:
+The process of solving a jigsaw puzzle automatically involves the following major steps:
 
-1. Locating all the randomly positioned pieces.
-2. Moving each piece to a known position inside a predefined matrix.
-3. Creating detailed pictures of all the pieces.
-4. Locating each piece in the provided overview picture of the puzzle.
+1. Locating the somewhat randomly positioned parts.
+2. Creating detailed pictures of all the parts.
+3. Moving the parts to known positions inside a predefined matrix.
+4. Locating each part in the provided overview picture of the puzzle.
 5. Translating the digital positions to a real world ones.
 6. Moving all the pieces to their final position.
 
@@ -116,3 +116,7 @@ All parts were printed on my Sovol SV01 in standard PLA with a custom super fast
 - 75mm/s print speed (37.5mm/s for the initial layer, 75mm/s for infill, 37.5mm/s for walls, 120mm for travel)
 - 100% cooling from the second layer on
 - Zig zag support and 5mm raft, where necessary
+
+## How to use it
+
+After installing all the necessary tools and libraries mentioned above as well as building the hardware, you can flash the firmware to the MKS Base motherboard via the Arduino IDE and test the whole system with the manual control program. If everything works correctly the next step is to perform the automatic camera calibration with it's according porgram and finally run the dang awesome thing with the main software to solve some puzzles!
