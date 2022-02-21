@@ -269,10 +269,6 @@ void moveYAxis(int newYAxisCoordinate) {
     if (newYAxisCoordinate != yAxisCoordinate) {
         int mmToGo;
         unsigned long long stepsToGo;
-        // Calculating step interval related variables
-        static const long MAX_STEP_INTERVAL = (long)100 * Y_AXIS_STEP_INTERVAL;
-        static const long MIN_STEP_INTERVAL = Y_AXIS_STEP_INTERVAL;
-        static const float STEP_INTERVAL_CHANGE = ((float)MAX_STEP_INTERVAL - MIN_STEP_INTERVAL) / 200;
         // Choosing a movement direction
         if (newYAxisCoordinate > yAxisCoordinate) {
             mmToGo = newYAxisCoordinate - yAxisCoordinate;
@@ -284,18 +280,12 @@ void moveYAxis(int newYAxisCoordinate) {
         stepsToGo = round(((float)mmToGo / Y_AXIS_MOVEMENT_PER_ROTATION) * 3200);
         // Sending the step signals
         for (unsigned long long i = 0; i < stepsToGo; i++) {
-            long stepInterval = MIN_STEP_INTERVAL - 10;
-            if (i < 201) {
-                stepInterval = round(MAX_STEP_INTERVAL - (i * STEP_INTERVAL_CHANGE)) - 10;
-            } else if (i > (stepsToGo - 201)) {
-                stepInterval = round(MIN_STEP_INTERVAL + ((i - (stepsToGo - 200)) * STEP_INTERVAL_CHANGE)) - 10;
-            }
             digitalWrite(Y_AXIS_0_STP_PIN, HIGH);
             digitalWrite(Y_AXIS_1_STP_PIN, HIGH);
             delayMicroseconds(10);
             digitalWrite(Y_AXIS_0_STP_PIN, LOW);
             digitalWrite(Y_AXIS_1_STP_PIN, LOW);
-            delayMicroseconds(stepInterval);
+            delayMicroseconds(Y_AXIS_STEP_INTERVAL);
         }
         // Resetting the movement direction
         if (newYAxisCoordinate < yAxisCoordinate) {

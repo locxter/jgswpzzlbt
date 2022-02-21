@@ -25,7 +25,7 @@ const char VACUUM_SYSTEM_COMMAND = 'V';
 // Defining robot axis minimums and maximums
 const int X_AXIS_MIN_COORDINATE = 50;
 const int X_AXIS_MAX_COORDINATE = 825;
-const int Y_AXIS_MAX_COORDINATE = 725;
+const int Y_AXIS_MAX_COORDINATE = /*725*/350;
 const int Z_AXIS_MAX_COORDINATE = 90;
 
 // Declaring a text drawing function
@@ -86,7 +86,7 @@ int main(int argc, char** argv) {
         vector<vector<int>> storageCoordinates;
         // Defining puzzle solving related stuff
         Mat referenceImage;
-        vector<vector<Mat>> solvingImages;
+        vector<Mat> solvingImages;
         vector<vector<int>> solvingResults;
         // Defining puzzle assembly related variables
         const int ASSEMBLY_COLUMN_WIDTH = round(((float)WIDTH / COLUMN_COUNT) + 20);
@@ -174,10 +174,9 @@ int main(int argc, char** argv) {
             RotatedRect minRect;
             Rect boundRect;
             Mat croppedFrame;
-            vector<Mat> partSolvingImages;
             // Moving the head to the pickup coordinates
             moveTo(serial, X_PICKUP_COORDINATE, Y_PICKUP_COORDINATE);
-            cout << "Moved the pickup coordinates successfully." << endl;
+            cout << "Moved the pick up coordinates successfully." << endl;
             // Prompting the user to lay down a jigsaw puzzle part
             showImage(WINDOW_NAME, drawText(Mat::zeros(Size(1280, 720), CV_8UC3), "Please lay down the next piece in the bottom left corner of the work area..."));
             // Capturing and preprocessing a picture of the part for position correction
@@ -208,6 +207,7 @@ int main(int argc, char** argv) {
             xAdjustment = round(((minRect.center.x - 960) / 8) + X_TOOL_OFFSET);
             yAdjustment = round(((540 - minRect.center.y) / 8) - Y_TOOL_OFFSET);
             cAdjustment = round(90 - minRect.angle);
+            cout << "Finished position and rotation adjustment calculation successfully:" << endl;
             cout << "X adjustment: " << xAdjustment << endl;
             cout << "Y adjustment: " << yAdjustment << endl;
             cout << "C adjustment: " << cAdjustment << endl;
@@ -244,20 +244,8 @@ int main(int argc, char** argv) {
             cout << "Contour detection finished successfully." << endl;
             // Cropping the frame and storing it for future processing
             croppedFrame = rawFrame(Range(boundRect.tl().y, boundRect.tl().y + boundRect.height), Range(boundRect.tl().x, boundRect.tl().x + boundRect.width));
-            partSolvingImages.push_back(croppedFrame);
-            // Rotating the cropped frame to accomodate all possible orientations and storing the results as well
-            for (int i = 1; i < 4; i++) {
-                const Point2f CENTER = Point2f(croppedFrame.size().width / 2.0, croppedFrame.size().height / 2.0);
-                Mat rotationMatix = getRotationMatrix2D(CENTER, 360 - (90 * i), 1.0);
-                const Rect2f BOUND_BOX = RotatedRect(cv::Point2f(), croppedFrame.size(), 360 - (90 * i)).boundingRect2f();
-                Mat rotatedCroppedFrame;
-                rotationMatix.at<double>(0, 2) += (BOUND_BOX.width / 2.0) - (croppedFrame.size().width / 2.0);
-                rotationMatix.at<double>(1, 2) += (BOUND_BOX.height / 2.0) - (croppedFrame.size().height / 2.0);
-                warpAffine(croppedFrame, rotatedCroppedFrame, rotationMatix, BOUND_BOX.size());
-                partSolvingImages.push_back(rotatedCroppedFrame);
-            }
-            solvingImages.push_back(partSolvingImages);
-            cout << "Created part matching images successfully." << endl;
+            solvingImages.push_back(croppedFrame);
+            cout << "Created part image for puzzle solving successfully." << endl;
             // Moving the part to it's storage coordinates
             sendCommand(serial, Y_AXIS_COMMAND, Y_PICKUP_COORDINATE + yAdjustment);
             pickPartFromPuzzleMat(serial);
@@ -273,46 +261,81 @@ int main(int argc, char** argv) {
         referenceImage = imread(REFERENCE_IMAGE_FILE, IMREAD_COLOR);
         for (int i = 0; i < PART_COUNT; i++) {
             // Defining processing related variables
+            Mat partImage = solvingImages[i];
             vector<int> partSolvingResults;
             int xPosition = 0;
             int yPosition = 0;
             int orientation = 0;
-            double matchVal = 0;
-            Point matchLoc;
-            // Looping through all four orientations
-            for (int j = 0; j < 4; j++) {
-                Mat partImage = solvingImages[i][j];
-                // Looping through different scales
-                for (float k = 1; k > 0; k -= 0.1) {
-                    Mat result;
-                    Mat resizedReferenceImage;
-                    double maxVal;
-                    Point maxLoc;
-                    // Resizing the reference image
-                    resize(referenceImage, resizedReferenceImage, Size(), k, k);
-                    if (resizedReferenceImage.cols < partImage.cols || resizedReferenceImage.rows < partImage.rows) {
-                        break;
-                    }
-                    // Doing the actual template matching
-                    result.create((resizedReferenceImage.rows - partImage.rows) + 1, (resizedReferenceImage.cols - partImage.cols) + 1, CV_32FC1);
-                    matchTemplate(resizedReferenceImage, partImage, result, TM_CCOEFF_NORMED);
-                    // Localizing the best match and updating the match values in that case
-                    minMaxLoc(result, new double, &maxVal, new Point, &maxLoc);
-                    if (maxVal > matchVal) {
-                        matchVal = maxVal;
-                        matchLoc = maxLoc;
-                        xPosition = floor((matchLoc.x + (partImage.rows / 2)) / (resizedReferenceImage.cols / COLUMN_COUNT));
-                        yPosition = ROW_COUNT - 1 - floor((matchLoc.y + (partImage.rows / 2)) / (resizedReferenceImage.rows / ROW_COUNT));
-                        orientation = j;
+            const int MAX_FEATURES = 1024;
+            const float GOOD_MATCH_PERCENT = 0.1f;
+            Ptr<Feature2D> partOrb;
+            Ptr<Feature2D> referenceOrb;
+            vector<KeyPoint> partKeypoints;
+            vector<KeyPoint> referenceKeypoints;
+            Mat partDescriptors;
+            Mat referenceDescriptors;
+            Ptr<DescriptorMatcher> matcher;
+            vector<DMatch> matches;
+            vector<Point2f> partPoints;
+            vector<Point2f> referencePoints;
+            vector<Point2f> partCorners(4);
+            vector<Point2f> referenceCorners(4);
+            Rect boundRect;
+            // Detecting ORB features and computing descriptors
+            partOrb = ORB::create(MAX_FEATURES);
+            referenceOrb = ORB::create(MAX_FEATURES * 16);
+            partOrb->detectAndCompute(partImage, Mat(), partKeypoints, partDescriptors);
+            referenceOrb->detectAndCompute(referenceImage, Mat(), referenceKeypoints, referenceDescriptors);
+            // Matching features
+            matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE_HAMMING);
+            matcher->match(partDescriptors, referenceDescriptors, matches, Mat());
+            // Removing not so good matches
+            sort(matches.begin(), matches.end());
+            matches.erase(matches.begin() + (matches.size() * GOOD_MATCH_PERCENT), matches.end());
+            // Extracting location of good matches
+            for (size_t i = 0; i < matches.size(); i++) {
+                partPoints.push_back(partKeypoints[matches[i].queryIdx].pt);
+                referencePoints.push_back(referenceKeypoints[matches[i].trainIdx].pt);
+            }
+            // Finding homography
+            Mat homography = findHomography(partPoints, referencePoints, RANSAC);
+            // Mapping part image onto reference image
+            partCorners[0] = Point2f(0, 0);
+            partCorners[1] = Point2f((float)partImage.cols, 0);
+            partCorners[2] = Point2f((float)partImage.cols, (float)partImage.rows);
+            partCorners[3] = Point2f(0, (float)partImage.rows);
+            perspectiveTransform(partCorners, referenceCorners, homography);
+            // Extracting important data
+            for (int i = 0; i < 4; i++) {
+                static float xAverage = (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x + referenceCorners[3].x) / 4;
+                static float yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4;
+                if (i == 0) {
+                    xAverage = (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x + referenceCorners[3].x) / 4;
+                    yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4;
+                }
+                if (referenceCorners[i].x < xAverage && referenceCorners[i].y < yAverage) {
+                    // Swapping 1 and 3 as the robot in reality always messes them up for some reason
+                    if (i == 1) {
+                        orientation = 3;
+                    } else if (i == 3) {
+                        orientation = 1;
+                    } else {
+                        orientation = i;
                     }
                 }
             }
+            boundRect = boundingRect(referenceCorners);
+            xPosition = floor((boundRect.tl().x + (boundRect.width / 2)) / (referenceImage.cols / COLUMN_COUNT));
+            yPosition = ROW_COUNT - 1 - floor((boundRect.tl().y + (boundRect.width / 2)) / (referenceImage.rows / ROW_COUNT));
             // Storing the important data
             partSolvingResults.push_back(xPosition);
             partSolvingResults.push_back(yPosition);
             partSolvingResults.push_back(orientation);
             solvingResults.push_back(partSolvingResults);
-            cout << "Calculated the position of part " << (i + 1) << " successfully." << endl;
+            cout << "Calculated the final position of part " << (i + 1) << " successfully:" << endl;
+            cout << "X position: " << xPosition << endl;
+            cout << "Y position: " << yPosition << endl;
+            cout << "Orientation: " << orientation * 90 << endl;
         }
         // Moving all the parts to their calculated positions
         cout << "Moving the parts to their final positions." << endl;

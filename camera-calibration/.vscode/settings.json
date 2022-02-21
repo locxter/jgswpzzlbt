@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "*.svelte": "html",
-        "ostream": "cpp",
-        "iostream": "cpp"
-    }
-}
