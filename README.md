@@ -55,7 +55,6 @@ Below is a full bill of materials with German sources for all non printable part
 | 1 | Vacuum valve | [Amazon](https://www.amazon.de/Magnetventil-%C3%96ffner-Fl%C3%BCssigkeit-Pneumatik-Elektroventil/dp/B0858Y2KSG) |
 | 1 | Vacuum tubing | [Amazon](https://www.amazon.de/JBL-Luftschlauch-Länge-Durchmesser-Aquaschlauch/dp/B000H6SRMU) |
 | 1 | Vacuum tubing connectors | [Amazon](https://www.amazon.de/Uniclife-Aquariumschl%C3%A4uche-Luftschlauchverbinder-Kunststoff-St%C3%BCck/dp/B07Q9Q9C8Y) |
-| 1 | LED strip| [Amazon](https://www.amazon.de/Streifen-kaltwei%C3%9F-Streifenlicht-Lichtleiste-klebeband/dp/B00HSF65MC) |
 | 1 | GT2 belt | [Amazon](https://www.amazon.de/OZUAR-Zahnriemen-3D-Drucker-Breite-Abstand/dp/B07D4GCYXW) |
 | 1 | Cable ties and cable tie mounts | [Amazon](https://www.amazon.de/Hipeqia-Nylon-Kabelbinder-Kabelbinderhalter-Selbstklebend-Hitzebest%C3%A4ndig/dp/B08CL2JFCH) |
 | 1 | Double sided tape | [Amazon](https://www.amazon.de/doppelseitiges-Klebeband-klebend-verschiedene-Breiten/dp/B00G6SCYCM) |
