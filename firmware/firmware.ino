@@ -24,7 +24,7 @@ Servo servo;
 
 // Defining the minimum x, y and c axis step intervals
 const int X_AXIS_STEP_INTERVAL = 150;
-const int Y_AXIS_STEP_INTERVAL = 600;
+const int Y_AXIS_STEP_INTERVAL = 750;
 const int C_AXIS_STEP_INTERVAL = 200;
 
 // Defining maximum x, y and z axis coordinates
@@ -234,6 +234,7 @@ void moveXAxis(int newXAxisCoordinate) {
         // Sending the step signals
         for (unsigned long long i = 0; i < stepsToGo; i++) {
             long stepInterval = MIN_STEP_INTERVAL - 10;
+            // Slowing down at the start and end of the move
             if (i < 201) {
                 stepInterval = round(MAX_STEP_INTERVAL - (i * STEP_INTERVAL_CHANGE)) - 10;
             } else if (i > (stepsToGo - 201)) {
@@ -280,12 +281,17 @@ void moveYAxis(int newYAxisCoordinate) {
         stepsToGo = round(((float)mmToGo / Y_AXIS_MOVEMENT_PER_ROTATION) * 3200);
         // Sending the step signals
         for (unsigned long long i = 0; i < stepsToGo; i++) {
+            long stepInterval = Y_AXIS_STEP_INTERVAL - 10;
+            // Slowing down at the start and end of the move
+            if (i < 201 || i >(stepsToGo - 201)) {
+                stepInterval = (2 * Y_AXIS_STEP_INTERVAL) - 10;
+            }
             digitalWrite(Y_AXIS_0_STP_PIN, HIGH);
             digitalWrite(Y_AXIS_1_STP_PIN, HIGH);
             delayMicroseconds(10);
             digitalWrite(Y_AXIS_0_STP_PIN, LOW);
             digitalWrite(Y_AXIS_1_STP_PIN, LOW);
-            delayMicroseconds(Y_AXIS_STEP_INTERVAL);
+            delayMicroseconds(stepInterval);
         }
         // Resetting the movement direction
         if (newYAxisCoordinate < yAxisCoordinate) {
@@ -329,6 +335,7 @@ void moveCAxis(int angle) {
     // Sending the step signals
     for (unsigned long long i = 0; i < stepsToGo; i++) {
         long stepInterval = MIN_STEP_INTERVAL - 10;
+        // Slowing down at the start and end of the move
         if (i < 201) {
             stepInterval = round(MAX_STEP_INTERVAL - (i * STEP_INTERVAL_CHANGE)) - 10;
         } else if (i > (stepsToGo - 201)) {

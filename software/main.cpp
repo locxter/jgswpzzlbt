@@ -25,7 +25,7 @@ const char VACUUM_SYSTEM_COMMAND = 'V';
 // Defining robot axis minimums and maximums
 const int X_AXIS_MIN_COORDINATE = 50;
 const int X_AXIS_MAX_COORDINATE = 825;
-const int Y_AXIS_MAX_COORDINATE = /*725*/350;
+const int Y_AXIS_MAX_COORDINATE = /*725*/ 400;
 const int Z_AXIS_MAX_COORDINATE = 90;
 
 // Declaring a text drawing function
@@ -165,7 +165,6 @@ int main(int argc, char** argv) {
             int cAdjustment = 0;
             // Creating image containers
             Mat rawFrame;
-            Mat grayFrame;
             Mat preprocessedFrame;
             Mat cannyFrame;
             Mat processedFrame;
@@ -183,9 +182,9 @@ int main(int argc, char** argv) {
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
             imshow(WINDOW_NAME, drawText(Mat::zeros(Size(1280, 720), CV_8UC3), "Moving the part to it's storage position. Please wait..."));
             waitKey(1000);
-            cvtColor(rawFrame, grayFrame, COLOR_BGR2GRAY);
-            bilateralFilter(grayFrame, preprocessedFrame, 8, 64, 64);
-            threshold(preprocessedFrame, preprocessedFrame, 0, 255, THRESH_OTSU);
+            cvtColor(rawFrame, preprocessedFrame, COLOR_BGR2GRAY);
+            medianBlur(preprocessedFrame, preprocessedFrame, 15);
+            threshold(preprocessedFrame, preprocessedFrame, 0, 255, THRESH_TRIANGLE);
             cout << "Captured and preprocessed part image successfully." << endl;
             // Performing canny edge detection
             Canny(preprocessedFrame, cannyFrame, 128, 255);
@@ -222,9 +221,9 @@ int main(int argc, char** argv) {
             sleep(1);
             // Capturing and preprocessing a picture of the part for puzzle solving
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
-            cvtColor(rawFrame, grayFrame, COLOR_BGR2GRAY);
-            bilateralFilter(grayFrame, preprocessedFrame, 8, 64, 64);
-            threshold(preprocessedFrame, preprocessedFrame, 0, 255, THRESH_OTSU);
+            cvtColor(rawFrame, preprocessedFrame, COLOR_BGR2GRAY);
+            medianBlur(preprocessedFrame, preprocessedFrame, 15);
+            threshold(preprocessedFrame, preprocessedFrame, 0, 255, THRESH_TRIANGLE);
             cout << "Captured and preprocessed part image successfully." << endl;
             // Performing canny edge detection
             Canny(preprocessedFrame, cannyFrame, 128, 255);
