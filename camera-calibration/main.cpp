@@ -187,7 +187,7 @@ int main(int argc, char** argv) {
             // Creating image containers
             Mat rawFrame;
             Mat grayFrame;
-            // Defining interal variables
+            // Defining internal variables
             bool chessboardFound = false;
             vector<Point2f> cornerPoints;
             // Loading and preprocessing a picture

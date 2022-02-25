@@ -4,7 +4,7 @@
 
 ![Overview image](overview.png)
 
-This is a jigsaw puzzle solving robot I designed. It is programmed in C++ using OpenCV for image recognition and LibSerial for communicating with a custom Arduino firmware. For further information take a look at the overview video in the file `overview.mp4` ([Link](https://raw.githubusercontent.com/locxter/jgswpzzlbt/main/overview.mp4)).
+This is a jigsaw puzzle solving robot I designed. It is programmed in C++ using OpenCV for image recognition and LibSerial for communicating with a custom Arduino firmware. For further information take a look at the overview video in the file `overview.mp4`.
 
 ## Dependencies
 
