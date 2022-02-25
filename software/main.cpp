@@ -25,7 +25,7 @@ const char VACUUM_SYSTEM_COMMAND = 'V';
 // Defining robot axis minimums and maximums
 const int X_AXIS_MIN_COORDINATE = 50;
 const int X_AXIS_MAX_COORDINATE = 825;
-const int Y_AXIS_MAX_COORDINATE = /*725*/ 400;
+const int Y_AXIS_MAX_COORDINATE = 725;
 const int Z_AXIS_MAX_COORDINATE = 90;
 
 // Declaring a text drawing function

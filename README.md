@@ -2,11 +2,9 @@
 
 ## Overview
 
-> Please keep in mind that this is a **work in progress**.
-
 ![Overview image](overview.png)
 
-This is a jigsaw puzzle solving robot I'm designing. It is programmed in C++ using OpenCV for image recognition and LibSerial for communicating with a custom Arduino firmware.
+This is a jigsaw puzzle solving robot I designed. It is programmed in C++ using OpenCV for image recognition and LibSerial for communicating with a custom Arduino firmware. For further information take a look at the overview video in the file `overview.mp4` ([Link](https://raw.githubusercontent.com/locxter/jgswpzzlbt/main/overview.mp4)).
 
 ## Dependencies
 
@@ -16,7 +14,7 @@ I generally try to minimize dependencies, but I'm a one man crew and can therefo
 - A2Plus for assemblying the robot virtually in FreeCAD. Install it via the integrated addon manager.
 - fcgear for creating the needed gears in FreeCAD. Install it via the integrated addon manager.
 - Arduino IDE as a way to compile the Arduino code. Install it with `sudo apt install arduino`.
-- GCC, G++, GDB and CMake for building the C++ code. Install it with 'sudo apt install `sudo apt install gcc g++ gdb cmake`.
+- GCC, G++, GDB and CMake for building the C++ code. Install it with 'sudo apt install `sudo apt install build-essential gdb cmake`.
 - VSCodium as universal text editor and IDE. Install it with `sudo snap install codium --classic`.
 - OpenCV as the used computer vision library. Install it with `sudo apt install libopencv-dev`.
 - LibSerial as the used serial communication library. Install it with `sudo apt install libserial-dev`.
@@ -34,7 +32,7 @@ The process of solving a jigsaw puzzle automatically involves the following majo
 
 ## How to build it
 
-jgswpzzlbt's mechanics mainly consist of a big 110x120cm chipboard, a 1m long 20x80mm aluminium extrusion and some custom 3D printed parts. An assembly overview image can be found in `cad/assembly.png` as well as an assembly overview CAD model in `cad/assembly.FCStd`. But please don't expect any parts to fit perfectly or be easy to assamble as only one prototype has been build so far.
+jgswpzzlbt's mechanics mainly consist of a big 110x120cm chipboard, a 1m long 20x80mm aluminium extrusion and some custom 3D printed parts. An assembly overview image can be found in the file `cad/assembly.png` as well as an assembly overview CAD model in the file `cad/assembly.FCStd`. But please don't expect any parts to fit perfectly or be easy to assamble as only one prototype has been build so far.
 
 ![Assembly image](cad/assembly.png)
 
@@ -118,4 +116,4 @@ All parts were printed on my Sovol SV01 in standard PLA with a custom super fast
 
 ## How to use it
 
-After installing all the necessary tools and libraries mentioned above as well as building the hardware, you can flash the firmware to the MKS Base motherboard via the Arduino IDE and test the whole system with the manual control program. If everything works correctly the next step is to perform the automatic camera calibration with it's according porgram and finally run the dang awesome thing with the main software to solve some puzzles!
+After installing all the necessary tools and libraries mentioned above as well as building the hardware, you can flash the firmware to the MKS Base motherboard via the Arduino IDE and compile the camera calibration, manual control and main program with cmake. Then test the whole system with the manual control program. If everything works correctly the next step is to perform the automatic camera calibration. Finally you can run the dang awesome thing with the main software to solve some puzzles!
