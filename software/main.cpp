@@ -363,7 +363,7 @@ int main(int argc, char** argv) {
     } else {
         // Throwing an error on invalid number of command line arguments
         cout << "Wrong number of arguments. Eight arguments containing the path of the camera calibration file, camera ID, serial port as well as reference image, column count, row count, width and height in mm of the jigsaw puzzle expected." << endl;
-        cout << "Example: " << argv[0] << " camera-calibration.xml 0 /dev/ttyUSB0 reference.png 6 4 150 100" << endl;
+        cout << "Example: " << argv[0] << " camera-calibration.xml 0 /dev/ttyUSB0 reference.png 5 3 150 100" << endl;
         return 1;
     }
 }
