@@ -8,14 +8,14 @@ This is a jigsaw puzzle solving robot I designed. It is programmed in C++ using 
 
 ## Dependencies
 
-I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Ubuntu as I'm running it myself. Anyway, you need to have the following packages installed for everything to work properly:
+I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Debian as I'm running it myself. Anyway, you need to have the following packages installed for everything to work properly:
 
 - FreeCAD for editing and exporting the CAD file. Install it with `sudo apt install freecad`.
 - A2Plus for assemblying the robot virtually in FreeCAD. Install it via the integrated addon manager.
 - fcgear for creating the needed gears in FreeCAD. Install it via the integrated addon manager.
 - Arduino IDE as a way to compile the Arduino code. Install it with `sudo apt install arduino`.
 - GCC, G++, GDB and CMake for building the C++ code. Install it with 'sudo apt install `sudo apt install build-essential gdb cmake`.
-- VSCodium as universal text editor and IDE. Install it with `sudo snap install codium --classic`.
+- VSCodium as universal text editor and IDE. To install it visit their [website](https://vscodium.com/#install).
 - OpenCV as the used computer vision library. Install it with `sudo apt install libopencv-dev`.
 - LibSerial as the used serial communication library. Install it with `sudo apt install libserial-dev`.
 
@@ -114,6 +114,10 @@ All parts were printed on my Sovol SV01 in standard PLA with a custom super fast
 - 100% cooling from the second layer on
 - Zig zag support and 5mm raft, where necessary
 
+## How to create a jigsaw puzzle
+
+As this robot uses a special simplified type of jigsaw puzzles, you have to create the puzzles to solve with it yourself. You can simply use the given example puzzle by going to a photo shop (they offer a way better print quality than an average home printer), printing the file `reference-with-cutting-lines.png` in the common 15x10cm format and cutting it into pieces, but creating your own puzzle entirely isn't to difficult either. To do so you need to create a reference image of the whole jigsaw puzzle, a variant of this image with cutting lines as well as part images to help with labeling the cut parts later on. Then just print it out in your desired size and cut it into pieces (keep in mind that the parts shouldn't get to small to work properly).
+
 ## How to use it
 
-After installing all the necessary tools and libraries mentioned above as well as building the hardware, you can flash the firmware to the MKS Base motherboard via the Arduino IDE and compile the camera calibration, manual control and main program with cmake. Then test the whole system with the manual control program. If everything works correctly the next step is to perform the automatic camera calibration. Finally you can run the dang awesome thing with the main software to solve some puzzles!
+After installing all the necessary tools and libraries mentioned above as well as building the hardware, you can flash the firmware to the MKS Base motherboard via the Arduino IDE and compile the camera calibration, manual control and main program with CMake. Then test the whole system with the manual control program. If everything works correctly, the next step is to perform the automatic camera calibration. Finally you can run the dang awesome thing with the main software to solve some puzzles!
