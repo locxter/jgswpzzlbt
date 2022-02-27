@@ -306,11 +306,11 @@ int main(int argc, char** argv) {
             perspectiveTransform(partCorners, referenceCorners, homography);
             // Extracting important data
             for (int i = 0; i < 4; i++) {
-                static float xAverage = (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x + referenceCorners[3].x) / 4;
-                static float yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4;
+                static float xAverage = (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x + referenceCorners[3].x) / 4.0;
+                static float yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4.0;
                 if (i == 0) {
-                    xAverage = (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x + referenceCorners[3].x) / 4;
-                    yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4;
+                    xAverage = (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x + referenceCorners[3].x) / 4.0;
+                    yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4.0;
                 }
                 if (referenceCorners[i].x < xAverage && referenceCorners[i].y < yAverage) {
                     // Swapping 1 and 3 as the robot in reality always messes them up for some reason
@@ -324,8 +324,8 @@ int main(int argc, char** argv) {
                 }
             }
             boundRect = boundingRect(referenceCorners);
-            xPosition = floor((boundRect.tl().x + (boundRect.width / 2)) / (referenceImage.cols / COLUMN_COUNT));
-            yPosition = ROW_COUNT - 1 - floor((boundRect.tl().y + (boundRect.width / 2)) / (referenceImage.rows / ROW_COUNT));
+            xPosition = floor((boundRect.tl().x + (boundRect.width / 2.0)) / (referenceImage.cols / COLUMN_COUNT));
+            yPosition = ROW_COUNT - (1 + floor((boundRect.tl().y + (boundRect.height / 2.0)) / (referenceImage.rows / ROW_COUNT)));
             // Storing the important data
             partSolvingResults.push_back(xPosition);
             partSolvingResults.push_back(yPosition);

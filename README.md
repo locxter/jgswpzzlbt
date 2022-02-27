@@ -14,8 +14,9 @@ I generally try to minimize dependencies, but I'm a one man crew and can therefo
 - A2Plus for assemblying the robot virtually in FreeCAD. Install it via the integrated addon manager.
 - fcgear for creating the needed gears in FreeCAD. Install it via the integrated addon manager.
 - Arduino IDE as a way to compile the Arduino code. Install it with `sudo apt install arduino`.
-- GCC, G++, GDB and CMake for building the C++ code. Install it with 'sudo apt install `sudo apt install build-essential gdb cmake`.
+- GCC, G++, GDB and CMake for building the C++ code. Install them with `sudo apt install build-essential gdb cmake`.
 - VSCodium as universal text editor and IDE. To install it visit their [website](https://vscodium.com/#install).
+- VSCodium extensions Arduino, C++, CMake and CMake Tools to enhance it's capabilities. Install them with `codium --install-extension vsciot-vscode.vscode-arduino --install-extension ms-vscode.cpptools --install-extension twxs.cmake --install-extension ms-vscode.cmake-tools`.
 - OpenCV as the used computer vision library. Install it with `sudo apt install libopencv-dev`.
 - LibSerial as the used serial communication library. Install it with `sudo apt install libserial-dev`.
 
