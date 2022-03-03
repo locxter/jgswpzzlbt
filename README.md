@@ -117,7 +117,7 @@ All parts were printed on my Sovol SV01 in standard PLA with a custom super fast
 
 ## How to create a jigsaw puzzle
 
-As this robot uses a special simplified type of jigsaw puzzles, you have to create the puzzles to solve with it yourself. You can simply use the given example puzzle by going to a photo shop (they offer a way better print quality than an average home printer), printing the file `reference-with-cutting-lines.png` in the common 15x10cm format and cutting it into pieces, but creating your own puzzle entirely isn't to difficult either. To do so you need to create a reference image of the whole jigsaw puzzle, a variant of this image with cutting lines as well as part images to help with labeling the cut parts later on. Then just print it out in your desired size and cut it into pieces (keep in mind that the parts shouldn't get to small to work properly).
+As this robot uses a special simplified type of jigsaw puzzles, you have to create the puzzles to solve with it yourself. You can simply use the given example puzzle by going to a photo shop (they offer a way better print quality than an average home printer), printing the file(s) `reference-with-cutting-lines.png` or in case of the 24 part version `reference-with-cutting-lines-NUMBER.png` in the common 15x10cm format and cutting it into pieces. But creating your own puzzle entirely isn't to difficult either. To do so you need to create a reference image of the whole jigsaw puzzle, a variant of this image with cutting lines as well as part images to help with labeling the cut parts later on. Then just print it out in your desired size and cut it into pieces. Keep in mind that the parts shouldn't get to small to work properly, 5x5cm per part is optimal.
 
 ## How to use it
 
