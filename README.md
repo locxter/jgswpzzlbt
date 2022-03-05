@@ -4,7 +4,7 @@
 
 ![Overview image](overview.png)
 
-This is a jigsaw puzzle solving robot I designed. It is programmed in C++ using OpenCV for image recognition and LibSerial for communicating with a custom Arduino firmware. For further information take a look at the overview video in the file `overview.mp4` or the result images in the files `6-part-result.jpeg` and `24-part-result.jpeg`.
+This is a jigsaw puzzle solving robot I designed. It is programmed in C++ using OpenCV for image recognition and LibSerial for communicating with a custom Arduino firmware. For further information take a look at the overview video `overview.mp4` or the result images `6-part-result.jpeg` and `24-part-result.jpeg`.
 
 ## Dependencies
 
@@ -33,7 +33,7 @@ The process of solving a jigsaw puzzle automatically involves the following majo
 
 ## How to build it
 
-jgswpzzlbt's mechanics mainly consist of a big 110x120cm chipboard, a 1m long 20x80mm aluminium extrusion and some custom 3D printed parts. An assembly overview image can be found in the file `cad/assembly.png` as well as an assembly overview CAD model in the file `cad/assembly.FCStd`. But please don't expect any parts to fit perfectly or be easy to assamble as only one prototype has been build so far.
+jgswpzzlbt's mechanics mainly consist of a big 110x120cm chipboard, a 1m long 20x80mm aluminium extrusion and some custom 3D printed parts. For further information take a look at the assembly overview image `cad/assembly.png` as well as the assembly overview CAD model `cad/assembly.FCStd`. But please don't expect any parts to fit perfectly or be easy to assamble as only one prototype has been build so far.
 
 ![Assembly image](cad/assembly.png)
 

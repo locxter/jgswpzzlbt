@@ -34,10 +34,7 @@ const int X_AXIS_CAPTURE_STEP_SIZE = 20;
 const int Y_AXIS_CAPTURE_STEP_SIZE = 10;
 
 // Defining chessboard size
-const int CHESSBOARD_SIZE[] = {
-            6,
-            9
-};
+const int CHESSBOARD_SIZE[] = { 6, 9 };
 
 // Declaring a text drawing function
 Mat drawText(Mat image, string text);
