@@ -4,7 +4,7 @@ project(camera-calibration VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
-add_executable(camera-calibration main.cpp)
+add_executable(camera-calibration main.cpp lib/opencv-helpers.hpp lib/opencv-helpers.cpp lib/libserial-helpers.hpp lib/libserial-helpers.cpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

@@ -10,13 +10,11 @@ This is a jigsaw puzzle solving robot I designed. It is programmed in C++ using 
 
 I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Debian as I'm running it myself. Anyway, you need to have the following packages installed for everything to work properly:
 
-- FreeCAD for editing and exporting the CAD file. Install it with `sudo apt install freecad`.
-- A2Plus for assemblying the robot virtually in FreeCAD. Install it via the integrated addon manager.
+- FreeCAD for editing and exporting the CAD files. Install it with `sudo apt install freecad`.
+- A2Plus for assemblying the different components in FreeCAD. Install it via the integrated addon manager.
 - fcgear for creating the needed gears in FreeCAD. Install it via the integrated addon manager.
 - Arduino IDE as a way to compile the Arduino code. Install it with `sudo apt install arduino`.
 - GCC, G++, GDB and CMake for building the C++ code. Install them with `sudo apt install build-essential gdb cmake`.
-- VSCodium as universal text editor and IDE. To install it visit their [website](https://vscodium.com/#install).
-- VSCodium extensions Arduino, C++, CMake and CMake Tools to enhance it's capabilities. Install them with `codium --install-extension vsciot-vscode.vscode-arduino --install-extension ms-vscode.cpptools --install-extension twxs.cmake --install-extension ms-vscode.cmake-tools`.
 - OpenCV as the used computer vision library. Install it with `sudo apt install libopencv-dev`.
 - LibSerial as the used serial communication library. Install it with `sudo apt install libserial-dev`.
 
@@ -121,4 +119,4 @@ As this robot uses a special simplified type of jigsaw puzzles, you have to crea
 
 ## How to use it
 
-After installing all the necessary tools and libraries mentioned above as well as building the hardware, you can flash the firmware to the MKS Base motherboard via the Arduino IDE and compile the camera calibration, manual control and main program with CMake. Then test the whole system with the manual control program. If everything works correctly, the next step is to perform the automatic camera calibration. Finally you can run the dang awesome thing with the main software to solve some puzzles!
+After installing all the necessary tools and libraries mentioned above as well as building the hardware, you can flash the firmware to the MKS Base motherboard via the Arduino IDE and compile the camera calibration, manual control and main program with CMake. To do so simply create a build directory in each program's folder via `mkdir build`, move to it via `cd build` and run CMake via `cmake ..` followed by make via `make`. Then test the whole system with the manual control program via `./manual-control`. If everything works correctly, the next step is to perform the automatic camera calibration via `./camera-calibration`. Finally you can run the dang awesome thing with the main software via `./software` to solve some puzzles! Have fun ;)
