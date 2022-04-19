@@ -158,28 +158,28 @@ void loop() {
 // Function for homing the robot
 void homeAxis() {
     // Variables for storing time before homing the x or y axis and success of that operation
-    unsigned long startMillis;
+    unsigned long startAxisHoming;
     bool success = true;
     // Move servo to a deactive coordinate
     if (servo.read() != Z_AXIS_MAX_COORDINATE) {
         servo.write(Z_AXIS_MAX_COORDINATE);
     }
     // Home the x axis
-    startMillis = millis();
+    startAxisHoming = millis();
     digitalWrite(X_AXIS_DIR_PIN, !digitalRead(X_AXIS_DIR_PIN));
     while (digitalRead(X_AXIS_ENDSTOP_PIN) == HIGH) {
         digitalWrite(X_AXIS_STP_PIN, HIGH);
         delayMicroseconds(10);
         digitalWrite(X_AXIS_STP_PIN, LOW);
         delayMicroseconds((2 * X_AXIS_STEP_INTERVAL) - 10);
-        if (millis() - startMillis > 60000) {
+        if (millis() - startAxisHoming > 60000) {
             success = false;
             break;
         }
     }
     digitalWrite(X_AXIS_DIR_PIN, !digitalRead(X_AXIS_DIR_PIN));
     // Home the y axis
-    startMillis = millis();
+    startAxisHoming = millis();
     digitalWrite(Y_AXIS_0_DIR_PIN, !digitalRead(Y_AXIS_0_DIR_PIN));
     digitalWrite(Y_AXIS_1_DIR_PIN, !digitalRead(Y_AXIS_1_DIR_PIN));
     while (digitalRead(Y_AXIS_ENDSTOP_PIN) == HIGH) {
@@ -189,7 +189,7 @@ void homeAxis() {
         digitalWrite(Y_AXIS_0_STP_PIN, LOW);
         digitalWrite(Y_AXIS_1_STP_PIN, LOW);
         delayMicroseconds((2 * Y_AXIS_STEP_INTERVAL) - 10);
-        if (millis() - startMillis > 60000) {
+        if (millis() - startAxisHoming > 60000) {
             success = false;
             break;
         }
