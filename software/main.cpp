@@ -32,21 +32,21 @@ int main(int argc, char** argv) {
         char serialResponse;
         // Part storage related variables
         int storageCellSize;
-        if (((float)WIDTH / COLUMN_COUNT) < ((float)HEIGHT / ROW_COUNT)) {
-            storageCellSize = std::round(((float)HEIGHT / ROW_COUNT) + 20);
+        if (((float) WIDTH / COLUMN_COUNT) < ((float) HEIGHT / ROW_COUNT)) {
+            storageCellSize = std::round(((float) HEIGHT / ROW_COUNT) + 20);
         } else {
-            storageCellSize = std::round(((float)WIDTH / COLUMN_COUNT) + 20);
+            storageCellSize = std::round(((float) WIDTH / COLUMN_COUNT) + 20);
         }
-        const int STORAGE_COLUMN_COUNT = std::floor(((float)X_AXIS_MAX_COORDINATE - X_AXIS_MIN_COORDINATE) / storageCellSize);
-        const int STORAGE_ROW_COUNT = std::ceil((float)PART_COUNT / STORAGE_COLUMN_COUNT);
+        const int STORAGE_COLUMN_COUNT = std::floor(((float) X_AXIS_MAX_COORDINATE - X_AXIS_MIN_COORDINATE) / storageCellSize);
+        const int STORAGE_ROW_COUNT = std::ceil((float) PART_COUNT / STORAGE_COLUMN_COUNT);
         std::vector<std::vector<int>> storageCoordinates;
         // Puzzle solving related variables
         cv::Mat referenceImage;
         std::vector<cv::Mat> solvingImages;
         std::vector<std::vector<int>> solvingResults;
         // Puzzle assembly related variables
-        const int ASSEMBLY_COLUMN_WIDTH = std::round(((float)WIDTH / COLUMN_COUNT) + 20);
-        const int ASSEMBLY_ROW_HEIGHT = std::round(((float)HEIGHT / ROW_COUNT) + 20);
+        const int ASSEMBLY_COLUMN_WIDTH = std::round(((float) WIDTH / COLUMN_COUNT) + 20);
+        const int ASSEMBLY_ROW_HEIGHT = std::round(((float) HEIGHT / ROW_COUNT) + 20);
         std::vector<std::vector<std::vector<int>>> assemblyCoordinates;
         // Fill the storage and assembly coordinates with data
         for (int i = 0; i < STORAGE_ROW_COUNT; i++) {
@@ -256,9 +256,9 @@ int main(int argc, char** argv) {
             cv::Mat homography = cv::findHomography(partPoints, referencePoints, cv::RANSAC);
             // Map part image onto reference image
             partCorners[0] = cv::Point2f(0, 0);
-            partCorners[1] = cv::Point2f((float)partImage.cols, 0);
-            partCorners[2] = cv::Point2f((float)partImage.cols, (float)partImage.rows);
-            partCorners[3] = cv::Point2f(0, (float)partImage.rows);
+            partCorners[1] = cv::Point2f((float) partImage.cols, 0);
+            partCorners[2] = cv::Point2f((float) partImage.cols, (float) partImage.rows);
+            partCorners[3] = cv::Point2f(0, (float) partImage.rows);
             cv::perspectiveTransform(partCorners, referenceCorners, homography);
             // Extract important data
             for (int i = 0; i < 4; i++) {

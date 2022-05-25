@@ -149,7 +149,7 @@ void loop() {
                 }
                 break;
             default:
-                Serial.print((String)ERROR_MESSAGE + '\n');
+                Serial.print((String) ERROR_MESSAGE + '\n');
                 break;
         }
     }
@@ -198,9 +198,9 @@ void homeAxis() {
     digitalWrite(Y_AXIS_1_DIR_PIN, !digitalRead(Y_AXIS_1_DIR_PIN));
     // Check for homing error and print an according message
     if (success) {
-        Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+        Serial.print((String) AVAILABILITY_MESSAGE + '\n');
     } else {
-        Serial.print((String)ERROR_MESSAGE + '\n');
+        Serial.print((String) ERROR_MESSAGE + '\n');
     }
 }
 
@@ -219,9 +219,9 @@ void moveXAxis(int newXAxisCoordinate) {
         int mmToGo;
         unsigned long long stepsToGo;
         // Calculating step interval related variables
-        static const long MAX_STEP_INTERVAL = (long)100 * X_AXIS_STEP_INTERVAL;
+        static const long MAX_STEP_INTERVAL = (long) 100 * X_AXIS_STEP_INTERVAL;
         static const long MIN_STEP_INTERVAL = X_AXIS_STEP_INTERVAL;
-        static const float STEP_INTERVAL_CHANGE = ((float)MAX_STEP_INTERVAL - MIN_STEP_INTERVAL) / 200;
+        static const float STEP_INTERVAL_CHANGE = ((float) MAX_STEP_INTERVAL - MIN_STEP_INTERVAL) / 200;
         // Choosing a movement direction
         if (newXAxisCoordinate > xAxisCoordinate) {
             mmToGo = newXAxisCoordinate - xAxisCoordinate;
@@ -229,7 +229,7 @@ void moveXAxis(int newXAxisCoordinate) {
             mmToGo = xAxisCoordinate - newXAxisCoordinate;
             digitalWrite(X_AXIS_DIR_PIN, !digitalRead(X_AXIS_DIR_PIN));
         }
-        stepsToGo = round(((float)mmToGo / X_AXIS_MOVEMENT_PER_ROTATION) * 3200);
+        stepsToGo = round(((float) mmToGo / X_AXIS_MOVEMENT_PER_ROTATION) * 3200);
         // Sending the step signals
         for (unsigned long long i = 0; i < stepsToGo; i++) {
             long stepInterval = MIN_STEP_INTERVAL - 10;
@@ -252,7 +252,7 @@ void moveXAxis(int newXAxisCoordinate) {
         xAxisCoordinate = newXAxisCoordinate;
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Function for controlling the y axis motor 
@@ -277,7 +277,7 @@ void moveYAxis(int newYAxisCoordinate) {
             digitalWrite(Y_AXIS_0_DIR_PIN, !digitalRead(Y_AXIS_0_DIR_PIN));
             digitalWrite(Y_AXIS_1_DIR_PIN, !digitalRead(Y_AXIS_1_DIR_PIN));
         }
-        stepsToGo = round(((float)mmToGo / Y_AXIS_MOVEMENT_PER_ROTATION) * 3200);
+        stepsToGo = round(((float) mmToGo / Y_AXIS_MOVEMENT_PER_ROTATION) * 3200);
         // Sending the step signals
         for (unsigned long long i = 0; i < stepsToGo; i++) {
             long stepInterval = Y_AXIS_STEP_INTERVAL - 10;
@@ -301,7 +301,7 @@ void moveYAxis(int newYAxisCoordinate) {
         yAxisCoordinate = newYAxisCoordinate;
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Function for controlling the x axis servo 
@@ -317,7 +317,7 @@ void moveZAxis(int newZAxisCoordinate) {
         servo.write(newZAxisCoordinate);
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Function for controlling the c axis motor 
@@ -326,7 +326,7 @@ void moveCAxis(int angle) {
     // Calculating step interval related variables
     const long MAX_STEP_INTERVAL = 100 * C_AXIS_STEP_INTERVAL;
     const long MIN_STEP_INTERVAL = C_AXIS_STEP_INTERVAL;
-    const float STEP_INTERVAL_CHANGE = ((float)MAX_STEP_INTERVAL - MIN_STEP_INTERVAL) / 200;
+    const float STEP_INTERVAL_CHANGE = ((float) MAX_STEP_INTERVAL - MIN_STEP_INTERVAL) / 200;
     // Choosing a movement direction
     if (angle < 0) {
         digitalWrite(C_AXIS_DIR_PIN, !digitalRead(C_AXIS_DIR_PIN));
@@ -350,7 +350,7 @@ void moveCAxis(int angle) {
         digitalWrite(C_AXIS_DIR_PIN, !digitalRead(C_AXIS_DIR_PIN));
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
 
 // Function for controlling the vacuum system
@@ -364,5 +364,5 @@ void controlVacuumSystem(bool isOn) {
         digitalWrite(VACUUM_PUMP_PIN, LOW);
     }
     // Printing an availability message
-    Serial.print((String)AVAILABILITY_MESSAGE + '\n');
+    Serial.print((String) AVAILABILITY_MESSAGE + '\n');
 }
