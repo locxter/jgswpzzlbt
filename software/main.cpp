@@ -147,14 +147,14 @@ int main(int argc, char** argv) {
             // Find contours and select only the largest one together with it's minimum bounding rectangle
             cv::findContours(cannyFrame, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
             for (int j = 0; j < contours.size(); j++) {
-                const cv::RotatedRect BUFFER = cv::minAreaRect(contours[j]);
+                cv::RotatedRect buffer = cv::minAreaRect(contours[j]);
                 static float largestArea = 0;
                 if (j == 0) {
                     largestArea = 0;
                 }
-                if (BUFFER.size.area() > largestArea) {
-                    minRect = BUFFER;
-                    largestArea = BUFFER.size.area();
+                if (buffer.size.area() > largestArea) {
+                    minRect = buffer;
+                    largestArea = buffer.size.area();
                 }
             }
             std::cout << "Contour detection finished successfully." << std::endl;
@@ -186,14 +186,14 @@ int main(int argc, char** argv) {
             // Find contours and select only the largest one together with it's bounding rectangle
             cv::findContours(cannyFrame, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
             for (int j = 0; j < contours.size(); j++) {
-                const cv::Rect BUFFER = cv::boundingRect(contours[j]);
+                cv::Rect buffer = cv::boundingRect(contours[j]);
                 static float largestArea = 0;
                 if (j == 0) {
                     largestArea = 0;
                 }
-                if (BUFFER.area() > largestArea) {
-                    boundRect = BUFFER;
-                    largestArea = BUFFER.area();
+                if (buffer.area() > largestArea) {
+                    boundRect = buffer;
+                    largestArea = buffer.area();
                 }
             }
             std::cout << "Contour detection finished successfully." << std::endl;
