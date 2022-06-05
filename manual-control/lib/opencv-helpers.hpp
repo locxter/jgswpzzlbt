@@ -14,5 +14,5 @@ void showImage(std::string windowName, cv::Mat image);
 cv::Mat capturePicture(cv::VideoCapture& camera, cv::Mat cameraMatrix, cv::Mat distortionCoefficients);
 
 // Function to save a picture
-void savePicture(cv::Mat image, std::string fileName);
+void savePicture(cv::Mat image, std::string filename);
 #endif

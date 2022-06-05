@@ -63,17 +63,17 @@ cv::Mat capturePicture(cv::VideoCapture& camera, cv::Mat cameraMatrix, cv::Mat d
 }
 
 // Function to save a picture
-void savePicture(cv::Mat image, std::string fileName) {
+void savePicture(cv::Mat image, std::string filename) {
     std::ifstream testFile;
     int counter = 0;
-    std::string finalFileName = fileName + '-' + std::to_string(counter) + ".jpeg";
-    testFile.open(finalFileName);
+    std::string completeFilename = filename + '-' + std::to_string(counter) + ".jpeg";
+    testFile.open(completeFilename);
     while (testFile.is_open()) {
         testFile.close();
         counter++;
-        finalFileName = fileName + '-' + std::to_string(counter) + ".jpeg";
-        testFile.open(finalFileName);
+        completeFilename = filename + '-' + std::to_string(counter) + ".jpeg";
+        testFile.open(completeFilename);
     }
     testFile.close();
-    cv::imwrite(finalFileName, image);
+    cv::imwrite(completeFilename, image);
 }
