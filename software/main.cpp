@@ -139,11 +139,11 @@ int main(int argc, char** argv) {
             cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Moving the part to it's storage position. Please wait..."));
             cv::waitKey(1000);
             cv::cvtColor(rawFrame, preprocessedFrame, cv::COLOR_BGR2GRAY);
-            cv::medianBlur(preprocessedFrame, preprocessedFrame, 15);
+            cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
             cv::threshold(preprocessedFrame, preprocessedFrame, 0, 255, cv::THRESH_TRIANGLE);
             std::cout << "Captured and preprocessed part image successfully." << std::endl;
             // Perform canny edge detection
-            cv::Canny(preprocessedFrame, cannyFrame, 128, 255);
+            cv::Canny(preprocessedFrame, cannyFrame, 0, 0);
             // Find contours and select only the largest one together with it's minimum bounding rectangle
             cv::findContours(cannyFrame, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
             for (int j = 0; j < contours.size(); j++) {
@@ -178,11 +178,11 @@ int main(int argc, char** argv) {
             // Capture and preprocess a picture of the part for puzzle solving
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
             cv::cvtColor(rawFrame, preprocessedFrame, cv::COLOR_BGR2GRAY);
-            cv::medianBlur(preprocessedFrame, preprocessedFrame, 15);
+            cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
             cv::threshold(preprocessedFrame, preprocessedFrame, 0, 255, cv::THRESH_TRIANGLE);
             std::cout << "Captured and preprocessed part image successfully." << std::endl;
             // Perform canny edge detection
-            cv::Canny(preprocessedFrame, cannyFrame, 128, 255);
+            cv::Canny(preprocessedFrame, cannyFrame, 0, 0);
             // Find contours and select only the largest one together with it's bounding rectangle
             cv::findContours(cannyFrame, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
             for (int j = 0; j < contours.size(); j++) {
