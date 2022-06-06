@@ -6,20 +6,20 @@ cv::Mat drawText(cv::Mat image, std::string text) {
     std::vector<std::string> lines;
     std::stringstream textStream(text);
     // Clone the input image for non-destructive drawing
-    cv::Mat imageBuffer = image.clone();
+    cv::Mat buffer = image.clone();
     // Splitt the text into lines and write them on the image one by one
     while (std::getline(textStream, lineBuffer, '\n')) {
         lines.push_back(lineBuffer);
     }
     for (int i = 0; i < lines.size(); i++) {
-        cv::putText(imageBuffer, lines[i], cv::Point(0, 30 * (i + 1)), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255));
+        cv::putText(buffer, lines[i], cv::Point(0, 30 * (i + 1)), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255));
     }
-    return imageBuffer;
+    return buffer;
 }
 
 // Function to show an image and wait for user response
 void showImage(std::string windowName, cv::Mat image) {
-    cv::Mat imageBuffer;
+    cv::Mat buffer;
     // Resize the image to fit inside the 1280 by 720 bounding box if needed
     if (image.cols > 1280 || image.rows > 720) {
         float scale;
@@ -28,17 +28,17 @@ void showImage(std::string windowName, cv::Mat image) {
         } else {
             scale = 720.0 / image.rows;
         }
-        cv::resize(image, imageBuffer, cv::Size(), scale, scale);
+        cv::resize(image, buffer, cv::Size(), scale, scale);
     } else {
-        imageBuffer = image.clone();
+        buffer = image.clone();
     }
     // Show the image until the user reacts
     while (true) {
-        cv::imshow(windowName, imageBuffer);
-        const int KEY_PRESSED = cv::waitKey(1000 / 25);
-        if (KEY_PRESSED == 113) {
+        cv::imshow(windowName, buffer);
+        int key = cv::waitKey(1000 / 25);
+        if (key == 113) {
             exit(0);
-        } else if (KEY_PRESSED == 114) {
+        } else if (key == 114) {
             break;
         }
     }

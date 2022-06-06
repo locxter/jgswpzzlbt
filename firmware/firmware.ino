@@ -219,9 +219,9 @@ void moveXAxis(int newXAxisCoordinate) {
         int mmToGo;
         unsigned long long stepsToGo;
         // Calculating step interval related variables
-        static const long MAX_STEP_INTERVAL = (long) 100 * X_AXIS_STEP_INTERVAL;
-        static const long MIN_STEP_INTERVAL = X_AXIS_STEP_INTERVAL;
-        static const float STEP_INTERVAL_CHANGE = ((float) MAX_STEP_INTERVAL - MIN_STEP_INTERVAL) / 200;
+        const long MAX_STEP_INTERVAL = (long) 100 * X_AXIS_STEP_INTERVAL;
+        const long MIN_STEP_INTERVAL = X_AXIS_STEP_INTERVAL;
+        const float STEP_INTERVAL_CHANGE = ((float) MAX_STEP_INTERVAL - MIN_STEP_INTERVAL) / 200;
         // Choosing a movement direction
         if (newXAxisCoordinate > xAxisCoordinate) {
             mmToGo = newXAxisCoordinate - xAxisCoordinate;

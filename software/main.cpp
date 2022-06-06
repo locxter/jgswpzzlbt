@@ -114,8 +114,8 @@ int main(int argc, char** argv) {
         // Move all parts to their storage position and capture needed images on the way
         for (int i = 0; i < PART_COUNT; i++) {
             // Variables for pickup coordinates and position adjustments
-            static const int X_PICKUP_COORDINATE = X_AXIS_MIN_COORDINATE + X_TOOL_OFFSET + 75;
-            static const int Y_PICKUP_COORDINATE = Y_TOOL_OFFSET + 75;
+            const int X_PICKUP_COORDINATE = X_AXIS_MIN_COORDINATE + X_TOOL_OFFSET + 75;
+            const int Y_PICKUP_COORDINATE = Y_TOOL_OFFSET + 75;
             int xAdjustment = 0;
             int yAdjustment = 0;
             int cAdjustment = 0;
@@ -297,15 +297,15 @@ int main(int argc, char** argv) {
         cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Moving the parts to their final positions. Please wait..."));
         cv::waitKey(1000);
         for (int i = 0; i < PART_COUNT; i++) {
-            const int X_POSITION = solvingResults[i][0];
-            const int Y_POSITION = solvingResults[i][1];
-            const int ORIENTATION = solvingResults[i][2];
+            int xPosition = solvingResults[i][0];
+            int yPosition = solvingResults[i][1];
+            int orientation = solvingResults[i][2];
             moveTo(serial, storageCoordinates[i][0], storageCoordinates[i][1]);
             pickPartFromPuzzleMat(serial);
-            if (ORIENTATION != 0) {
-                rotatePart(serial, ORIENTATION * 90);
+            if (orientation != 0) {
+                rotatePart(serial, orientation * 90);
             }
-            moveTo(serial, assemblyCoordinates[X_POSITION][Y_POSITION][0], assemblyCoordinates[X_POSITION][Y_POSITION][1]);
+            moveTo(serial, assemblyCoordinates[xPosition][yPosition][0], assemblyCoordinates[xPosition][yPosition][1]);
             releasePartToPuzzleMat(serial);
             std::cout << "Moved part " << (i + 1) << " to it's final position successfully." << std::endl;
         }
