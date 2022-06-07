@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
             cv::waitKey(1000);
             cv::cvtColor(rawFrame, preprocessedFrame, cv::COLOR_BGR2GRAY);
             cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
-            cv::threshold(preprocessedFrame, preprocessedFrame, 0, 255, cv::THRESH_TRIANGLE);
+            cv::adaptiveThreshold(preprocessedFrame, preprocessedFrame, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 75, 0);
             std::cout << "Captured and preprocessed part image successfully." << std::endl;
             // Perform canny edge detection
             cv::Canny(preprocessedFrame, cannyFrame, 0, 0);
@@ -179,7 +179,7 @@ int main(int argc, char** argv) {
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
             cv::cvtColor(rawFrame, preprocessedFrame, cv::COLOR_BGR2GRAY);
             cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
-            cv::threshold(preprocessedFrame, preprocessedFrame, 0, 255, cv::THRESH_TRIANGLE);
+            cv::adaptiveThreshold(preprocessedFrame, preprocessedFrame, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 75, 0);
             std::cout << "Captured and preprocessed part image successfully." << std::endl;
             // Perform canny edge detection
             cv::Canny(preprocessedFrame, cannyFrame, 0, 0);
@@ -269,7 +269,14 @@ int main(int argc, char** argv) {
                     yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4.0;
                 }
                 if (referenceCorners[j].x < xAverage && referenceCorners[j].y < yAverage) {
-                    orientation = j;
+                    // Swap 1 and 3 as the robot in reality always messes them up for some reason
+                    if (j == 1) {
+                        orientation = 3;
+                    } else if (j == 3) {
+                        orientation = 1;
+                    } else {
+                        orientation = j;
+                    }
                 }
             }
             boundRect = cv::boundingRect(referenceCorners);
