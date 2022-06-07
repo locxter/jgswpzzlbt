@@ -222,7 +222,7 @@ int main(int argc, char** argv) {
             int yPosition = 0;
             int orientation = 0;
             const int MAX_FEATURES = 1024;
-            const float GOOD_MATCH_PERCENT = 0.1f;
+            const float GOOD_MATCH_PERCENT = 0.1;
             cv::Ptr<cv::Feature2D> partOrb;
             cv::Ptr<cv::Feature2D> referenceOrb;
             std::vector<cv::KeyPoint> partKeypoints;
@@ -248,9 +248,9 @@ int main(int argc, char** argv) {
             std::sort(matches.begin(), matches.end());
             matches.erase(matches.begin() + (matches.size() * GOOD_MATCH_PERCENT), matches.end());
             // Extract location of good matches
-            for (size_t i = 0; i < matches.size(); i++) {
-                partPoints.push_back(partKeypoints[matches[i].queryIdx].pt);
-                referencePoints.push_back(referenceKeypoints[matches[i].trainIdx].pt);
+            for (int j = 0; j < matches.size(); j++) {
+                partPoints.push_back(partKeypoints[matches[j].queryIdx].pt);
+                referencePoints.push_back(referenceKeypoints[matches[j].trainIdx].pt);
             }
             // Find homography
             cv::Mat homography = cv::findHomography(partPoints, referencePoints, cv::RANSAC);
@@ -261,22 +261,15 @@ int main(int argc, char** argv) {
             partCorners[3] = cv::Point2f(0, (float) partImage.rows);
             cv::perspectiveTransform(partCorners, referenceCorners, homography);
             // Extract important data
-            for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
                 static float xAverage = (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x + referenceCorners[3].x) / 4.0;
                 static float yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4.0;
-                if (i == 0) {
+                if (j == 0) {
                     xAverage = (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x + referenceCorners[3].x) / 4.0;
                     yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4.0;
                 }
-                if (referenceCorners[i].x < xAverage && referenceCorners[i].y < yAverage) {
-                    // Swap 1 and 3 as the robot in reality always messes them up for some reason
-                    if (i == 1) {
-                        orientation = 3;
-                    } else if (i == 3) {
-                        orientation = 1;
-                    } else {
-                        orientation = i;
-                    }
+                if (referenceCorners[j].x < xAverage && referenceCorners[j].y < yAverage) {
+                    orientation = j;
                 }
             }
             boundRect = cv::boundingRect(referenceCorners);
