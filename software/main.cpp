@@ -141,6 +141,7 @@ int main(int argc, char** argv) {
             cv::cvtColor(rawFrame, preprocessedFrame, cv::COLOR_BGR2GRAY);
             cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
             cv::adaptiveThreshold(preprocessedFrame, preprocessedFrame, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 75, 0);
+            cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
             std::cout << "Captured and preprocessed part image successfully." << std::endl;
             // Perform canny edge detection
             cv::Canny(preprocessedFrame, cannyFrame, 0, 0);
@@ -180,6 +181,7 @@ int main(int argc, char** argv) {
             cv::cvtColor(rawFrame, preprocessedFrame, cv::COLOR_BGR2GRAY);
             cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
             cv::adaptiveThreshold(preprocessedFrame, preprocessedFrame, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 75, 0);
+            cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
             std::cout << "Captured and preprocessed part image successfully." << std::endl;
             // Perform canny edge detection
             cv::Canny(preprocessedFrame, cannyFrame, 0, 0);
