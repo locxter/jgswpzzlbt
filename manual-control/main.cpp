@@ -78,9 +78,9 @@ int main(int argc, char** argv) {
             static int valueChange = 10;
             // Show a frame
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
-            resize(rawFrame, resizedFrame, cv::Size(1280, 720));
+            cv::resize(rawFrame, resizedFrame, cv::Size(1280, 720));
             annotatedFrame = drawText(resizedFrame, "Value change: " + std::to_string(valueChange) + " X: " + std::to_string(xAxisCoordinate) + " Y: " + std::to_string(yAxisCoordinate) + " Z: " + std::to_string(zAxisCoordinate) + " V: " + std::to_string(vacuumSystemIsOn));
-            imshow(WINDOW_NAME, annotatedFrame);
+            cv::imshow(WINDOW_NAME, annotatedFrame);
             // Fetch user input
             keyPressed = cv::waitKey(1000 / 25);
             // Quit when Q is pressed

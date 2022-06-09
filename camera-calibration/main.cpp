@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
         moveTo(serial, X_AXIS_CENTER_COORDINATE, Y_AXIS_CENTER_COORDINATE);
         std::cout << "Moved to start coordinates." << std::endl;
         // Prompt the user to align the calibration pattern
-        showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Please lay down the calibration pattern in the center of the camera viewport.\nThe next screen will help you with the alignment."));
+        showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Please lay down the calibration pattern in the center of the camera viewport.\nThe next screen will help you with the alignment..."));
         // Show a life camera feed with alignment helps
         while (true) {
             // Image containers and variable for storing the key pressed
@@ -84,11 +84,11 @@ int main(int argc, char** argv) {
             int keyPressed;
             // Show a frame
             rawFrame = capturePicture(camera);
-            resize(rawFrame, resizedFrame, cv::Size(1280, 720));
-            line(resizedFrame, cv::Point(620, 335), cv::Point(660, 335), cv::Scalar(0, 0, 255), 1.5);
-            line(resizedFrame, cv::Point(640, 335), cv::Point(640, 385), cv::Scalar(0, 0, 255), 1.5);
-            line(resizedFrame, cv::Point(620, 385), cv::Point(660, 385), cv::Scalar(0, 0, 255), 1.5);
-            imshow(WINDOW_NAME, resizedFrame);
+            cv::resize(rawFrame, resizedFrame, cv::Size(1280, 720));
+            cv::line(resizedFrame, cv::Point(620, 335), cv::Point(660, 335), cv::Scalar(0, 0, 255), 1.5);
+            cv::line(resizedFrame, cv::Point(640, 335), cv::Point(640, 385), cv::Scalar(0, 0, 255), 1.5);
+            cv::line(resizedFrame, cv::Point(620, 385), cv::Point(660, 385), cv::Scalar(0, 0, 255), 1.5);
+            cv::imshow(WINDOW_NAME, resizedFrame);
             // Fetch user input
             keyPressed = cv::waitKey(1000 / 25);
             // Quit when Q is pressed
@@ -102,7 +102,8 @@ int main(int argc, char** argv) {
         }
         // Move to the required coordinates and take the calibration pictures
         std::cout << "Started the image capture." << std::endl;
-        imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Image capture in progress. Please wait..."));
+        cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Image capture in progress. Please wait..."));
+        cv::waitKey(1000);
         for (int i = Y_AXIS_CENTER_COORDINATE; i < Y_AXIS_CENTER_COORDINATE + (Y_AXIS_CAPTURE_RANGE + 1); i += Y_AXIS_CAPTURE_STEP_SIZE) {
             sendCommand(serial, Y_AXIS_COMMAND, i);
             for (int j = X_AXIS_CENTER_COORDINATE; j < X_AXIS_CENTER_COORDINATE + (X_AXIS_CAPTURE_RANGE + 1); j += X_AXIS_CAPTURE_STEP_SIZE) {
@@ -147,9 +148,9 @@ int main(int argc, char** argv) {
             std::vector<cv::Point2f> cornerPoints;
             // Load and preprocess a picture
             rawFrame = calibrationImages[i];
-            cvtColor(rawFrame, grayFrame, cv::COLOR_BGR2GRAY);
+            cv::cvtColor(rawFrame, grayFrame, cv::COLOR_BGR2GRAY);
             // Actually try to find chessboard corners
-            chessboardFound = findChessboardCornersSB(grayFrame, cv::Size(CHESSBOARD_SIZE[0], CHESSBOARD_SIZE[1]), cornerPoints);
+            chessboardFound = cv::findChessboardCornersSB(grayFrame, cv::Size(CHESSBOARD_SIZE[0], CHESSBOARD_SIZE[1]), cornerPoints);
             if (chessboardFound) {
                 std::cout << "Algorithm detected the chessboard on image " << i << '.' << std::endl;
                 objectPoints.push_back(objectPointsTemplate);
@@ -160,8 +161,9 @@ int main(int argc, char** argv) {
         }
         // Perform the calibration
         std::cout << "Started the calibration." << std::endl;
-        imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Camera calibration in progress. Please wait..."));
-        calibrateCamera(objectPoints, imagePoints, cv::Size(calibrationImages[0].cols, calibrationImages[0].rows), cameraMatrix, distortionCoefficients, rotationVector, translationVector);
+        cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Camera calibration in progress. Please wait..."));
+        cv::waitKey(1000);
+        cv::calibrateCamera(objectPoints, imagePoints, cv::Size(calibrationImages[0].cols, calibrationImages[0].rows), cameraMatrix, distortionCoefficients, rotationVector, translationVector);
         std::cout << "Camera matrix: " << cameraMatrix << std::endl;
         std::cout << "Distortion coefficients : " << distortionCoefficients << std::endl;
         // Write the calibration to file
