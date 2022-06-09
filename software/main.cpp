@@ -114,7 +114,7 @@ int main(int argc, char** argv) {
         // Move all parts to their storage position and capture needed images on the way
         for (int i = 0; i < PART_COUNT; i++) {
             // Variables for pickup coordinates and position adjustments
-            const int X_PICKUP_COORDINATE = X_AXIS_MIN_COORDINATE + X_TOOL_OFFSET + 75;
+            const int X_PICKUP_COORDINATE = X_AXIS_MIN_COORDINATE + X_TOOL_OFFSET + 125;
             const int Y_PICKUP_COORDINATE = Y_TOOL_OFFSET + 75;
             int xAdjustment = 0;
             int yAdjustment = 0;
@@ -133,7 +133,28 @@ int main(int argc, char** argv) {
             moveTo(serial, X_PICKUP_COORDINATE, Y_PICKUP_COORDINATE);
             std::cout << "Moved the pick up coordinates successfully." << std::endl;
             // Prompt the user to lay down a jigsaw puzzle part
-            showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Please lay down the next piece in the bottom left corner of the work area..."));
+            showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Please lay down the next piece in the center of the camera viewport.\nThe next screen will help you with the alignment..."));
+            // Show a life camera feed with alignment helps
+            while (true) {
+                // Image containers and variable for storing the key pressed
+                cv::Mat rawFrame;
+                cv::Mat resizedFrame;
+                int keyPressed;
+                // Show a frame
+                rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
+                cv::resize(rawFrame, resizedFrame, cv::Size(1280, 720));
+                cv::imshow(WINDOW_NAME, resizedFrame);
+                // Fetch user input
+                keyPressed = cv::waitKey(1000 / 25);
+                // Quit when Q is pressed
+                if (keyPressed == 113) {
+                    return 0;
+                }
+                // Move forward when R is pressed
+                else if (keyPressed == 114) {
+                    break;
+                }
+            }
             // Capture and preprocess a picture of the part for position correction
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
             cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Moving the part to it's storage position. Please wait..."));
