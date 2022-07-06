@@ -124,7 +124,7 @@ void loop() {
         const char C_AXIS_COMMAND = 'C';
         const char VACUUM_SYSTEM_COMMAND = 'V';
         // Reade commands and their according parameters
-        String serialInput = Serial.readString();
+        String serialInput = Serial.readStringUntil('\n');
         char command = serialInput.charAt(0);
         int commandParameter = serialInput.substring(1).toInt();
         // Execute known commands or print an error
@@ -149,7 +149,8 @@ void loop() {
                 }
                 break;
             default:
-                Serial.println(ERROR_MESSAGE);
+                Serial.print(ERROR_MESSAGE);
+                Serial.print('\n');
                 break;
         }
     }
@@ -198,9 +199,11 @@ void homeAxis() {
     digitalWrite(Y_AXIS_1_DIR_PIN, !digitalRead(Y_AXIS_1_DIR_PIN));
     // Check for homing error and print an according message
     if (success) {
-        Serial.println(AVAILABILITY_MESSAGE);
+        Serial.print(AVAILABILITY_MESSAGE);
+        Serial.print('\n');
     } else {
-        Serial.println(ERROR_MESSAGE);
+        Serial.print(ERROR_MESSAGE);
+        Serial.print('\n');
     }
 }
 
@@ -252,7 +255,8 @@ void moveXAxis(int newXAxisCoordinate) {
         xAxisCoordinate = newXAxisCoordinate;
     }
     // Printing an availability message
-    Serial.println(AVAILABILITY_MESSAGE);
+    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print('\n');
 }
 
 // Function for controlling the y axis motor 
@@ -301,7 +305,8 @@ void moveYAxis(int newYAxisCoordinate) {
         yAxisCoordinate = newYAxisCoordinate;
     }
     // Printing an availability message
-    Serial.println(AVAILABILITY_MESSAGE);
+    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print('\n');
 }
 
 // Function for controlling the x axis servo 
@@ -317,7 +322,8 @@ void moveZAxis(int newZAxisCoordinate) {
         servo.write(newZAxisCoordinate);
     }
     // Printing an availability message
-    Serial.println(AVAILABILITY_MESSAGE);
+    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print('\n');
 }
 
 // Function for controlling the c axis motor 
@@ -350,7 +356,8 @@ void moveCAxis(int angle) {
         digitalWrite(C_AXIS_DIR_PIN, !digitalRead(C_AXIS_DIR_PIN));
     }
     // Printing an availability message
-    Serial.println(AVAILABILITY_MESSAGE);
+    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print('\n');
 }
 
 // Function for controlling the vacuum system
@@ -364,5 +371,6 @@ void controlVacuumSystem(bool isOn) {
         digitalWrite(VACUUM_PUMP_PIN, LOW);
     }
     // Printing an availability message
-    Serial.println(AVAILABILITY_MESSAGE);
+    Serial.print(AVAILABILITY_MESSAGE);
+    Serial.print('\n');
 }
