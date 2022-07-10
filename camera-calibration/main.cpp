@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include "lib/opencv-helpers.hpp"
 #include "lib/libserial-helpers.hpp"
 

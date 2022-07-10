@@ -1,7 +1,6 @@
 #ifndef LIBSERIAL_HELPERS
 #define LIBSERIAL_HELPERS
 #include <iostream>
-#include <unistd.h>
 #include <libserial/SerialStream.h>
 
 // Serial messages
