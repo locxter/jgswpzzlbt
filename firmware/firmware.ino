@@ -18,6 +18,9 @@ const int VACUUM_VALVE_PIN = 10;
 const char AVAILABILITY_MESSAGE = 'R';
 const char ERROR_MESSAGE = 'E';
 
+// Servo object
+Servo servo;
+
 // Minimum x, y and c axis step intervals
 const int X_AXIS_STEP_INTERVAL = 150;
 const int Y_AXIS_STEP_INTERVAL = 750;
@@ -31,9 +34,6 @@ const int Z_AXIS_MAX_COORDINATE = 90;
 // X and y axis movement per rotation
 const int X_AXIS_MOVEMENT_PER_ROTATION = 40;
 const int Y_AXIS_MOVEMENT_PER_ROTATION = 220;
-
-// Servo object
-Servo servo;
 
 // Own functions
 void homeAxis();
