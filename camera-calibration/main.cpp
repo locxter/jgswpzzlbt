@@ -60,6 +60,7 @@ int main(int argc, char** argv) {
             std::cout << "Opened serial port successfully." << std::endl;
         } else {
             std::cout << "Unable to open serial port." << std::endl;
+            return 1;
         }
         serial.SetBaudRate(LibSerial::BaudRate::BAUD_115200);
         getline(serial, serialInput);
