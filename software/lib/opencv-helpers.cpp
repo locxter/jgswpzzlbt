@@ -37,7 +37,7 @@ void showImage(std::string windowName, cv::Mat image) {
         cv::imshow(windowName, buffer);
         int key = cv::waitKey(1000 / 25);
         if (key == 113) {
-            exit(0);
+            std::exit(0);
         } else if (key == 114) {
             break;
         }
@@ -54,7 +54,7 @@ cv::Mat capturePicture(cv::VideoCapture& camera, cv::Mat cameraMatrix, cv::Mat d
     camera.read(rawFrame);
     if (rawFrame.empty()) {
         std::cout << "Blank frame grabbed." << std::endl;
-        exit(1);
+        std::exit(1);
     }
     // Basic preprocessing
     cv::undistort(rawFrame, undistortedFrame, cameraMatrix, distortionCoefficients);

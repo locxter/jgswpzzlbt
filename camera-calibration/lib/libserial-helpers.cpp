@@ -10,7 +10,7 @@ void sendCommand(LibSerial::SerialStream& serial, char command, int commandParam
     serialResponse = serialInput.at(0);
     if (serialResponse == ERROR_MESSAGE) {
         std::cout << "Robot failed to execute the command " << command << commandParameter << '.' << std::endl;
-        exit(1);
+        std::exit(1);
     }
 }
 
