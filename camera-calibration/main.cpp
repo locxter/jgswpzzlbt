@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
         const int Y_AXIS_CAPTURE_RANGE = 40;
         const int X_AXIS_CAPTURE_STEP_SIZE = 20;
         const int Y_AXIS_CAPTURE_STEP_SIZE = 10;
-        const int CHESSBOARD_SIZE[] = { 6, 9 };
+        const int CHESSBOARD_SIZE[] = {6, 9};
         const int X_AXIS_CENTER_COORDINATE = round(X_AXIS_MAX_COORDINATE / 2.0);
         const int Y_AXIS_CENTER_COORDINATE = round(Y_AXIS_MAX_COORDINATE / 2.0);
         std::vector<cv::Mat> calibrationImages;
