@@ -12,9 +12,9 @@ int main(int argc, char** argv) {
         const std::string SERIAL_PORT = argv[3];
         const std::string WINDOW_NAME = "jgswpzzlbt manual control";
         // Robot axis maximums
-        const int X_AXIS_MAX_COORDINATE = 825;
-        const int Y_AXIS_MAX_COORDINATE = 725;
-        const int Z_AXIS_MAX_COORDINATE = 90;
+        const int X_AXIS_MAX = 825;
+        const int Y_AXIS_MAX = 725;
+        const int Z_AXIS_MAX = 90;
         // Objects for robot communication
         cv::VideoCapture camera;
         cv::Mat cameraMatrix;
@@ -73,15 +73,15 @@ int main(int argc, char** argv) {
             cv::Mat annotatedFrame;
             int keyPressed;
             // Coordinate storage and variable for storing the increment/decrement
-            static int xAxisCoordinate = 0;
-            static int yAxisCoordinate = 0;
-            static int zAxisCoordinate = 90;
-            static bool vacuumSystemIsOn = false;
+            static int x = 0;
+            static int y = 0;
+            static int z = 90;
+            static bool isVacuumOn = false;
             static int valueChange = 10;
             // Show a frame
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
             cv::resize(rawFrame, resizedFrame, cv::Size(1280, 720));
-            annotatedFrame = drawText(resizedFrame, "Value change: " + std::to_string(valueChange) + " X: " + std::to_string(xAxisCoordinate) + " Y: " + std::to_string(yAxisCoordinate) + " Z: " + std::to_string(zAxisCoordinate) + " V: " + std::to_string(vacuumSystemIsOn));
+            annotatedFrame = drawText(resizedFrame, "Value change: " + std::to_string(valueChange) + " X: " + std::to_string(x) + " Y: " + std::to_string(y) + " Z: " + std::to_string(z) + " V: " + std::to_string(isVacuumOn));
             cv::imshow(WINDOW_NAME, annotatedFrame);
             // Fetch user input
             keyPressed = cv::waitKey(1000 / 25);
@@ -124,57 +124,57 @@ int main(int argc, char** argv) {
             }
             // Increase x axis coordinate when D is pressed
             else if (keyPressed == 100) {
-                xAxisCoordinate += valueChange;
-                if (xAxisCoordinate > X_AXIS_MAX_COORDINATE) {
-                    xAxisCoordinate = X_AXIS_MAX_COORDINATE;
+                x += valueChange;
+                if (x > X_AXIS_MAX) {
+                    x = X_AXIS_MAX;
                 }
-                sendCommand(serial, X_AXIS_COMMAND, xAxisCoordinate);
-                std::cout << "X: " << xAxisCoordinate << std::endl;
+                sendCommand(serial, X_AXIS_COMMAND, x);
+                std::cout << "X: " << x << std::endl;
             }
             // Decrease x axis coordinate when A is pressed
             else if (keyPressed == 97) {
-                xAxisCoordinate -= valueChange;
-                if (xAxisCoordinate < 0) {
-                    xAxisCoordinate = 0;
+                x -= valueChange;
+                if (x < 0) {
+                    x = 0;
                 }
-                sendCommand(serial, X_AXIS_COMMAND, xAxisCoordinate);
-                std::cout << "X: " << xAxisCoordinate << std::endl;
+                sendCommand(serial, X_AXIS_COMMAND, x);
+                std::cout << "X: " << x << std::endl;
             }
             // Increase y axis coordinate when W is pressed
             else if (keyPressed == 119) {
-                yAxisCoordinate += valueChange;
-                if (yAxisCoordinate > Y_AXIS_MAX_COORDINATE) {
-                    yAxisCoordinate = Y_AXIS_MAX_COORDINATE;
+                y += valueChange;
+                if (y > Y_AXIS_MAX) {
+                    y = Y_AXIS_MAX;
                 }
-                sendCommand(serial, Y_AXIS_COMMAND, yAxisCoordinate);
-                std::cout << "Y: " << yAxisCoordinate << std::endl;
+                sendCommand(serial, Y_AXIS_COMMAND, y);
+                std::cout << "Y: " << y << std::endl;
             }
             // Decrease y axis coordinate when S is pressed
             else if (keyPressed == 115) {
-                yAxisCoordinate -= valueChange;
-                if (yAxisCoordinate < 0) {
-                    yAxisCoordinate = 0;
+                y -= valueChange;
+                if (y < 0) {
+                    y = 0;
                 }
-                sendCommand(serial, Y_AXIS_COMMAND, yAxisCoordinate);
-                std::cout << "Y: " << yAxisCoordinate << std::endl;
+                sendCommand(serial, Y_AXIS_COMMAND, y);
+                std::cout << "Y: " << y << std::endl;
             }
             // Increase z axis coordinate when UP ARROW is pressed
             else if (keyPressed == 82) {
-                zAxisCoordinate += valueChange;
-                if (zAxisCoordinate > Z_AXIS_MAX_COORDINATE) {
-                    zAxisCoordinate = Z_AXIS_MAX_COORDINATE;
+                z += valueChange;
+                if (z > Z_AXIS_MAX) {
+                    z = Z_AXIS_MAX;
                 }
-                sendCommand(serial, Z_AXIS_COMMAND, zAxisCoordinate);
-                std::cout << "Z: " << yAxisCoordinate << std::endl;
+                sendCommand(serial, Z_AXIS_COMMAND, z);
+                std::cout << "Z: " << z << std::endl;
             }
             // Decrease z axis coordinate when DOWN ARROW is pressed
             else if (keyPressed == 84) {
-                zAxisCoordinate -= valueChange;
-                if (zAxisCoordinate < 0) {
-                    zAxisCoordinate = 0;
+                z -= valueChange;
+                if (z < 0) {
+                    z = 0;
                 }
-                sendCommand(serial, Z_AXIS_COMMAND, zAxisCoordinate);
-                std::cout << "Z: " << yAxisCoordinate << std::endl;
+                sendCommand(serial, Z_AXIS_COMMAND, z);
+                std::cout << "Z: " << z << std::endl;
             }
             // Increase c axis coordinate when RIGHT ARROW is pressed
             else if (keyPressed == 83) {
@@ -188,15 +188,15 @@ int main(int argc, char** argv) {
             }
             // Turning vacuum system on when T is pressed
             else if (keyPressed == 116) {
-                vacuumSystemIsOn = true;
-                sendCommand(serial, VACUUM_SYSTEM_COMMAND, vacuumSystemIsOn);
-                std::cout << "V: " << vacuumSystemIsOn << std::endl;
+                isVacuumOn = true;
+                sendCommand(serial, VACUUM_SYSTEM_COMMAND, isVacuumOn);
+                std::cout << "V: " << isVacuumOn << std::endl;
             }
             // Turning vacuum system off when G is pressed
             else if (keyPressed == 103) {
-                vacuumSystemIsOn = false;
-                sendCommand(serial, VACUUM_SYSTEM_COMMAND, vacuumSystemIsOn);
-                std::cout << "V: " << vacuumSystemIsOn << std::endl;
+                isVacuumOn = false;
+                sendCommand(serial, VACUUM_SYSTEM_COMMAND, isVacuumOn);
+                std::cout << "V: " << isVacuumOn << std::endl;
             }
         }
         // Close the program

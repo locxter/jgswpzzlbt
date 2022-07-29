@@ -15,9 +15,9 @@ void sendCommand(LibSerial::SerialStream& serial, char command, int commandParam
 }
 
 // Function to move to a x and y coordinate
-void moveTo(LibSerial::SerialStream& serial, int xCoordinate, int yCoordinate) {
-    sendCommand(serial, X_AXIS_COMMAND, xCoordinate);
-    sendCommand(serial, Y_AXIS_COMMAND, yCoordinate);
+void moveTo(LibSerial::SerialStream& serial, int x, int y) {
+    sendCommand(serial, X_AXIS_COMMAND, x);
+    sendCommand(serial, Y_AXIS_COMMAND, y);
 }
 
 // Function to pick a part from the puzzle mat

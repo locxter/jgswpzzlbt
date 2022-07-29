@@ -16,5 +16,5 @@ const char VACUUM_SYSTEM_COMMAND = 'V';
 void sendCommand(LibSerial::SerialStream& serial, char command, int commandParameter);
 
 // Function to move to a x and y coordinate
-void moveTo(LibSerial::SerialStream& serial, int xCoordinate, int yCoordinate);
+void moveTo(LibSerial::SerialStream& serial, int x, int y);
 #endif

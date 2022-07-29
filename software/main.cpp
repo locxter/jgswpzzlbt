@@ -20,9 +20,9 @@ int main(int argc, char** argv) {
         // Robot axis minimums and maximums as well as tool offset
         const int X_TOOL_OFFSET = 0;
         const int Y_TOOL_OFFSET = 80;
-        const int X_AXIS_MIN_COORDINATE = 50;
-        const int X_AXIS_MAX_COORDINATE = 825;
-        const int Y_AXIS_MAX_COORDINATE = 725;
+        const int X_AXIS_MIN = 50;
+        const int X_AXIS_MAX = 825;
+        const int Y_AXIS_MAX = 725;
         // Objects for robot communication
         cv::VideoCapture camera;
         cv::Mat cameraMatrix;
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
         } else {
             storageCellSize = std::round(((float) WIDTH / COLUMN_COUNT) + 20);
         }
-        const int STORAGE_COLUMN_COUNT = std::floor(((float) X_AXIS_MAX_COORDINATE - X_AXIS_MIN_COORDINATE) / storageCellSize);
+        const int STORAGE_COLUMN_COUNT = std::floor(((float) X_AXIS_MAX - X_AXIS_MIN) / storageCellSize);
         const int STORAGE_ROW_COUNT = std::ceil((float) PART_COUNT / STORAGE_COLUMN_COUNT);
         std::vector<std::vector<int>> storageCoordinates;
         // Puzzle solving related variables
@@ -56,8 +56,8 @@ int main(int argc, char** argv) {
                 if (storageCoordinates.size() == PART_COUNT) {
                     break;
                 }
-                partCoordinates.push_back(std::round((storageCellSize * .5) + (storageCellSize * j) + X_AXIS_MIN_COORDINATE));
-                partCoordinates.push_back(std::round(Y_AXIS_MAX_COORDINATE - ((storageCellSize * .5) + (storageCellSize * i))));
+                partCoordinates.push_back(std::round((storageCellSize * .5) + (storageCellSize * j) + X_AXIS_MIN));
+                partCoordinates.push_back(std::round(Y_AXIS_MAX - ((storageCellSize * .5) + (storageCellSize * i))));
                 storageCoordinates.push_back(partCoordinates);
             }
         }
@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
             std::vector<std::vector<int>> columnCoordinates;
             for (int j = 0; j < ROW_COUNT; j++) {
                 std::vector<int> partCoordinates;
-                partCoordinates.push_back(std::round((ASSEMBLY_COLUMN_WIDTH * .5) + (ASSEMBLY_COLUMN_WIDTH * i) + X_AXIS_MIN_COORDINATE));
+                partCoordinates.push_back(std::round((ASSEMBLY_COLUMN_WIDTH * .5) + (ASSEMBLY_COLUMN_WIDTH * i) + X_AXIS_MIN));
                 partCoordinates.push_back(std::round((ASSEMBLY_ROW_HEIGHT * .5) + (ASSEMBLY_ROW_HEIGHT * j)));
                 columnCoordinates.push_back(partCoordinates);
             }
@@ -116,8 +116,8 @@ int main(int argc, char** argv) {
         // Move all parts to their storage position and capture needed images on the way
         for (int i = 0; i < PART_COUNT; i++) {
             // Variables for pickup coordinates and position adjustments
-            const int X_PICKUP_COORDINATE = X_AXIS_MIN_COORDINATE + X_TOOL_OFFSET + 125;
-            const int Y_PICKUP_COORDINATE = Y_TOOL_OFFSET + 75;
+            const int X_PICKUP = X_AXIS_MIN + X_TOOL_OFFSET + 125;
+            const int Y_PICKUP = Y_TOOL_OFFSET + 75;
             int xAdjustment = 0;
             int yAdjustment = 0;
             int cAdjustment = 0;
@@ -132,7 +132,7 @@ int main(int argc, char** argv) {
             cv::Rect boundRect;
             cv::Mat croppedFrame;
             // Move the head to the pickup coordinates
-            moveTo(serial, X_PICKUP_COORDINATE, Y_PICKUP_COORDINATE);
+            moveTo(serial, X_PICKUP, Y_PICKUP);
             std::cout << "Moved the pick up coordinates successfully." << std::endl;
             // Prompt the user to lay down a jigsaw puzzle part
             showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Please lay down the next piece in the center of the camera viewport.\nThe next screen will help you with the alignment..."));
@@ -191,13 +191,13 @@ int main(int argc, char** argv) {
             std::cout << "Y adjustment: " << yAdjustment << std::endl;
             std::cout << "C adjustment: " << cAdjustment << std::endl;
             // Pick the part from the adjusted position and apply rotation adjustment afterwards
-            moveTo(serial, X_PICKUP_COORDINATE + xAdjustment, Y_PICKUP_COORDINATE + yAdjustment);
+            moveTo(serial, X_PICKUP + xAdjustment, Y_PICKUP + yAdjustment);
             pickPartFromPuzzleMat(serial);
             rotatePart(serial, cAdjustment);
             // Move the part to picture capture position
-            sendCommand(serial, X_AXIS_COMMAND, X_PICKUP_COORDINATE + xAdjustment);
+            sendCommand(serial, X_AXIS_COMMAND, X_PICKUP + xAdjustment);
             releasePartToPuzzleMat(serial);
-            sendCommand(serial, Y_AXIS_COMMAND, Y_PICKUP_COORDINATE + yAdjustment + Y_TOOL_OFFSET);
+            sendCommand(serial, Y_AXIS_COMMAND, Y_PICKUP + yAdjustment + Y_TOOL_OFFSET);
             sleep(1);
             // Capture and preprocess a picture of the part for puzzle solving
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
@@ -227,7 +227,7 @@ int main(int argc, char** argv) {
             solvingImages.push_back(croppedFrame);
             std::cout << "Created part image for puzzle solving successfully." << std::endl;
             // Move the part to it's storage coordinates
-            sendCommand(serial, Y_AXIS_COMMAND, Y_PICKUP_COORDINATE + yAdjustment);
+            sendCommand(serial, Y_AXIS_COMMAND, Y_PICKUP + yAdjustment);
             pickPartFromPuzzleMat(serial);
             moveTo(serial, storageCoordinates[i][0], storageCoordinates[i][1]);
             releasePartToPuzzleMat(serial);
@@ -335,7 +335,7 @@ int main(int argc, char** argv) {
             std::cout << "Moved part " << (i + 1) << " to it's final position successfully." << std::endl;
         }
         // Move out of the way and close the program
-        moveTo(serial, 0, Y_AXIS_MAX_COORDINATE);
+        moveTo(serial, 0, Y_AXIS_MAX);
         std::cout << "Finished solving the jigsaw puzzle!" << std::endl;
         showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Finished solving the jigsaw puzzle!"));
         camera.release();

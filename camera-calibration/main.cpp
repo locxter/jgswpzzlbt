@@ -13,8 +13,8 @@ int main(int argc, char** argv) {
         const std::string CAMERA_CALIBRATION_FILE = argv[3];
         const std::string WINDOW_NAME = "jgswpzzlbt camera calibration";
         // Robot axis maximums
-        const int X_AXIS_MAX_COORDINATE = 825;
-        const int Y_AXIS_MAX_COORDINATE = 725;
+        const int X_AXIS_MAX = 825;
+        const int Y_AXIS_MAX = 725;
         // Objects for robot communication
         cv::VideoCapture camera;
         LibSerial::SerialStream serial;
@@ -26,8 +26,8 @@ int main(int argc, char** argv) {
         const int X_AXIS_CAPTURE_STEP_SIZE = 20;
         const int Y_AXIS_CAPTURE_STEP_SIZE = 10;
         const int CHESSBOARD_SIZE[] = {6, 9};
-        const int X_AXIS_CENTER_COORDINATE = round(X_AXIS_MAX_COORDINATE / 2.0);
-        const int Y_AXIS_CENTER_COORDINATE = round(Y_AXIS_MAX_COORDINATE / 2.0);
+        const int X_AXIS_CENTER = round(X_AXIS_MAX / 2.0);
+        const int Y_AXIS_CENTER = round(Y_AXIS_MAX / 2.0);
         std::vector<cv::Mat> calibrationImages;
         std::vector<cv::Point3f> objectPointsTemplate;
         for (int i = 0; i < CHESSBOARD_SIZE[1]; i++) {
@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
         cv::namedWindow(WINDOW_NAME);
         showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: Quit the program\nR: Indicate that the next operation can be performed"));
         // Moving to the start coordinates
-        moveTo(serial, X_AXIS_CENTER_COORDINATE, Y_AXIS_CENTER_COORDINATE);
+        moveTo(serial, X_AXIS_CENTER, Y_AXIS_CENTER);
         std::cout << "Moved to start coordinates." << std::endl;
         // Prompt the user to align the calibration pattern
         showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Please lay down the calibration pattern in the center of the camera viewport.\nThe next screen will help you with the alignment..."));
@@ -107,30 +107,30 @@ int main(int argc, char** argv) {
         std::cout << "Started the image capture." << std::endl;
         cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Image capture in progress. Please wait..."));
         cv::waitKey(1000);
-        for (int i = Y_AXIS_CENTER_COORDINATE; i < Y_AXIS_CENTER_COORDINATE + (Y_AXIS_CAPTURE_RANGE + 1); i += Y_AXIS_CAPTURE_STEP_SIZE) {
+        for (int i = Y_AXIS_CENTER; i < Y_AXIS_CENTER + (Y_AXIS_CAPTURE_RANGE + 1); i += Y_AXIS_CAPTURE_STEP_SIZE) {
             sendCommand(serial, Y_AXIS_COMMAND, i);
-            for (int j = X_AXIS_CENTER_COORDINATE; j < X_AXIS_CENTER_COORDINATE + (X_AXIS_CAPTURE_RANGE + 1); j += X_AXIS_CAPTURE_STEP_SIZE) {
+            for (int j = X_AXIS_CENTER; j < X_AXIS_CENTER + (X_AXIS_CAPTURE_RANGE + 1); j += X_AXIS_CAPTURE_STEP_SIZE) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 calibrationImages.push_back(capturePicture(camera));
                 std::cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.' << std::endl;
             }
-            for (int j = X_AXIS_CENTER_COORDINATE - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_CENTER_COORDINATE - (X_AXIS_CAPTURE_RANGE + 1); j -= X_AXIS_CAPTURE_STEP_SIZE) {
+            for (int j = X_AXIS_CENTER - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_CENTER - (X_AXIS_CAPTURE_RANGE + 1); j -= X_AXIS_CAPTURE_STEP_SIZE) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 calibrationImages.push_back(capturePicture(camera));
                 std::cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.' << std::endl;
             }
         }
-        for (int i = Y_AXIS_CENTER_COORDINATE - Y_AXIS_CAPTURE_STEP_SIZE; i > Y_AXIS_CENTER_COORDINATE - (Y_AXIS_CAPTURE_RANGE + 1); i -= Y_AXIS_CAPTURE_STEP_SIZE) {
+        for (int i = Y_AXIS_CENTER - Y_AXIS_CAPTURE_STEP_SIZE; i > Y_AXIS_CENTER - (Y_AXIS_CAPTURE_RANGE + 1); i -= Y_AXIS_CAPTURE_STEP_SIZE) {
             sendCommand(serial, Y_AXIS_COMMAND, i);
-            for (int j = X_AXIS_CENTER_COORDINATE; j < X_AXIS_CENTER_COORDINATE + (X_AXIS_CAPTURE_RANGE + 1); j += X_AXIS_CAPTURE_STEP_SIZE) {
+            for (int j = X_AXIS_CENTER; j < X_AXIS_CENTER + (X_AXIS_CAPTURE_RANGE + 1); j += X_AXIS_CAPTURE_STEP_SIZE) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 calibrationImages.push_back(capturePicture(camera));
                 std::cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.' << std::endl;
             }
-            for (int j = X_AXIS_CENTER_COORDINATE - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_CENTER_COORDINATE - (X_AXIS_CAPTURE_RANGE + 1); j -= X_AXIS_CAPTURE_STEP_SIZE) {
+            for (int j = X_AXIS_CENTER - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_CENTER - (X_AXIS_CAPTURE_RANGE + 1); j -= X_AXIS_CAPTURE_STEP_SIZE) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 calibrationImages.push_back(capturePicture(camera));
