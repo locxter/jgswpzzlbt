@@ -21,8 +21,7 @@ int main(int argc, char** argv) {
         cv::Mat distortionCoefficients;
         cv::FileStorage cameraCalibration;
         LibSerial::SerialStream serial;
-        std::string serialInput;
-        char serialResponse;
+        std::string response;
         // Initialize robot
         cameraCalibration.open("camera-calibration.xml", cv::FileStorage::READ);
         if (cameraCalibration.isOpened()) {
@@ -54,9 +53,8 @@ int main(int argc, char** argv) {
             return 1;
         }
         serial.SetBaudRate(LibSerial::BaudRate::BAUD_115200);
-        std::getline(serial, serialInput);
-        serialResponse = serialInput.at(0);
-        if (serialResponse == AVAILABILITY_MESSAGE) {
+        std::getline(serial, response);
+        if (response.at(0) == AVAILABILITY_MESSAGE) {
             std::cout << "Robot homed successfully." << std::endl;
         } else {
             std::cout << "Homing of the robot failed." << std::endl;

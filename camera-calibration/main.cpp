@@ -18,8 +18,7 @@ int main(int argc, char** argv) {
         // Objects for robot communication
         cv::VideoCapture camera;
         LibSerial::SerialStream serial;
-        std::string serialInput;
-        char serialResponse;
+        std::string response;
         // Calibration related variables
         const int X_AXIS_CAPTURE_RANGE = 120;
         const int Y_AXIS_CAPTURE_RANGE = 40;
@@ -63,9 +62,8 @@ int main(int argc, char** argv) {
             return 1;
         }
         serial.SetBaudRate(LibSerial::BaudRate::BAUD_115200);
-        getline(serial, serialInput);
-        serialResponse = serialInput.at(0);
-        if (serialResponse == AVAILABILITY_MESSAGE) {
+        getline(serial, response);
+        if (response.at(0) == AVAILABILITY_MESSAGE) {
             std::cout << "Robot homed successfully." << std::endl;
         } else {
             std::cout << "Homing of the robot failed." << std::endl;

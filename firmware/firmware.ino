@@ -124,9 +124,9 @@ void loop() {
         const char C_AXIS_COMMAND = 'C';
         const char VACUUM_SYSTEM_COMMAND = 'V';
         // Reade commands and their according parameters
-        String serialInput = Serial.readStringUntil('\n');
-        char command = serialInput.charAt(0);
-        int commandParameter = serialInput.substring(1).toInt();
+        String input = Serial.readStringUntil('\n');
+        char command = input.charAt(0);
+        int commandParameter = input.substring(1).toInt();
         // Execute known commands or print an error
         switch (command) {
             case X_AXIS_COMMAND:
