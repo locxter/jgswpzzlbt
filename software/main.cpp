@@ -292,9 +292,9 @@ int main(int argc, char** argv) {
                     yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4.0;
                 }
                 if (referenceCorners[j].x < xAverage && referenceCorners[j].y < yAverage) {
-                    // Swap 1 and 3 as the robot in reality always messes them up for some reason
+                    // Swap 1 and 3 (aka -1) as the robot in reality always messes them up for some reason
                     if (j == 1) {
-                        orientation = 3;
+                        orientation = -1;
                     } else if (j == 3) {
                         orientation = 1;
                     } else {
