@@ -8,11 +8,11 @@ This is a jigsaw puzzle solving robot I designed. It is programmed in C++ using 
 
 ## Dependencies
 
-I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Ubuntu/Debian as I'm running it myself. Anyway, you need to have the following packages installed for everything to work properly:
+I generally try to minimize dependencies, but I'm a one man crew and can therefore only support Linux Mint/Ubuntu as I'm running it myself. Anyway, you need to have the following packages installed for everything to work properly:
 
 - FreeCAD for editing and exporting the CAD files. Install it with `sudo apt install freecad`.
 - A2Plus for assemblying the different components in FreeCAD. Install it via the integrated addon manager.
-- fcgear for creating the needed gears in FreeCAD. Install it via the integrated addon manager.
+- freecad.gears for creating the needed gears in FreeCAD. Install it via the integrated addon manager.
 - Arduino IDE as a way to compile the Arduino code. Install it with `sudo apt install arduino`.
 - GCC, G++, GDB and CMake for building the C++ code. Install them with `sudo apt install build-essential gdb cmake`.
 - OpenCV as the used computer vision library. Install it with `sudo apt install libopencv-dev`.
