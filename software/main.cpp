@@ -303,8 +303,8 @@ int main(int argc, char** argv) {
                 }
             }
             boundRect = cv::boundingRect(referenceCorners);
-            xPosition = std::floor((boundRect.tl().x + (boundRect.width / 2.0)) / (referenceImage.cols / COLUMN_COUNT));
-            yPosition = ROW_COUNT - (1 + std::floor((boundRect.tl().y + (boundRect.height / 2.0)) / (referenceImage.rows / ROW_COUNT)));
+            xPosition = std::floor((boundRect.tl().x + (boundRect.width / 2.0)) / ((float) referenceImage.cols / COLUMN_COUNT));
+            yPosition = ROW_COUNT - (1 + std::floor((boundRect.tl().y + (boundRect.height / 2.0)) / ((float) referenceImage.rows / ROW_COUNT)));
             // Store and print the important data
             partSolvingResults.push_back(xPosition);
             partSolvingResults.push_back(yPosition);
