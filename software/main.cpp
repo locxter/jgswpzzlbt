@@ -232,7 +232,7 @@ int main(int argc, char** argv) {
             std::cout << "Moved part " << (i + 1) << " to it's storage location successfully." << std::endl;
         }
         sendCommand(serial, X_AXIS_COMMAND, 0);
-        // Solve the jigsaw puzzle by utilitizing multi-scale template matching
+        // Solve the jigsaw puzzle by utilitizing feature matching
         std::cout << "Solving the jigsaw puzzle." << std::endl;
         cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Solving the jigsaw puzzle. Please wait..."));
         cv::waitKey(1000);
