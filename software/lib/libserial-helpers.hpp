@@ -1,8 +1,8 @@
 #ifndef LIBSERIAL_HELPERS
 #define LIBSERIAL_HELPERS
 #include <iostream>
-#include <unistd.h>
 #include <libserial/SerialStream.h>
+#include <unistd.h>
 
 // Serial messages
 const char AVAILABILITY_MESSAGE = 'R';

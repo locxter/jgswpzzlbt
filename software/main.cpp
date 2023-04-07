@@ -1,6 +1,6 @@
-#include <iostream>
-#include "lib/opencv-helpers.hpp"
 #include "lib/libserial-helpers.hpp"
+#include "lib/opencv-helpers.hpp"
+#include <iostream>
 
 // Main function
 int main(int argc, char** argv) {
@@ -64,7 +64,8 @@ int main(int argc, char** argv) {
             std::vector<std::vector<int>> columnCoordinates;
             for (int j = 0; j < ROW_COUNT; j++) {
                 std::vector<int> partCoordinates;
-                partCoordinates.push_back(std::round((ASSEMBLY_COLUMN_WIDTH * .5) + (ASSEMBLY_COLUMN_WIDTH * i) + X_AXIS_MIN));
+                partCoordinates.push_back(
+                    std::round((ASSEMBLY_COLUMN_WIDTH * .5) + (ASSEMBLY_COLUMN_WIDTH * i) + X_AXIS_MIN));
                 partCoordinates.push_back(std::round((ASSEMBLY_ROW_HEIGHT * .5) + (ASSEMBLY_ROW_HEIGHT * j)));
                 columnCoordinates.push_back(partCoordinates);
             }
@@ -110,7 +111,10 @@ int main(int argc, char** argv) {
         }
         // Display a small help at start
         cv::namedWindow(WINDOW_NAME);
-        showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: Quit the program\nR: Indicate that the next operation can be performed"));
+        showImage(WINDOW_NAME,
+                  drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3),
+                           "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: "
+                           "Quit the program\nR: Indicate that the next operation can be performed"));
         // Move all parts to their storage position and capture needed images on the way
         for (int i = 0; i < PART_COUNT; i++) {
             // Variables for pickup coordinates and position adjustments
@@ -133,7 +137,9 @@ int main(int argc, char** argv) {
             moveTo(serial, X_PICKUP, Y_PICKUP);
             std::cout << "Moved the pick up coordinates successfully." << std::endl;
             // Prompt the user to lay down a jigsaw puzzle part
-            showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Please lay down the next piece in the center of the camera viewport.\nThe next screen will help you with the alignment..."));
+            showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3),
+                                            "Please lay down the next piece in the center of the camera viewport.\nThe "
+                                            "next screen will help you with the alignment..."));
             // Show a life camera feed with alignment helps
             while (true) {
                 // Image containers and variable for storing the key pressed
@@ -157,11 +163,13 @@ int main(int argc, char** argv) {
             }
             // Capture and preprocess a picture of the part for position correction
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
-            cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Moving the part to it's storage position. Please wait..."));
+            cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3),
+                                             "Moving the part to it's storage position. Please wait..."));
             cv::waitKey(1000);
             cv::cvtColor(rawFrame, preprocessedFrame, cv::COLOR_BGR2GRAY);
             cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
-            cv::adaptiveThreshold(preprocessedFrame, preprocessedFrame, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 75, 0);
+            cv::adaptiveThreshold(preprocessedFrame, preprocessedFrame, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C,
+                                  cv::THRESH_BINARY, 75, 0);
             cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
             std::cout << "Captured and preprocessed part image successfully." << std::endl;
             // Perform canny edge detection
@@ -201,7 +209,8 @@ int main(int argc, char** argv) {
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
             cv::cvtColor(rawFrame, preprocessedFrame, cv::COLOR_BGR2GRAY);
             cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
-            cv::adaptiveThreshold(preprocessedFrame, preprocessedFrame, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 75, 0);
+            cv::adaptiveThreshold(preprocessedFrame, preprocessedFrame, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C,
+                                  cv::THRESH_BINARY, 75, 0);
             cv::medianBlur(preprocessedFrame, preprocessedFrame, 25);
             std::cout << "Captured and preprocessed part image successfully." << std::endl;
             // Perform canny edge detection
@@ -221,7 +230,8 @@ int main(int argc, char** argv) {
             }
             std::cout << "Contour detection finished successfully." << std::endl;
             // Crop the frame and store it for future processing
-            croppedFrame = rawFrame(cv::Range(boundRect.tl().y, boundRect.tl().y + boundRect.height), cv::Range(boundRect.tl().x, boundRect.tl().x + boundRect.width));
+            croppedFrame = rawFrame(cv::Range(boundRect.tl().y, boundRect.tl().y + boundRect.height),
+                                    cv::Range(boundRect.tl().x, boundRect.tl().x + boundRect.width));
             solvingImages.push_back(croppedFrame);
             std::cout << "Created part image for puzzle solving successfully." << std::endl;
             // Move the part to it's storage coordinates
@@ -234,7 +244,8 @@ int main(int argc, char** argv) {
         sendCommand(serial, X_AXIS_COMMAND, 0);
         // Solve the jigsaw puzzle by utilitizing feature matching
         std::cout << "Solving the jigsaw puzzle." << std::endl;
-        cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Solving the jigsaw puzzle. Please wait..."));
+        cv::imshow(WINDOW_NAME,
+                   drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Solving the jigsaw puzzle. Please wait..."));
         cv::waitKey(1000);
         referenceImage = cv::imread(REFERENCE_IMAGE_FILE);
         for (int i = 0; i < PART_COUNT; i++) {
@@ -285,11 +296,19 @@ int main(int argc, char** argv) {
             cv::perspectiveTransform(partCorners, referenceCorners, homography);
             // Extract important data
             for (int j = 0; j < 4; j++) {
-                static float xAverage = (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x + referenceCorners[3].x) / 4.0;
-                static float yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4.0;
+                static float xAverage =
+                    (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x + referenceCorners[3].x) /
+                    4.0;
+                static float yAverage =
+                    (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) /
+                    4.0;
                 if (j == 0) {
-                    xAverage = (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x + referenceCorners[3].x) / 4.0;
-                    yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y + referenceCorners[3].y) / 4.0;
+                    xAverage = (referenceCorners[0].x + referenceCorners[1].x + referenceCorners[2].x +
+                                referenceCorners[3].x) /
+                               4.0;
+                    yAverage = (referenceCorners[0].y + referenceCorners[1].y + referenceCorners[2].y +
+                                referenceCorners[3].y) /
+                               4.0;
                 }
                 if (referenceCorners[j].x < xAverage && referenceCorners[j].y < yAverage) {
                     // Swap 1 and 3 (aka -1) as the robot in reality always messes them up for some reason
@@ -303,8 +322,10 @@ int main(int argc, char** argv) {
                 }
             }
             boundRect = cv::boundingRect(referenceCorners);
-            xPosition = std::floor((boundRect.tl().x + (boundRect.width / 2.0)) / ((float) referenceImage.cols / COLUMN_COUNT));
-            yPosition = ROW_COUNT - (1 + std::floor((boundRect.tl().y + (boundRect.height / 2.0)) / ((float) referenceImage.rows / ROW_COUNT)));
+            xPosition =
+                std::floor((boundRect.tl().x + (boundRect.width / 2.0)) / ((float) referenceImage.cols / COLUMN_COUNT));
+            yPosition = ROW_COUNT - (1 + std::floor((boundRect.tl().y + (boundRect.height / 2.0)) /
+                                                    ((float) referenceImage.rows / ROW_COUNT)));
             // Store and print the important data
             partSolvingResults.push_back(xPosition);
             partSolvingResults.push_back(yPosition);
@@ -317,7 +338,8 @@ int main(int argc, char** argv) {
         }
         // Move all the parts to their calculated positions
         std::cout << "Moving the parts to their final positions." << std::endl;
-        cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Moving the parts to their final positions. Please wait..."));
+        cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3),
+                                         "Moving the parts to their final positions. Please wait..."));
         cv::waitKey(1000);
         for (int i = 0; i < PART_COUNT; i++) {
             int xPosition = solvingResults[i][0];
@@ -335,14 +357,19 @@ int main(int argc, char** argv) {
         // Move out of the way and close the program
         moveTo(serial, 0, Y_AXIS_MAX);
         std::cout << "Finished solving the jigsaw puzzle!" << std::endl;
-        showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Finished solving the jigsaw puzzle!"));
+        showImage(WINDOW_NAME,
+                  drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Finished solving the jigsaw puzzle!"));
         camera.release();
         serial.Close();
         return 0;
     } else {
         // Throw an error on invalid number of command line arguments
-        std::cout << "Wrong number of arguments. Eight arguments containing the path of the camera calibration file, camera ID, serial port as well as reference image, column count, row count, width and height in mm of the jigsaw puzzle expected." << std::endl;
-        std::cout << "Example: " << argv[0] << " camera-calibration.xml 0 /dev/ttyUSB0 reference.png 6 4 300 200" << std::endl;
+        std::cout << "Wrong number of arguments. Eight arguments containing the path of the camera calibration file, "
+                     "camera ID, serial port as well as reference image, column count, row count, width and height in "
+                     "mm of the jigsaw puzzle expected."
+                  << std::endl;
+        std::cout << "Example: " << argv[0] << " camera-calibration.xml 0 /dev/ttyUSB0 reference.png 6 4 300 200"
+                  << std::endl;
         return 1;
     }
 }

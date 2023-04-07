@@ -1,6 +1,6 @@
-#include <iostream>
-#include "lib/opencv-helpers.hpp"
 #include "lib/libserial-helpers.hpp"
+#include "lib/opencv-helpers.hpp"
+#include <iostream>
 
 // Main function
 int main(int argc, char** argv) {
@@ -62,7 +62,16 @@ int main(int argc, char** argv) {
         }
         // Display a small help at start
         cv::namedWindow(WINDOW_NAME);
-        showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: Quit the program\nF: Save the current frame\n1 to 9: Set the value change to 1, 5, 10, 25, 50, 75, 100, 250 or 500\nD: Increase x axis coordinate\nA: Decrease x axis coordinate\nW: Increase y axis coordinate\nS: Decrease y axis coordinate\nUP ARROW: Increase z axis coordinate\nDOWN ARROW : Decrease z axis coordinate\nRIGHT ARROW: Increase c axis coordinate\nLEFT ARROW: Decrease c axis coordinate\nT: Turn vacuum system on\nG: Turn vacuum system off\nR: Indicate that the next operation can be performed"));
+        showImage(
+            WINDOW_NAME,
+            drawText(
+                cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3),
+                "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: Quit the "
+                "program\nF: Save the current frame\n1 to 9: Set the value change to 1, 5, 10, 25, 50, 75, 100, 250 or "
+                "500\nD: Increase x axis coordinate\nA: Decrease x axis coordinate\nW: Increase y axis coordinate\nS: "
+                "Decrease y axis coordinate\nUP ARROW: Increase z axis coordinate\nDOWN ARROW : Decrease z axis "
+                "coordinate\nRIGHT ARROW: Increase c axis coordinate\nLEFT ARROW: Decrease c axis coordinate\nT: Turn "
+                "vacuum system on\nG: Turn vacuum system off\nR: Indicate that the next operation can be performed"));
         // Endless frame capturing, displaying and communcation loop
         while (true) {
             // Image containers and variable for storing the key pressed
@@ -79,7 +88,10 @@ int main(int argc, char** argv) {
             // Show a frame
             rawFrame = capturePicture(camera, cameraMatrix, distortionCoefficients);
             cv::resize(rawFrame, resizedFrame, cv::Size(1280, 720));
-            annotatedFrame = drawText(resizedFrame, "Value change: " + std::to_string(valueChange) + " X: " + std::to_string(x) + " Y: " + std::to_string(y) + " Z: " + std::to_string(z) + " V: " + std::to_string(isVacuumOn));
+            annotatedFrame =
+                drawText(resizedFrame, "Value change: " + std::to_string(valueChange) + " X: " + std::to_string(x) +
+                                           " Y: " + std::to_string(y) + " Z: " + std::to_string(z) +
+                                           " V: " + std::to_string(isVacuumOn));
             cv::imshow(WINDOW_NAME, annotatedFrame);
             // Fetch user input
             keyPressed = cv::waitKey(1000 / 25);
@@ -203,7 +215,9 @@ int main(int argc, char** argv) {
         return 0;
     } else {
         // Throw an error on invalid number of command line arguments
-        std::cout << "Wrong number of arguments. Three arguments containing the path of the camera calibration file, camera ID and serial port expected." << std::endl;
+        std::cout << "Wrong number of arguments. Three arguments containing the path of the camera calibration file, "
+                     "camera ID and serial port expected."
+                  << std::endl;
         std::cout << "Example: " << argv[0] << " camera-calibration.xml 0 /dev/ttyUSB0" << std::endl;
         return 1;
     }

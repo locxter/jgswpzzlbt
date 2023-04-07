@@ -207,7 +207,7 @@ void homeAxis() {
     }
 }
 
-// Function for controlling the x axis motor 
+// Function for controlling the x axis motor
 void moveXAxis(int x) {
     // Variable to store current coordinate
     static int currentX = 0;
@@ -259,7 +259,7 @@ void moveXAxis(int x) {
     Serial.print('\n');
 }
 
-// Function for controlling the y axis motor 
+// Function for controlling the y axis motor
 void moveYAxis(int y) {
     // Defining variable to store current coordinate
     static int currentY = 0;
@@ -286,7 +286,7 @@ void moveYAxis(int y) {
         for (unsigned long long i = 0; i < stepsToGo; i++) {
             long stepInterval = Y_AXIS_STEP_INTERVAL - 10;
             // Slowing down at the start and end of the move
-            if (i < 201 || i >(stepsToGo - 201)) {
+            if (i < 201 || i > (stepsToGo - 201)) {
                 stepInterval = (2 * Y_AXIS_STEP_INTERVAL) - 10;
             }
             digitalWrite(Y_AXIS_0_STP_PIN, HIGH);
@@ -309,7 +309,7 @@ void moveYAxis(int y) {
     Serial.print('\n');
 }
 
-// Function for controlling the x axis servo 
+// Function for controlling the x axis servo
 void moveZAxis(int z) {
     // Limiting the parameter range
     if (z > Z_AXIS_MAX) {
@@ -326,7 +326,7 @@ void moveZAxis(int z) {
     Serial.print('\n');
 }
 
-// Function for controlling the c axis motor 
+// Function for controlling the c axis motor
 void moveCAxis(int angle) {
     unsigned long long stepsToGo = round((abs(angle) / 90.0) * 3200);
     // Calculating step interval related variables

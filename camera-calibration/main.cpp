@@ -1,7 +1,7 @@
+#include "lib/libserial-helpers.hpp"
+#include "lib/opencv-helpers.hpp"
 #include <iostream>
 #include <unistd.h>
-#include "lib/opencv-helpers.hpp"
-#include "lib/libserial-helpers.hpp"
 
 // Main function
 int main(int argc, char** argv) {
@@ -71,12 +71,17 @@ int main(int argc, char** argv) {
         }
         // Display a small help at start
         cv::namedWindow(WINDOW_NAME);
-        showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: Quit the program\nR: Indicate that the next operation can be performed"));
+        showImage(WINDOW_NAME,
+                  drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3),
+                           "This program is fully keyboard driven. Here is a full list of all available actions:\nQ: "
+                           "Quit the program\nR: Indicate that the next operation can be performed"));
         // Moving to the start coordinates
         moveTo(serial, X_AXIS_CENTER, Y_AXIS_CENTER);
         std::cout << "Moved to start coordinates." << std::endl;
         // Prompt the user to align the calibration pattern
-        showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Please lay down the calibration pattern in the center of the camera viewport.\nThe next screen will help you with the alignment..."));
+        showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3),
+                                        "Please lay down the calibration pattern in the center of the camera "
+                                        "viewport.\nThe next screen will help you with the alignment..."));
         // Show a life camera feed with alignment helps
         while (true) {
             // Image containers and variable for storing the key pressed
@@ -103,7 +108,8 @@ int main(int argc, char** argv) {
         }
         // Move to the required coordinates and take the calibration pictures
         std::cout << "Started the image capture." << std::endl;
-        cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Image capture in progress. Please wait..."));
+        cv::imshow(WINDOW_NAME,
+                   drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Image capture in progress. Please wait..."));
         cv::waitKey(1000);
         for (int i = Y_AXIS_CENTER; i < Y_AXIS_CENTER + (Y_AXIS_CAPTURE_RANGE + 1); i += Y_AXIS_CAPTURE_STEP_SIZE) {
             sendCommand(serial, Y_AXIS_COMMAND, i);
@@ -111,28 +117,35 @@ int main(int argc, char** argv) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 calibrationImages.push_back(capturePicture(camera));
-                std::cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.' << std::endl;
+                std::cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.'
+                          << std::endl;
             }
-            for (int j = X_AXIS_CENTER - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_CENTER - (X_AXIS_CAPTURE_RANGE + 1); j -= X_AXIS_CAPTURE_STEP_SIZE) {
+            for (int j = X_AXIS_CENTER - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_CENTER - (X_AXIS_CAPTURE_RANGE + 1);
+                 j -= X_AXIS_CAPTURE_STEP_SIZE) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 calibrationImages.push_back(capturePicture(camera));
-                std::cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.' << std::endl;
+                std::cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.'
+                          << std::endl;
             }
         }
-        for (int i = Y_AXIS_CENTER - Y_AXIS_CAPTURE_STEP_SIZE; i > Y_AXIS_CENTER - (Y_AXIS_CAPTURE_RANGE + 1); i -= Y_AXIS_CAPTURE_STEP_SIZE) {
+        for (int i = Y_AXIS_CENTER - Y_AXIS_CAPTURE_STEP_SIZE; i > Y_AXIS_CENTER - (Y_AXIS_CAPTURE_RANGE + 1);
+             i -= Y_AXIS_CAPTURE_STEP_SIZE) {
             sendCommand(serial, Y_AXIS_COMMAND, i);
             for (int j = X_AXIS_CENTER; j < X_AXIS_CENTER + (X_AXIS_CAPTURE_RANGE + 1); j += X_AXIS_CAPTURE_STEP_SIZE) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 calibrationImages.push_back(capturePicture(camera));
-                std::cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.' << std::endl;
+                std::cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.'
+                          << std::endl;
             }
-            for (int j = X_AXIS_CENTER - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_CENTER - (X_AXIS_CAPTURE_RANGE + 1); j -= X_AXIS_CAPTURE_STEP_SIZE) {
+            for (int j = X_AXIS_CENTER - X_AXIS_CAPTURE_STEP_SIZE; j > X_AXIS_CENTER - (X_AXIS_CAPTURE_RANGE + 1);
+                 j -= X_AXIS_CAPTURE_STEP_SIZE) {
                 sendCommand(serial, X_AXIS_COMMAND, j);
                 sleep(1);
                 calibrationImages.push_back(capturePicture(camera));
-                std::cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.' << std::endl;
+                std::cout << "Captured a picture at x coordinate " << j << " and y coordinate " << i << '.'
+                          << std::endl;
             }
         }
         // Close the robot connection
@@ -140,7 +153,8 @@ int main(int argc, char** argv) {
         serial.Close();
         // Loop over all the images and try to find the chessboard in them
         std::cout << "Started the chessboard search." << std::endl;
-        showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Chessboard search in progress. Please wait..."));
+        showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3),
+                                        "Chessboard search in progress. Please wait..."));
         for (int i = 0; i < calibrationImages.size(); i++) {
             // Image containers and other internal variables
             cv::Mat rawFrame;
@@ -151,7 +165,8 @@ int main(int argc, char** argv) {
             rawFrame = calibrationImages[i];
             cv::cvtColor(rawFrame, grayFrame, cv::COLOR_BGR2GRAY);
             // Actually try to find chessboard corners
-            chessboardFound = cv::findChessboardCornersSB(grayFrame, cv::Size(CHESSBOARD_SIZE[0], CHESSBOARD_SIZE[1]), cornerPoints);
+            chessboardFound =
+                cv::findChessboardCornersSB(grayFrame, cv::Size(CHESSBOARD_SIZE[0], CHESSBOARD_SIZE[1]), cornerPoints);
             if (chessboardFound) {
                 std::cout << "Algorithm detected the chessboard on image " << i << '.' << std::endl;
                 objectPoints.push_back(objectPointsTemplate);
@@ -162,9 +177,11 @@ int main(int argc, char** argv) {
         }
         // Perform the calibration
         std::cout << "Started the calibration." << std::endl;
-        cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Camera calibration in progress. Please wait..."));
+        cv::imshow(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3),
+                                         "Camera calibration in progress. Please wait..."));
         cv::waitKey(1000);
-        cv::calibrateCamera(objectPoints, imagePoints, cv::Size(calibrationImages[0].cols, calibrationImages[0].rows), cameraMatrix, distortionCoefficients, rotationVector, translationVector);
+        cv::calibrateCamera(objectPoints, imagePoints, cv::Size(calibrationImages[0].cols, calibrationImages[0].rows),
+                            cameraMatrix, distortionCoefficients, rotationVector, translationVector);
         std::cout << "Camera matrix: " << cameraMatrix << std::endl;
         std::cout << "Distortion coefficients : " << distortionCoefficients << std::endl;
         // Write the calibration to file
@@ -174,12 +191,16 @@ int main(int argc, char** argv) {
         cameraCalibration.release();
         // Close the program
         std::cout << "Finished the camera calibration!" << std::endl;
-        showImage(WINDOW_NAME, drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Finished the camera calibration!"));
+        showImage(WINDOW_NAME,
+                  drawText(cv::Mat::zeros(cv::Size(1280, 720), CV_8UC3), "Finished the camera calibration!"));
         return 0;
     } else {
         // Throw an error on invalid number of command line arguments
-        std::cout << "Wrong number of arguments. Three arguments containing the camera ID, serial port and name of camera calibration file expected." << std::endl;
-        std::cout << "Example: " << argv[0] << " camera-calibration.xml 0 /dev/ttyUSB0 camera-calibration.xml" << std::endl;
+        std::cout << "Wrong number of arguments. Three arguments containing the camera ID, serial port and name of "
+                     "camera calibration file expected."
+                  << std::endl;
+        std::cout << "Example: " << argv[0] << " camera-calibration.xml 0 /dev/ttyUSB0 camera-calibration.xml"
+                  << std::endl;
         return 1;
     }
 }

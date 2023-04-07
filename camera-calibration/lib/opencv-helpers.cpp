@@ -12,7 +12,8 @@ cv::Mat drawText(cv::Mat image, std::string text) {
         lines.push_back(lineBuffer);
     }
     for (int i = 0; i < lines.size(); i++) {
-        cv::putText(buffer, lines[i], cv::Point(0, 30 * (i + 1)), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255));
+        cv::putText(buffer, lines[i], cv::Point(0, 30 * (i + 1)), cv::FONT_HERSHEY_SIMPLEX, 1,
+                    cv::Scalar(255, 255, 255));
     }
     return buffer;
 }
