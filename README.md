@@ -2,6 +2,8 @@
 
 ## Overview
 
+> This project is **DEPRECATED**, therefore might not be on par with my current coding standards and will not receive any updates now or in the future. Please use my [next generation rewrite (jgswpzzlbt-ng)](https://github.com/locxter/jgswpzzlbt-ng) instead.
+
 ![Overview image](overview.png)
 
 This is a jigsaw puzzle solving robot I designed. It is programmed in C++ using OpenCV for image recognition and LibSerial for communicating with a custom Arduino firmware. For further information take a look at the overview video `overview.mp4` or the result images `6-part-result.jpeg` and `24-part-result.jpeg`.
