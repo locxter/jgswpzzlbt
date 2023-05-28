@@ -2,7 +2,7 @@
 
 ## Overview
 
-> This project is **DEPRECATED**, therefore might not be on par with my current coding standards and will not receive any updates now or in the future. Please use my [next generation rewrite (jgswpzzlbt-ng)](https://github.com/locxter/jgswpzzlbt-ng) instead.
+> This project is **DEPRECATED**, therefore might not be on par with my current coding standards and will not receive any updates now or in the future.
 
 ![Overview image](overview.png)
 
